@@ -1,4 +1,4 @@
-#!C:\moodle-1\server\php\.\php.exe
+#!C:\moodle-2\server\php\.\php.exe
 <?php
 /**
  * Get the Compatibility info from PHP CLI
