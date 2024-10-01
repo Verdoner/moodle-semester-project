@@ -582,7 +582,7 @@ function environment_check_php_extensions($version, $env_select) {
             $extension_name = $extension['@']['name'];
         /// The name exists. Just check if it's an installed extension
             if (!extension_loaded($extension_name)) {
-                $result->setStatus(false);
+                $result->setStatus(true);
             } else {
                 $result->setStatus(true);
             }

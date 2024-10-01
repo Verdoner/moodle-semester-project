@@ -15,21 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version metadata for the plugintype_pluginname plugin.
+ * Activity index for the mod_[modname] plugin.
  *
- * @package   plugintype_pluginname
+ * @package   mod_[modname]
  * @copyright Year, You Name <your@email.address>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+require_once('../../config.php');
 
-$plugin->version   = 2024090300;       // The current module version (Date: YYYYMMDDXX).
-$plugin->requires  = 2024090300;    // Requires this Moodle version.
-$plugin->component = 'mod_homework';        // Full name of the plugin (used for diagnostics)
-//$plugin->cron      = 0;
+// The `id` parameter is the course id.
+$id = required_param('id', PARAM_INT);
 
-//$plugin->dependencies = [
-  //  'mod_forum' => 2022042100,
-  //  'mod_data' => 2022042100
-//];
+// Fetch the requested course.
+$course = $DB->get_record('course', ['id'=> $id], '*', MUST_EXIST);
+
+// Require that the user is logged into the course.
+require_course_login($course);
+
+$modinfo = get_fast_modinfo($course);
+
+foreach ($modinfo->get_instances_of('[modinfo]') as $instanceid => $cm) {
+    // Display information about your activity.
+}
