@@ -32,3 +32,7 @@ $string['pluginadministration'] = 'Homework administration';
 $string['pluginname'] = 'Homework';
 $string['somesetting'] = 'Some setting';
 $string['somesetting_desc'] = 'Description of some setting';
+$string['duedate'] = 'Due Date';
+$string['dueto'] = 'Due to';
+
+

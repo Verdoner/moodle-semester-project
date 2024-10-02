@@ -32,9 +32,30 @@ class mod_homework_mod_form extends moodleform_mod {
 
         $mform =& $this->_form;
 
+        $mform->addElement('header', 'general', get_string('general', 'form'));
+        $mform->addElement('text', 'name', get_string('name'), array('size'=>'48'));
+        $mform->addHelpButton('name', 'name', 'homework');
+        if (!empty($CFG->formatstringstriptags)) {
+            $mform->setType('name', PARAM_TEXT);
+        } else {
+            $mform->setType('name', PARAM_CLEANHTML);
+        }
+        $mform->addRule('name', null, 'required', null, 'client');
+        $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
+        $this->standard_intro_elements();
+
+        $mform->addElement('header', 'duedate', get_string('duedate', 'homework'));
+        $mform->addElement('date_selector', 'duedateselector', get_string('dueto', 'homework'), array(
+            'startyear' => date("Y"),
+            'stopyear'  => date("Y"),
+            'optional'  => false
+        ));
+
+
+        //-------------------------------------------------------MUST MOODLE
         $this->standard_coursemodule_elements();
 
-
+        //-------------------------------------------------------
         $this->add_action_buttons();
     }
     function validation($data, $files) {
