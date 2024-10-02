@@ -38,6 +38,23 @@ function xmldb_homeworkdb_upgrade($oldversion) {
 
     $dbman = $DB->get_manager();
 
+	if ($oldversion < 2024100204) {
+// Define field homework_id to be dropped from files_homework.
+		$table = new xmldb_table('files_homework');
+		$field = new xmldb_field('books');
+
+		// Conditionally launch drop field homework_id.
+		if ($dbman->field_exists($table, $field)) {
+			$dbman->drop_field($table, $field);
+		}
+
+		// Homeworkdb savepoint reached.
+		upgrade_mod_savepoint(true, 2024100204, 'homeworkdb');
+	}
+
+
+
+
     // For further information please read {@link https://docs.moodle.org/dev/Upgrade_API}.
     //
     // You will also have to create the db/install.xml file by using the XMLDB Editor.
