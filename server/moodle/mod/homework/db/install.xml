@@ -4,7 +4,7 @@
        xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
     <TABLES>
-        <TABLE NAME="howwork" COMMENT="each record is one homework resource">
+        <TABLE NAME="homework" COMMENT="each record is one homework resource">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="true"/>
             </FIELDS>

@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,28 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * List of urls in course
- *
- * @package    mod_url
- * @copyright  2009 onwards Martin Dougiamas (http://dougiamas.com)
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+global $ADMIN;
+defined('MOODLE_INTERNAL') || die();
 
-require_once('../../config.php');
+// Add settings page.
+if ($ADMIN->fulltree) {
+    $settings->add(new admin_settingpage('mod_homework', get_string('pluginname', 'mod_homework')));
 
-// The `id` parameter is the course id.
-$id = required_param('id', PARAM_INT);
+    $settings->add(new admin_setting_configtext('homework/some_setting',
+        get_string('somesetting', 'mod_homework'), get_string('somesetting_desc', 'mod_homework'), 'default_value'));
 
-// Fetch the requested course.
-$course = $DB->get_record('course', ['id'=> $id], '*', MUST_EXIST);
-
-// Require that the user is logged into the course.
-require_course_login($course);
-
-$modinfo = get_fast_modinfo($course);
-
-foreach ($modinfo->get_instances_of('homework') as $instanceid => $cm) {
-    // Display information about your activity.
-    echo $cm->modname;
+    $ADMIN->add('modsettings', $settings);
 }

@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,28 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * List of urls in course
- *
- * @package    mod_url
- * @copyright  2009 onwards Martin Dougiamas (http://dougiamas.com)
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
+global $OUTPUT, $PAGE, $DB;
 require_once('../../config.php');
 
-// The `id` parameter is the course id.
-$id = required_param('id', PARAM_INT);
+$id = required_param('id', PARAM_INT); // Course module ID
+[$course, $cm] = get_course_and_cm_from_cmid($id, 'homework');
+// $instance = $DB->get_record('homework', ['id'=> $cm->instance], '*', MUST_EXIST);
 
-// Fetch the requested course.
-$course = $DB->get_record('course', ['id'=> $id], '*', MUST_EXIST);
+$PAGE->set_url('/mod/homework/view.php', array('id' => $id));
+$PAGE->set_title(get_string('modulename', 'mod_homework'));
+$PAGE->set_heading(get_string('modulename', 'mod_homework'));
 
-// Require that the user is logged into the course.
-require_course_login($course);
-
-$modinfo = get_fast_modinfo($course);
-
-foreach ($modinfo->get_instances_of('homework') as $instanceid => $cm) {
-    // Display information about your activity.
-    echo $cm->modname;
-}
+echo $OUTPUT->header();
+echo $OUTPUT->heading('this is the homework view page');
+echo $OUTPUT->footer();
