@@ -19,7 +19,7 @@ require_once('../../config.php');
 
 $id = required_param('id', PARAM_INT); // Course module ID
 [$course, $cm] = get_course_and_cm_from_cmid($id, 'homework');
-// $instance = $DB->get_record('homework', ['id'=> $cm->instance], '*', MUST_EXIST);
+$instance = $DB->get_record('homework', ['id'=> $cm->instance], '*', MUST_EXIST);
 
 $PAGE->set_url('/mod/homework/view.php', array('id' => $id));
 $PAGE->set_title(get_string('modulename', 'mod_homework'));

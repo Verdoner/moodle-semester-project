@@ -24,6 +24,9 @@
 function homework_add_instance($homeworkdata){
     global $DB;
 
+    $homeworkdata->timecreated = time();
+    $homeworkdata->timemodified = time();
+
     $homeworkdata->id = $DB->insert_record('homework', $homeworkdata);
 
     return $homeworkdata->id;
@@ -38,7 +41,7 @@ function homework_add_instance($homeworkdata){
 function homework_update_instance($homeworkdata){
     global $DB;
 
-    //$homeworkdata->timemodified = time();
+    $homeworkdata->timemodified = time();
     $homeworkdata->id = $homeworkdata->instance;
 
     $DB->update_record('homework', $homeworkdata);
@@ -55,7 +58,7 @@ function homework_update_instance($homeworkdata){
 function homework_delete_instance($id){
     global $DB;
 
-    $DB->delete_records('homework ', ['id' => $id]);
+    $DB->delete_records('homework', ['id' => $id]);
 
     return true;
 }
