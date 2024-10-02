@@ -25,9 +25,9 @@
 $string['modulename'] = 'Homework';
 $string['modulenameplural'] = 'Homework';
 $string['modulename_help'] = 'Use the homework module to create interactive homework.';
-$string['livequiz:addinstance'] = 'Add a new homework';
-$string['livequiz:submit'] = 'Submit homework';
-$string['livequiz:view'] = 'View homework';
+$string['homework:addinstance'] = 'Add a new homework';
+$string['homework:submit'] = 'Submit homework';
+$string['homework:view'] = 'View homework';
 $string['pluginadministration'] = 'Homework administration';
 $string['pluginname'] = 'Homework';
 $string['somesetting'] = 'Some setting';

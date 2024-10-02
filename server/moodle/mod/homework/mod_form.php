@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 /**
- * Activity creation/editing form for the mod_livequiz plugin.
+ * Activity creation/editing form for the mod_homework plugin.
  *
  * @package
  * @copyright
