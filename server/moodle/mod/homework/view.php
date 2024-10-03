@@ -14,17 +14,58 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-global $OUTPUT, $PAGE, $DB;
+global $OUTPUT, $PAGE, $DB, $CFG;
 require_once('../../config.php');
+use mod_homework\view_page;
 
 $id = required_param('id', PARAM_INT); // Course module ID
 [$course, $cm] = get_course_and_cm_from_cmid($id, 'homework');
 $instance = $DB->get_record('homework', ['id'=> $cm->instance], '*', MUST_EXIST);
 
-$PAGE->set_url('/mod/homework/view.php', array('id' => $id));
-$PAGE->set_title(get_string('modulename', 'mod_homework'));
-$PAGE->set_heading(get_string('modulename', 'mod_homework'));
+$context = context_module::instance($cm->id);
+require_login($course, true, $cm);
 
+$PAGE->set_url('/mod/homework/view.php', array('id' => $id));
+$PAGE->set_title(get_string('modulename', 'homework'));
+$PAGE->set_heading(get_string('modulename', 'homework'));
+
+// Adding secondary navigation links
+if ($PAGE->has_secondary_navigation()) {
+    // Create a new navigation node for 'Submissions'
+    $submissionsnode = navigation_node::create(
+        get_string('viewsubmissions', 'mod_homework'), // The label
+        new moodle_url('/mod/homework/submissions.php', array('id' => $cm->id)), // URL for the link
+        navigation_node::TYPE_CUSTOM, // Type of node (custom link)
+        null, // Icon or image (null by default)
+        'submissionsnav' // Unique key for the navigation node
+    );
+
+    // Add the submissions node to the secondary navigation
+    $PAGE->secondarynav->add_node($submissionsnode);
+
+    // Example: Add another node, e.g., 'Edit Homework'
+    $editnode = navigation_node::create(
+        get_string('edit', 'moodle'),
+        new moodle_url('/mod/homework/edit.php', array('id' => $cm->id)),
+        navigation_node::TYPE_CUSTOM,
+        null,
+        'editnav'
+    );
+    $PAGE->secondarynav->add_node($editnode);
+}
+
+// Output the header - REQUIRED
 echo $OUTPUT->header();
-echo $OUTPUT->heading('this is the homework view page');
+
+$viewobj = new view_page();
+$viewobj->canedit = true;
+$viewobj->editurl = new moodle_url('/mod/homework/edit.php', ['cmid' => $cm->id]);
+
+// Add the actual page content here
+echo html_writer::tag('div', 'This is the homework view page', array('class' => 'content'));
+if($viewobj->canedit && !$viewobj->hashomework){
+    echo html_writer::link($viewobj->editurl, get_string('addhomework', 'homework'), ['class' => 'btn btn-secondary']);
+}
+
+// Output the footer - REQUIRED
 echo $OUTPUT->footer();

@@ -18,9 +18,9 @@
 /**
  * List of urls in course
  *
- * @package    mod_url
- * @copyright  2009 onwards Martin Dougiamas (http://dougiamas.com)
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once('../../config.php');
@@ -38,5 +38,5 @@ $modinfo = get_fast_modinfo($course);
 
 foreach ($modinfo->get_instances_of('homework') as $instanceid => $cm) {
     // Display information about your activity.
-    echo $cm->modname;
+    // echo $cm->modname;
 }
