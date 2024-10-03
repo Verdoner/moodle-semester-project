@@ -1,5 +1,5 @@
 <?php
-require('../mod/homeworkdb');
+require('../mod/homeworkdb/lang/en/homeworkdb.php');
 //Replace placeholder with path for file with functions
 
 //This tests getting and setting data in the database for the homework feed plugin
