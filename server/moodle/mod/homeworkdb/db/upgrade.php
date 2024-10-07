@@ -38,18 +38,52 @@ function xmldb_homeworkdb_upgrade($oldversion) {
 
     $dbman = $DB->get_manager();
 
-	if ($oldversion < 2024100204) {
-// Define field homework_id to be dropped from files_homework.
-		$table = new xmldb_table('files_homework');
-		$field = new xmldb_field('books');
+	if ($oldversion < 2024100303) {
+		// Define table homeworkdb to be created.
+		$table = new xmldb_table('homeworkdb');
 
-		// Conditionally launch drop field homework_id.
-		if ($dbman->field_exists($table, $field)) {
-			$dbman->drop_field($table, $field);
+		// Adding fields to table homeworkdb.
+		$table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+		$table->add_field('course', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+		$table->add_field('name', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+		$table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+		$table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+		$table->add_field('intro', XMLDB_TYPE_TEXT, null, null, null, null, null);
+		$table->add_field('introformat', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, '0');
+
+		// Adding keys to table homeworkdb.
+		$table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+		$table->add_key('fk_course', XMLDB_KEY_FOREIGN, ['course'], 'course', ['id']);
+
+		// Conditionally launch create table for homeworkdb.
+		if (!$dbman->table_exists($table)) {
+			$dbman->create_table($table);
 		}
 
 		// Homeworkdb savepoint reached.
-		upgrade_mod_savepoint(true, 2024100204, 'homeworkdb');
+		upgrade_mod_savepoint(true, 2024100303, 'homeworkdb');
+
+		// Define table homework to be created.
+		$table = new xmldb_table('homework');
+
+		// Adding fields to table homework.
+		$table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+		$table->add_field('description', XMLDB_TYPE_TEXT, null, null, null, null, null);
+		$table->add_field('duedate', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
+		$table->add_field('eventid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+
+		// Adding keys to table homework.
+		$table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+		$table->add_key('f_key', XMLDB_KEY_FOREIGN_UNIQUE, ['eventid'], 'event', ['id']);
+
+		// Conditionally launch create table for homework.
+		if (!$dbman->table_exists($table)) {
+			$dbman->create_table($table);
+		}
+
+		// Homeworkdb savepoint reached.
+		upgrade_mod_savepoint(true, 2024100303, 'homeworkdb');
+
 	}
 
 

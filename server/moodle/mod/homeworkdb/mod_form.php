@@ -46,10 +46,9 @@ class mod_homeworkdb_mod_form extends moodleform_mod {
         // Adding the "general" fieldset, where all the common settings are shown.
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
-
 		// Adding the standard "name" field.
         $mform->addElement('text', 'name', get_string('homeworkdbname', 'mod_homeworkdb'), array('size' => '64'));
-/*
+
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
@@ -65,15 +64,15 @@ class mod_homeworkdb_mod_form extends moodleform_mod {
             $this->standard_intro_elements();
         } else {
             $this->add_intro_editor();
-        }*/
+        }
 
         // Adding the rest of mod_homeworkdb settings, spreading all them into this fieldset
         // ... or adding more fieldsets ('header' elements) if needed for better logic.
-	    //$mform->addElement('static', 'label1', 'homeworkdbsettings', get_string('homeworkdbsettings', 'mod_homeworkdb'));
-        //$mform->addElement('header', 'homeworkdbfieldset', get_string('homeworkdbfieldset', 'mod_homeworkdb'));
+	    $mform->addElement('static', 'label1', 'homeworkdbsettings', get_string('homeworkdbsettings', 'mod_homeworkdb'));
+        $mform->addElement('header', 'homeworkdbfieldset', get_string('homeworkdbfieldset', 'mod_homeworkdb'));
 
         // Add standard elements.
-        //$this->standard_coursemodule_elements();
+        $this->standard_coursemodule_elements();
 
         // Add standard buttons.
         $this->add_action_buttons();

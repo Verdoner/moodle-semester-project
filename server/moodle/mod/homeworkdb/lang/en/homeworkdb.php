@@ -26,3 +26,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'homeworkdb';
+$string['formtitle'] = 'homeworkdb';
+$string['description'] = 'Description';
+$string['homeworkdbname'] = 'homeworkdbname';
+$string['modulename'] = 'homeworkdb';
+$string['eventid'] = 'eventid';
+$string['duedate'] = 'duedate';
+$string['modulename'] = 'Homework';
