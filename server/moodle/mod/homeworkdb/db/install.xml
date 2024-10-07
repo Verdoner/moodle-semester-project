@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/homeworkdb/db" VERSION="20241003" COMMENT="XMLDB file for Moodle mod_homeworkdb"
+<XMLDB PATH="mod/homeworkdb/db" VERSION="20241007" COMMENT="XMLDB file for Moodle mod_homeworkdb"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -23,37 +23,14 @@
         <KEY NAME="event_f_key" TYPE="foreign-unique" FIELDS="eventid" REFTABLE="event" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="course_sections_homework" COMMENT="Table connecting homework and course_sections">
-      <FIELDS>
-        <FIELD NAME="course_sections_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="homework_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="f_key_course_sections_id" TYPE="foreign-unique" FIELDS="course_sections_id" REFTABLE="course_sections" REFFIELDS="id"/>
-        <KEY NAME="f_key_homework_id" TYPE="foreign-unique" FIELDS="homework_id" REFTABLE="homeworkdb" REFFIELDS="id"/>
-      </KEYS>
-    </TABLE>
     <TABLE NAME="files_homework" COMMENT="table connecting files and homework">
       <FIELDS>
         <FIELD NAME="files_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="homework_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="books" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="f_key_files_id" TYPE="foreign" FIELDS="files_id" REFTABLE="files" REFFIELDS="id"/>
         <KEY NAME="f_key_homework_id" TYPE="foreign" FIELDS="homework_id" REFTABLE="homeworkdb" REFFIELDS="id"/>
-      </KEYS>
-    </TABLE>
-    <TABLE NAME="homework" COMMENT="Table for homework">
-      <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="duedate" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="eventid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="f_key" TYPE="foreign-unique" FIELDS="eventid" REFTABLE="event" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
   </TABLES>
