@@ -31,7 +31,7 @@ if ($ADMIN->fulltree) {
     require_once($CFG->dirroot.'/auth/shibboleth/classes/admin_setting_special_convert_data_configfile.php');
 
     // Introductory explanation.
-    $readmeurl = (new moodle_url('/auth/shibboleth/README.txt'))->out();
+    $readmeurl = (new moodle_url('/auth/shibboleth/README.md'))->out();
     $settings->add(new admin_setting_heading('auth_shibboleth/pluginname', '',
             new lang_string('auth_shibbolethdescription', 'auth_shibboleth', $readmeurl)));
 

@@ -7,7 +7,7 @@
  * For more information about the class and upcoming tools and toys using it,
  * visit {@link http://www.phpflickr.com/} or {@link http://phpflickr.sourceforge.net}
  *
- *   For installation instructions, open the README.txt file packaged with this
+ *   For installation instructions, open the README.md file packaged with this
  *   class. If you don't have a copy, you can see it at:
  *    {@link http://www.phpflickr.com/README.txt}
  *
