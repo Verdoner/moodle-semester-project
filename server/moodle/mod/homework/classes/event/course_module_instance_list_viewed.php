@@ -15,25 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_url instance list viewed event.
+ * The mod_homework instance list viewed event.
  *
- * @package    mod_url
- * @copyright  2013 Mark Nelson <markn@moodle.com>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace mod_homework\event;
 
 defined('MOODLE_INTERNAL') || die();
 
-/**
- * The mod_url instance list viewed event class.
- *
- * @package    mod_url
- * @since      Moodle 2.7
- * @copyright  2013 Mark Nelson <markn@moodle.com>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 class course_module_instance_list_viewed extends \core\event\course_module_instance_list_viewed {
 
 }

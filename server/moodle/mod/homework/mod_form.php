@@ -16,9 +16,9 @@
 /**
  * Activity creation/editing form for the mod_homework plugin.
  *
- * @package
- * @copyright
- * @license
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
@@ -32,6 +32,7 @@ class mod_homework_mod_form extends moodleform_mod {
 
         $mform =& $this->_form;
 
+        //Section for input of Name for the course, and its description
         $mform->addElement('header', 'general', get_string('general', 'form'));
         $mform->addElement('text', 'name', get_string('name'), array('size'=>'48'));
         $mform->addHelpButton('name', 'name', 'homework');
@@ -44,6 +45,7 @@ class mod_homework_mod_form extends moodleform_mod {
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $this->standard_intro_elements();
 
+        //Section for input of duedate
         $mform->addElement('header', 'duedate', get_string('duedate', 'homework'));
         $mform->addElement('date_selector', 'duedateselector', get_string('dueto', 'homework'), array(
             'startyear' => date("Y"),

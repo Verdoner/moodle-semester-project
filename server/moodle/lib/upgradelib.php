@@ -456,7 +456,7 @@ function upgrade_stale_php_files_present(): bool {
 
     $someexamplesofremovedfiles = [
         // Removed in 4.4.
-        '/README.txt',
+        '/README.md',
         '/lib/dataformatlib.php',
         '/lib/horde/readme_moodle.txt',
         '/lib/yui/src/formchangechecker/js/formchangechecker.js',
@@ -529,7 +529,7 @@ function upgrade_stale_php_files_present(): bool {
         '/lib/dml/mssql_native_moodle_recordset.php',
         '/lib/dml/mssql_native_moodle_temptables.php',
         // Removed in 3.4.
-        '/auth/README.txt',
+        '/auth/README.md',
         '/calendar/set.php',
         '/enrol/users.php',
         '/enrol/yui/rolemanager/assets/skins/sam/rolemanager.css',
@@ -563,7 +563,7 @@ function upgrade_stale_php_files_present(): bool {
         '/admin/oacleanup.php',
         // Removed in 2.5.
         '/backup/lib.php',
-        '/backup/bb/README.txt',
+        '/backup/bb/README.md',
         '/lib/excel/test.php',
         // Removed in 2.4.
         '/admin/tool/unittest/simpletestlib.php',
