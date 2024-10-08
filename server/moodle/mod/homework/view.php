@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Code for viewing each homework module for details(not done)
+ *
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ */
+
 global $OUTPUT, $PAGE, $DB, $CFG;
 require_once('../../config.php');
 use mod_homework\view_page;
@@ -63,6 +72,14 @@ $viewobj->editurl = new moodle_url('/mod/homework/edit.php', ['cmid' => $cm->id]
 
 // Add the actual page content here
 echo html_writer::tag('div', 'This is the homework view page', array('class' => 'content'));
+$records = $DB->get_records('homework');
+
+// Iterate and display the records
+foreach ($records as $record) {
+    echo 'Homework ID: ' . $record->id . '<br>';
+    echo 'Homework Name: ' . $record->name . '<br>';
+    // Add any other fields you'd like to display
+}
 if($viewobj->canedit && !$viewobj->hashomework){
     echo html_writer::link($viewobj->editurl, get_string('addhomework', 'homework'), ['class' => 'btn btn-secondary']);
 }
