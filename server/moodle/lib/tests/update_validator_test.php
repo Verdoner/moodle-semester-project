@@ -64,7 +64,7 @@ class update_validator_test extends \advanced_testcase {
             'one/' => true,
             'one/version.php' => 'Can not write target file',
             'two/' => true,
-            'two/README.md' => true));
+            'two/README.txt' => true));
         $this->assertFalse($validator->execute());
         $this->assertTrue($this->has_message($validator->get_messages(), $validator::ERROR, 'filestatus',
             array('file' => 'one/version.php', 'status' => 'Can not write target file')));
@@ -72,7 +72,7 @@ class update_validator_test extends \advanced_testcase {
         // Insufficient number of extracted files.
         $validator = testable_core_update_validator::instance($fixtures.'/emptydir', array(
             'emptydir/' => true,
-            'emptydir/README.md' => true));
+            'emptydir/README.txt' => true));
         $this->assertFalse($validator->execute());
         $this->assertTrue($this->has_message($validator->get_messages(), $validator::ERROR, 'filesnumber'));
 
@@ -91,7 +91,7 @@ class update_validator_test extends \advanced_testcase {
             'one/' => true,
             'one/version.php' => true,
             'two/' => true,
-            'two/README.md' => true));
+            'two/README.txt' => true));
         $this->assertFalse($validator->execute());
         $this->assertTrue($this->has_message($validator->get_messages(), $validator::ERROR, 'onedir'));
 

@@ -32,7 +32,7 @@
     $shibbolethauth = get_auth_plugin('shibboleth');
 
     // Check whether Shibboleth is configured properly
-    $readmeurl = (new moodle_url('/auth/shibboleth/README.md'))->out();
+    $readmeurl = (new moodle_url('/auth/shibboleth/README.txt'))->out();
     if (empty($pluginconfig->user_attribute)) {
         throw new \moodle_exception('shib_not_set_up_error', 'auth_shibboleth', '', $readmeurl);
      }
