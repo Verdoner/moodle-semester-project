@@ -86,7 +86,7 @@ define ('XMLDB_INDEX_NOTUNIQUE',false);
 // ==== Some strings used widely ====
 /** New line in xmldb generated files */
 define ('XMLDB_LINEFEED', "\n");
-/** Upgrade start in upgrade.php */
+/** Upgrade start in upgrade.php*/
 define ('XMLDB_PHP_HEADER', '    if ($oldversion < XXXXXXXXXX) {' . XMLDB_LINEFEED);
-/** Upgrade end in upgrade.php */
+/** Upgrade end in upgrade.php*/
 define ('XMLDB_PHP_FOOTER', '    }' . XMLDB_LINEFEED);
