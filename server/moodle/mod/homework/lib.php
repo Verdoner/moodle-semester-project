@@ -38,6 +38,8 @@ function homework_add_instance($homeworkdata){
 
     $homeworkdata->id = $DB->insert_record('homework', $homeworkdata);
 
+
+
     return $homeworkdata->id;
 }
 

@@ -35,5 +35,7 @@ $string['somesetting_desc'] = 'Description of some setting';
 $string['duedate'] = 'Due Date';
 $string['dueto'] = 'Due to';
 $string['addhomework'] = 'Add homework';
+$string['homeworkchooser'] = 'Homework Chooser';
+$string['openhomeworkchooser'] = 'Open Homework Chooser';
 
 
