@@ -1,6 +1,6 @@
 <?php
 
-namespace mod_homeworkdb;
+namespace mod_homework;
 
 class Homework {
 	public function __construct(int $id) {

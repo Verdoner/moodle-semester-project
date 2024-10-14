@@ -15,18 +15,18 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Code to be executed after the plugin's database scheme has been installed is defined here.
+ * Code that is executed before the tables and data are dropped during the plugin uninstallation.
  *
- * @package     mod_homeworkdb
+ * @package     mod_homework
  * @category    upgrade
  * @copyright   2024 PV 
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
- * Custom code to be run on installing the plugin.
+ * Custom uninstallation procedure.
  */
-function xmldb_homeworkdb_install() {
+function xmldb_homework_uninstall() {
 
     return true;
 }
