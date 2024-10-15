@@ -69,7 +69,8 @@ $records = $DB->get_records('homework');
 echo html_writer::start_tag('div', ['class' => 'mod-quiz-edit-content']);
 
 // Include the AMD module
-$PAGE->requires->js_call_amd('mod_homework/homeworkchooser', 'init', array($cm->id));
+$PAGE->requires->js_call_amd('mod_homework/homeworkchooser', 'init', array($cm->id,
+    get_string('homeworkchooser', 'mod_homework')));
 
 // Output the footer - REQUIRED
 echo $OUTPUT->footer();
