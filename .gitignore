@@ -151,3 +151,4 @@ server/mysql/data/mysql_error.log
 /server/moodle/mod/workshop/
 /server/moodle/mod/lesson/
 /server/moodle/mod/assign/
+/server/moodledata/cache/
