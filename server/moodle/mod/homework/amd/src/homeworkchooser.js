@@ -57,6 +57,8 @@ export const init = async (cmid, title) => {
  */
 const handleFormSubmit = (modal) => {
     const inputField = modal.getRoot().find('#inputField').val();
+    const startPage = modal.getRoot().find('#startPage').val();
+    const endPage = modal.getRoot().find('#endPage').val();
 
     if (inputField === "") {
         alert("Please fill in input field.");
@@ -67,6 +69,8 @@ const handleFormSubmit = (modal) => {
         methodname: 'mod_homework_save_homework_chooser',  // Your PHP function that will handle the data
         args: {
             inputfield: inputField,
+            startpage: startPage,
+            endpage: endPage,
         },
         done: function(response) {
             console.log("Data saved successfully:", response);

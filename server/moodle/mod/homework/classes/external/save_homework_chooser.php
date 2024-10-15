@@ -16,12 +16,14 @@ class save_homework_chooser extends \external_api
     public static function execute_parameters()
     {
         return new external_function_parameters([
-            'inputfield' => new external_value(PARAM_TEXT, 'Input field value')
+            'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
+            'startpage' => new external_value(PARAM_TEXT, 'startPage field value'),
+            'endpage' => new external_value(PARAM_TEXT, 'endPage field value')
         ]);
     }
 
     // The main function to handle the request.
-    public static function execute($inputfield)
+    public static function execute($inputfield, $startpage, $endpage)
     {
         global $DB, $USER;
 
@@ -30,7 +32,10 @@ class save_homework_chooser extends \external_api
         $record = new \stdClass();
         $record->userid = $USER->id;
         $record->description = $inputfield;
+        $record->startpage = $startpage;
+        $record->endpage = $endpage;
         $record->timecreated = time();
+        $record->timemodified = time();
 
         $DB->insert_record('homework_literature', $record);
 
