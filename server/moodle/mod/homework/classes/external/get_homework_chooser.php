@@ -40,45 +40,12 @@ class get_homework_chooser extends \external_api {
                         <label for="endPage"></label>
                         <input type="number" id="endPage" name="endPage" min="1" placeholder="End Page" style="width: 50px;">
                     </div>
+                    <div id="linkDiv" style="display:none">
+                        <label for="link">Link:</label><br>
+                        <input name="link" id="link" type="url" placeholder="Enter URL">
+                    </div>
                 </form>
             </div>
-            <script>
-            const startPageInput = document.getElementById("startPage");
-            const endPageInput = document.getElementById("endPage");
-    
-            // Add event listener to validate the input fields
-            startPageInput.addEventListener("input", validatePageRange);
-            endPageInput.addEventListener("input", validatePageRange);
-    
-            function validatePageRange() {
-                const startPage = parseInt(startPageInput.value, 10);
-                const endPage = parseInt(endPageInput.value, 10);
-    
-                if (endPageInput.value !== "" && startPageInput.value !== "") {
-                    if (endPage < startPage) {
-                        endPageInput.setCustomValidity("End Page must be greater than or equal to Start Page");
-                    } else {
-                        endPageInput.setCustomValidity(""); // Clear the error message if valid
-                    }
-                } else {
-                    endPageInput.setCustomValidity(""); // Clear any error if either field is empty
-                }
-            }
-            // Get all radio buttons with the name "option"
-            const radioButtons = document.querySelectorAll("input[name=\'option\']");
-            const testTextarea = document.getElementById("page-range-input");
-    
-            // Add event listener to each radio button
-            radioButtons.forEach(radio => {
-                radio.addEventListener("change", function() {
-                    if (document.getElementById("option1").checked) {
-                        testTextarea.style.display = "block";
-                    } else {
-                        testTextarea.style.display = "none";
-                    }
-                });
-            });
-        </script>
         ';
 
         return ['html' => $html];

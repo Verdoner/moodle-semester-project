@@ -11,6 +11,14 @@ $functions = [
         'type'        => 'write',
         'ajax'        => true
     ],
+    'mod_homework_save_homework_link' => [
+        'classname'   => 'mod_homework\external\save_homework_link',
+        'methodname'  => 'execute',
+        'classpath'   => 'mod/homework/classes/external/save_homework_link.php',
+        'description' => 'Saves the homework chooser link field value',
+        'type'        => 'write',
+        'ajax'        => true
+    ],
     'mod_homework_get_homework_chooser' => [
         'classname'   => 'mod_homework\external\get_homework_chooser',
         'methodname'  => 'execute',
@@ -25,6 +33,7 @@ $services = [
     'mod_homework_services' => [
         'functions' => [
             'mod_homework_save_homework_literature',
+            'mod_homework_save_homework_link',
             'mod_homework_get_homework_chooser',
         ],
         'restrictedusers' => 0,
