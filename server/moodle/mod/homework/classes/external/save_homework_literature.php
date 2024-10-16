@@ -1,5 +1,5 @@
 <?php
-// File: mod/homework/classes/external/save_homework_chooser.php
+// File: mod/homework/classes/external/save_homework_literature.php
 
 namespace mod_homework\external;
 
@@ -9,7 +9,7 @@ use external_function_parameters;
 use external_value;
 use external_single_structure;
 
-class save_homework_chooser extends \external_api
+class save_homework_literature extends \external_api
 {
 
     // Define the parameters expected by this function.
@@ -42,6 +42,7 @@ class save_homework_chooser extends \external_api
         // Return a success response.
         return ['status' => 'success', 'message' => 'Data saved successfully'];
     }
+
 
     // Define the return values.
     public static function execute_returns()

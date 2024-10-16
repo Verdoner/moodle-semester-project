@@ -3,10 +3,10 @@
 // File: mod/homework/db/services.php
 
 $functions = [
-    'mod_homework_save_homework_chooser' => [
-        'classname'   => 'mod_homework\external\save_homework_chooser',
+    'mod_homework_save_homework_literature' => [
+        'classname'   => 'mod_homework\external\save_homework_literature',
         'methodname'  => 'execute',
-        'classpath'   => 'mod/homework/classes/external/save_homework_chooser.php',
+        'classpath'   => 'mod/homework/classes/external/save_homework_literature.php',
         'description' => 'Saves the homework chooser input field value',
         'type'        => 'write',
         'ajax'        => true
@@ -24,7 +24,7 @@ $functions = [
 $services = [
     'mod_homework_services' => [
         'functions' => [
-            'mod_homework_save_homework_chooser',
+            'mod_homework_save_homework_literature',
             'mod_homework_get_homework_chooser',
         ],
         'restrictedusers' => 0,

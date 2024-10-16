@@ -66,7 +66,7 @@ const handleFormSubmit = (modal) => {
     }
     // AJAX call to send data to the server
     Ajax.call([{
-        methodname: 'mod_homework_save_homework_chooser',  // Your PHP function that will handle the data
+        methodname: 'mod_homework_save_homework_literature',  // Your PHP function that will handle the data
         args: {
             inputfield: inputField,
             startpage: startPage,
