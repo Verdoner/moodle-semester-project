@@ -3,8 +3,10 @@
 
 namespace mod_homework\external;
 
-require_once("$CFG->libdir/externallib.php");
+global $CFG;
+require_once($CFG->libdir . '/externallib.php');
 
+use external_api;
 use external_function_parameters;
 use external_value;
 use external_single_structure;
@@ -17,8 +19,8 @@ class save_homework_literature extends \external_api
     {
         return new external_function_parameters([
             'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
-            'startpage' => new external_value(PARAM_TEXT, 'startPage field value'),
-            'endpage' => new external_value(PARAM_TEXT, 'endPage field value')
+            'startpage' => new external_value(PARAM_INT, 'startPage field value'),
+            'endpage' => new external_value(PARAM_INT, 'endPage field value')
         ]);
     }
 

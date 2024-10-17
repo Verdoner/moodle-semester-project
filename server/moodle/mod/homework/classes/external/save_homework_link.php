@@ -3,8 +3,10 @@
 
 namespace mod_homework\external;
 
-require_once("$CFG->libdir/externallib.php");
+global $CFG;
+require_once($CFG->libdir . '/externallib.php');
 
+use external_api;
 use external_function_parameters;
 use external_value;
 use external_single_structure;
