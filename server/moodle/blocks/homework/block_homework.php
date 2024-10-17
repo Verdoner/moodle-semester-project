@@ -51,10 +51,15 @@ class block_homework extends block_base {
 
 
         foreach($homeworks as $homework) {
+            if ($PAGE->pagetype == 'course-view-topics') {
+                if(preg_replace('/\D/', '',$PAGE->url) != $homework->course){
+                    continue;
+                }
+            }
             $tmp = [];
             $tmp['name'] = $homework->name;
             $tmp['duedate'] = $homework->duedate;
-            $tmp['description'] = $homework->description;
+            $tmp['intro'] = strip_tags($homework->intro);
             $tmp['courseTitle'] = $DB->get_field('course', 'fullname', ['id' => $homework->course]);
 
             $files = [];
@@ -103,6 +108,7 @@ class block_homework extends block_base {
             array_push($data, $tmp);
         }
 
+
         // Render the content using a template and pass the homework data to it
         $this->content->text = $OUTPUT->render_from_template('block_homework/data', ['data' => $data]);
 
@@ -118,7 +124,7 @@ class block_homework extends block_base {
         return [
             'admin' => false,
             'site-index' => false,
-            'course-view' => false,
+            'course-view' => true,
             'mod' => false,
             'my' => true,
         ];

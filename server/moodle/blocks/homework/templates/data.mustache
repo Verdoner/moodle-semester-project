@@ -27,17 +27,15 @@
 
     <div class="outer-box" id="outer-box">
         {{#data}}
-        <div class="infobox">
-            <h2>{{name}}</h2>
-            <h3>{{lectureTitle}}</h3>
-            <h3>{{duedate}}</h3>
-            <p>{{description}}</p>
+            <div class="infobox">
+                <h2>name: {{name}}</h2>
+                <p>Intro: {{intro}}</p>
 
-            {{#files}}
-                <img src="{{iconurl}}" alt="File icon">
-                <a href="{{fileurl}}" download="{{filename}}">{{filename}}</a>
-            {{/files}}
-        </div>
+                {{#files}}
+                    <img src="{{iconurl}}" alt="File icon">
+                    <a href="{{fileurl}}" download="{{filename}}">{{filename}}</a>
+                {{/files}}
+            </div>
         {{/data}}
     </div>
 </div>
