@@ -15,17 +15,18 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Code that is executed before the tables and data are dropped during the plugin uninstallation.
  *
  * @package     mod_homework
+ * @category    upgrade
  * @copyright   2024 PV 
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+/**
+ * Custom uninstallation procedure.
+ */
+function xmldb_homework_uninstall() {
 
-$plugin->component = 'mod_homework';
-$plugin->release = '0.1.2';
-$plugin->version = 2024101400;
-$plugin->requires = 2022112800;
-$plugin->maturity = MATURITY_ALPHA;
+    return true;
+}
