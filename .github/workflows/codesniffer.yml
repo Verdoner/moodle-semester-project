@@ -7,7 +7,7 @@ on:
     branches: [ "10-homework-teacher-feature-be-able-to-add-links-for-other-sources" ]
 
 jobs:
-  homework-plugin-test:
+  homework-plugin-codesniffer:
     runs-on: ubuntu-latest
 
     steps:
