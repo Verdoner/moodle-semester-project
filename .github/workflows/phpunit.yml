@@ -255,9 +255,9 @@ jobs:
               --non-interactive \
               --agree-license \
               --allow-unstable \
-              --fullname="Moodle testing thing" \
-              --shortname="mtt" \
-              --adminpass="hunter2"
+              --fullname="Tests for Moodle Homework Plugin" \
+              --shortname="mhp" \
+              --adminpass="Admin.123"
 
           echo "This is the path: $(realpath config.php)"
 
