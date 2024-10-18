@@ -23,6 +23,16 @@ jobs:
     - name: Add Composer global bin to PATH
       run: echo "PATH=$HOME/.composer/vendor/bin:$PATH" >> $GITHUB_ENV
 
+    # Create .phpcs.xml file with required content
+    - name: Create .phpcs.xml file
+      run: |
+        cat <<EOT >> ./.phpcs.xml
+        <?xml version="1.0" encoding="UTF-8"?>
+        <ruleset name="MoodleCore">
+          <rule ref="moodle-extra"/>
+        </ruleset>
+        EOT
+
     # Run PHP_CodeSniffer
     - name: Run Code Sniffer
       run: phpcs server/moodle/mod/homework/
