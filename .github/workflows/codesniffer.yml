@@ -19,11 +19,21 @@ jobs:
         composer global config minimum-stability dev
         composer global config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
         composer global require moodlehq/moodle-cs
-        composer require --dev phpcompatibility/php-compatibility
     # Add Composer global bin to PATH
     - name: Add Composer global bin to PATH
       run: echo "PATH=$HOME/.composer/vendor/bin:$PATH" >> $GITHUB_ENV
 
+    # Create .phpcs.xml file with required content
+    - name: Create .phpcs.xml file
+      run: |
+        cat <<EOT >> ./.phpcs.xml
+        <?xml version="1.0" encoding="UTF-8"?>
+        <ruleset name="MoodleCore">
+          <rule ref="./phpcs.xml"/>
+          <rule ref="moodle-extra"/>
+        </ruleset>
+        EOT
+
     # Run PHP_CodeSniffer
     - name: Run Code Sniffer
-      run: phpcs --standard=$HOME/.composer/vendor/moodlehq/moodle-cs/phpcs.xml.dist server/moodle/mod/homework/
+      run: phpcs server/moodle/mod/homework/
