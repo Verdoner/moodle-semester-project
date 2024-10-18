@@ -25,4 +25,4 @@ jobs:
 
     # Run PHP_CodeSniffer
     - name: Run Code Sniffer
-      run: phpcs server/moodle/mod/homework/
+      run: phpcs --standard=$HOME/.composer/vendor/moodlehq/moodle-cs/phpcs.xml.dist server/moodle/mod/homework/
