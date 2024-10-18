@@ -1,13 +1,20 @@
 <?php
-// save_homework_test.php
 
 
 /**
  * PHPUnit test case for mod_homework's save homework functionality.
  *
- * @group mod_homework
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
  */
-class save_homework_test extends advanced_testcase {
+
+namespace mod_homework\tests;
+
+use advanced_testcase;
+
+class saveHomework_test extends advanced_testcase {
 
     /**
      * Setup routine before running each test.

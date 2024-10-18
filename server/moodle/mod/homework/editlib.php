@@ -1,7 +1,6 @@
 <?php
 
 /**
- *
  * File for the functions of the editor
  *
  * @package   mod_homework

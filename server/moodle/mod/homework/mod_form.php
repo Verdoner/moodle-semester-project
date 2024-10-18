@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+global $CFG;
 /**
  * Activity creation/editing form for the mod_homework plugin.
  *
@@ -47,10 +48,8 @@ class mod_homework_mod_form extends moodleform_mod {
 
         //Section for input of duedate
         $mform->addElement('header', 'duedate', get_string('duedate', 'homework'));
-        $mform->addElement('date_selector', 'duedateselector', get_string('dueto', 'homework'), array(
-            'startyear' => date("Y"),
-            'stopyear'  => date("Y"),
-            'optional'  => false
+        $mform->addElement('date_time_selector', 'duedateselector', get_string('dueto', 'homework'), array(
+            'optional'  => true
         ));
 
 
@@ -60,9 +59,23 @@ class mod_homework_mod_form extends moodleform_mod {
         //-------------------------------------------------------
         $this->add_action_buttons();
     }
-    function validation($data, $files) {
+    public function validation($data, $files) {
+        $errors = parent::validation($data, $files);
 
+        // Validate the optional due date field
+        if (isset($data['duedateselector'])) {
+            // If the field is optional and the value is not 0 (which means a date was selected), perform validation
+            if ($data['duedateselector'] != 0) {
+                // Check if the selected due date is in the past
+                if ($data['duedateselector'] < time()) {
+                    $errors['duedateselector'] = get_string('duedate_in_past', 'homework');
+                }
+            }
+        }
+
+        return $errors;
     }
+
     function data_preprocessing(&$default_values) {
 
     }

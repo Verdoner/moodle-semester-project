@@ -1,5 +1,13 @@
 <?php
-// File: mod/homework/classes/external/save_homework_literature.php
+
+/**
+ * homework/classes/external/save_homework_literature.php
+ *
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ */
 
 namespace mod_homework\external;
 
@@ -14,7 +22,9 @@ use external_single_structure;
 class save_homework_literature extends \external_api
 {
 
-    // Define the parameters expected by this function.
+    /**
+     * @return external_function_parameters Define the parameters expected by this function.
+     */
     public static function execute_parameters()
     {
         return new external_function_parameters([
@@ -24,7 +34,14 @@ class save_homework_literature extends \external_api
         ]);
     }
 
-    // The main function to handle the request.
+    /**
+     * The main function to handle the request.
+     * @param $inputfield
+     * @param $startpage
+     * @param $endpage
+     * @return string[]
+     * @throws \dml_exception
+     */
     public static function execute($inputfield, $startpage, $endpage)
     {
         global $DB, $USER;
@@ -45,8 +62,9 @@ class save_homework_literature extends \external_api
         return ['status' => 'success', 'message' => 'Data saved successfully'];
     }
 
-
-    // Define the return values.
+    /**
+     * @return external_single_structure Define the return values.
+     */
     public static function execute_returns()
     {
         return new external_single_structure([

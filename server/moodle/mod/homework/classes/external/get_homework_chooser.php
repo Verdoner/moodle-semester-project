@@ -1,7 +1,18 @@
 <?php
 
+/**
+ * homework/classes/external/get_homework_chooser.php
+ * A class defining an external API function
+ *
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ */
+
 namespace mod_homework\external;
 
+global $CFG;
 require_once("$CFG->libdir/externallib.php");
 
 use external_function_parameters;
@@ -10,12 +21,20 @@ use external_single_structure;
 
 class get_homework_chooser extends \external_api {
 
+    /**
+     * @return external_function_parameters Is a definition of the functions parameter type and a description of it.
+     */
     public static function execute_parameters() {
         return new external_function_parameters([
             'cmid' => new external_value(PARAM_INT, 'Course Module ID'),
         ]);
     }
 
+    /**
+     * The logic making the custom html for modal client-side
+     * @param $cmid - The current modules id
+     * @return string[] - The html to be shown client-side
+     */
     public static function execute($cmid) {
         global $DB;
 
@@ -51,6 +70,9 @@ class get_homework_chooser extends \external_api {
         return ['html' => $html];
     }
 
+    /**
+     * @return external_single_structure - Is a definition of the functions return type and a description of it
+     */
     public static function execute_returns() {
         return new external_single_structure([
             'html' => new external_value(PARAM_RAW, 'HTML for the homework chooser modal')

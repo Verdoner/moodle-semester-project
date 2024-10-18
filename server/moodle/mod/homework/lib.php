@@ -16,7 +16,7 @@
 //defined('MOODLE_INTERNAL') || die();
 
 /**
- * General functions for homework plugin
+ * lib functions for homework plugin
  *
  * @package   mod_homework
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
@@ -24,21 +24,26 @@
  *
  */
 
-/**
- * @param $homeworkdata
- * @return bool|int
- * @throws dml_exception
- */
 
+/**
+ * @param $homeworkdata - Contains the data from homework to be added to the db
+ * @return bool|int - Returns Homework id
+ * @throws dml_exception - Throws error if database save fails
+ */
 function homework_add_instance($homeworkdata){
     global $DB;
 
     $homeworkdata->timecreated = time();
     $homeworkdata->timemodified = time();
 
+    // Save the due date if it's not empty
+    if (!empty($homeworkdata->duedateselector)) {
+        $homeworkdata->duedate = $homeworkdata->duedateselector;  // Store the due date as a UNIX timestamp
+    } else {
+        $homeworkdata->duedate = 0;  // If no due date is set, store 0 in the database
+    }
+
     $homeworkdata->id = $DB->insert_record('homework', $homeworkdata);
-
-
 
     return $homeworkdata->id;
 }
@@ -54,6 +59,8 @@ function homework_update_instance($homeworkdata){
 
     $homeworkdata->timemodified = time();
     $homeworkdata->id = $homeworkdata->instance;
+
+    $homeworkdata->duedate = $homeworkdata->duedateselector;
 
     $DB->update_record('homework', $homeworkdata);
 

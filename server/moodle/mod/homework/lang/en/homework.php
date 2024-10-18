@@ -37,5 +37,5 @@ $string['dueto'] = 'Due to';
 $string['addhomework'] = 'Add homework';
 $string['homeworkchooser'] = 'Homework Chooser';
 $string['openhomeworkchooser'] = 'Open Homework Chooser';
-
+$string['duedate_in_past'] = 'The date you are trying to set is in the past! Choose a new one.';
 

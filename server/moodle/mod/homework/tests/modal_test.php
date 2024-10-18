@@ -1,7 +1,20 @@
 <?php
-// modaltest.php
 
-class modaltest extends advanced_testcase {
+/**
+ * homework/tests/modalTest.php
+ *
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ */
+
+namespace mod_homework\tests;
+
+use advanced_testcase;
+use DOMDocument;
+
+class modal_test extends advanced_testcase {
 
     /**
      * @return void

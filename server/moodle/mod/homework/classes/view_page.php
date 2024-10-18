@@ -14,11 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
-namespace mod_homework;
-
-
 /**
  * This class captures all the various information to render the front page of the homework activity.
  *
@@ -29,6 +24,9 @@ namespace mod_homework;
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+namespace mod_homework;
+
 class view_page {
     /** @var array $infomessages of messages with information to display about the quiz. */
     public $infomessages;
