@@ -1,18 +1,4 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
-//
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Code for viewing each homework module for details (not done)
@@ -20,11 +6,11 @@
  * @package   mod_homework
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *
  */
 
 global $OUTPUT, $PAGE, $DB, $CFG;
-require_once('../../config.php');
+require_once(__DIR__ . '/../../config.php');
+
 use mod_homework\view_page;
 
 $id = required_param('id', PARAM_INT); // Course module ID
@@ -43,7 +29,7 @@ if ($PAGE->has_secondary_navigation()) {
     // Create a new navigation node for 'Submissions'
     $submissionsnode = navigation_node::create(
         get_string('viewsubmissions', 'mod_homework'), // The label
-        new moodle_url('/mod/homework/submissions.php', array('id' => $cm->id)), // URL for the link
+        new moodle_url('/mod/homework/submissions.php', array('id' => $cm->id)),
         navigation_node::TYPE_CUSTOM, // Type of node (custom link)
         null, // Icon or image (null by default)
         'submissionsnav' // Unique key for the navigation node
@@ -71,7 +57,11 @@ $viewobj->canedit = true;
 $viewobj->editurl = new moodle_url('/mod/homework/edit.php', ['cmid' => $cm->id]);
 
 // Add the actual page content here
-echo html_writer::tag('div', 'This is the homework view page', array('class' => 'content'));
+echo html_writer::tag(
+    'div',
+    'This is the homework view page',
+    array('class' => 'content')
+);
 $records = $DB->get_records('homework');
 
 // Iterate and display the records
@@ -80,8 +70,13 @@ foreach ($records as $record) {
     echo 'Homework Name: ' . $record->name . '<br>';
     // Add any other fields you'd like to display
 }
-if($viewobj->canedit && !$viewobj->hashomework){
-    echo html_writer::link($viewobj->editurl, get_string('addhomework', 'homework'), ['class' => 'btn btn-secondary']);
+
+if($viewobj->canedit && !$viewobj->hashomework) {
+    echo html_writer::link(
+        $viewobj->editurl,
+        get_string('addhomework', 'homework'),
+        ['class' => 'btn btn-secondary']
+    );
 }
 
 // Output the footer - REQUIRED
