@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - https://moodle.org/
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,69 +12,59 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
-
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 /**
- * The main mod_homework configuration form.
+ * Activity creation/editing form for the mod_homework plugin.
  *
- * @package     mod_homework
- * @copyright   2024 PV 
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
 
-/**
- * Module instance settings form.
- *
- * @package     mod_homework
- * @copyright   2024 PV 
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 class mod_homework_mod_form extends moodleform_mod {
+	/**
+	 * @return void
+	 */
+	function definition() {
+		global $CFG, $DB, $OUTPUT;
 
-    /**
-     * Defines forms elements
-     */
-    public function definition() {
-        global $CFG;
+		$mform =& $this->_form;
 
-        $mform = $this->_form;
+		//Section for input of Name for the course, and its description
+		$mform->addElement('header', 'general', get_string('general', 'form'));
+		$mform->addElement('text', 'name', get_string('name'), array('size'=>'48'));
+		$mform->addHelpButton('name', 'name', 'homework');
+		if (!empty($CFG->formatstringstriptags)) {
+			$mform->setType('name', PARAM_TEXT);
+		} else {
+			$mform->setType('name', PARAM_CLEANHTML);
+		}
+		$mform->addRule('name', null, 'required', null, 'client');
+		$mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
+		$this->standard_intro_elements();
 
-        // Adding the "general" fieldset, where all the common settings are shown.
-        $mform->addElement('header', 'general', get_string('general', 'form'));
+		//Section for input of duedate
+		$mform->addElement('header', 'duedate', get_string('duedate', 'homework'));
+		$mform->addElement('date_selector', 'duedateselector', get_string('dueto', 'homework'), array(
+			'startyear' => date("Y"),
+			'stopyear'  => date("Y"),
+			'optional'  => false
+		));
 
-		// Adding the standard "name" field.
-        $mform->addElement('text', 'name', get_string('homeworkname', 'mod_homework'), array('size' => '64'));
 
-        if (!empty($CFG->formatstringstriptags)) {
-            $mform->setType('name', PARAM_TEXT);
-        } else {
-            $mform->setType('name', PARAM_CLEANHTML);
-        }
+		//-------------------------------------------------------MUST MOODLE
+		$this->standard_coursemodule_elements();
 
-        $mform->addRule('name', null, 'required', null, 'client');
-        $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-        $mform->addHelpButton('name', 'homeworkname', 'mod_homework');
+		//-------------------------------------------------------
+		$this->add_action_buttons();
+	}
+	function validation($data, $files) {
 
-        // Adding the standard "intro" and "introformat" fields.
-        if ($CFG->branch >= 29) {
-            $this->standard_intro_elements();
-        } else {
-            $this->add_intro_editor();
-        }
+	}
+	function data_preprocessing(&$default_values) {
 
-        // Adding the rest of mod_homework settings, spreading all them into this fieldset
-        // ... or adding more fieldsets ('header' elements) if needed for better logic.
-	    $mform->addElement('static', 'label1', 'homeworksettings', get_string('homeworksettings', 'mod_homework'));
-        $mform->addElement('header', 'homeworkfieldset', get_string('homeworkfieldset', 'mod_homework'));
+	}
 
-        // Add standard elements.
-        $this->standard_coursemodule_elements();
-
-        // Add standard buttons.
-        $this->add_action_buttons();
-    }
 }
