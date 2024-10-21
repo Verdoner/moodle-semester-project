@@ -23,8 +23,7 @@
  *
  */
 defined('MOODLE_INTERNAL') || die();
-global $ADMIN, $settings;
-
+global $ADMIN;
 // Add settings page.
 if ($ADMIN->fulltree) {
     $settings->add(new admin_settingpage('mod_homework', get_string('pluginname', 'mod_homework')));
