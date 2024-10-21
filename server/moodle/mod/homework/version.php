@@ -23,8 +23,6 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-global $plugin;
-
 
 $plugin->version   = 2024101400;       // The current module version (Date: YYYYMMDDXX).
 $plugin->requires  = 2024090300;       // Requires this Moodle version.
