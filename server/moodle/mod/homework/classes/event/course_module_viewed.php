@@ -24,16 +24,16 @@
 
 namespace mod_homework\event;
 
-defined('MOODLE_INTERNAL') || die();
-
+/**
+ *
+ */
 class course_module_viewed extends \core\event\course_module_viewed {
-
     /**
      * Init method.
      *
      * @return void
      */
-    protected function init() {
+    protected function init(): void {
         $this->data['objecttable'] = 'homework';
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
@@ -44,7 +44,7 @@ class course_module_viewed extends \core\event\course_module_viewed {
      *
      * @return string[]
      */
-    public static function get_objectid_mapping() {
-        return array('db' => 'homework', 'restore' => 'homework');
+    public static function get_objectid_mapping(): array {
+        return ['db' => 'homework', 'restore' => 'homework'];
     }
 }

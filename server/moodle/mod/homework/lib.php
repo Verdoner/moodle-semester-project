@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-//defined('MOODLE_INTERNAL') || die();
+// defined('MOODLE_INTERNAL') || die();
 
 /**
  * lib functions for homework plugin
@@ -26,21 +26,22 @@
 
 
 /**
+ *
  * @param $homeworkdata - Contains the data from homework to be added to the db
  * @return bool|int - Returns Homework id
  * @throws dml_exception - Throws error if database save fails
  */
-function homework_add_instance($homeworkdata){
+function homework_add_instance($homeworkdata) {
     global $DB;
 
     $homeworkdata->timecreated = time();
     $homeworkdata->timemodified = time();
 
-    // Save the due date if it's not empty
+    // Save the due date if it's not empty.
     if (!empty($homeworkdata->duedateselector)) {
-        $homeworkdata->duedate = $homeworkdata->duedateselector;  // Store the due date as a UNIX timestamp
+        $homeworkdata->duedate = $homeworkdata->duedateselector;  // Store the due date as a UNIX timestamp.
     } else {
-        $homeworkdata->duedate = 0;  // If no due date is set, store 0 in the database
+        $homeworkdata->duedate = 0;  // If no due date is set, store 0 in the database.
     }
 
     $homeworkdata->id = $DB->insert_record('homework', $homeworkdata);
@@ -49,12 +50,12 @@ function homework_add_instance($homeworkdata){
 }
 
 /**
+ *
  * @param $homeworkdata
  * @return bool
  * @throws dml_exception
  */
-
-function homework_update_instance($homeworkdata){
+function homework_update_instance($homeworkdata) {
     global $DB;
 
     $homeworkdata->timemodified = time();
@@ -68,12 +69,12 @@ function homework_update_instance($homeworkdata){
 }
 
 /**
+ *
  * @param $id
  * @return bool
  * @throws dml_exception
  */
-
-function homework_delete_instance($id){
+function homework_delete_instance($id) {
     global $DB;
 
     $DB->delete_records('homework', ['id' => $id]);

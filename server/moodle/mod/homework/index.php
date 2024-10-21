@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -14,6 +13,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+defined('MOODLE_INTERNAL') || die();
+
 global $DB;
 
 /**
@@ -30,7 +32,7 @@ require_once('../../config.php');
 $id = required_param('id', PARAM_INT);
 
 // Fetch the requested course.
-$course = $DB->get_record('course', ['id'=> $id], '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $id], '*', MUST_EXIST);
 
 // Require that the user is logged into the course.
 require_course_login($course);
@@ -39,5 +41,5 @@ $modinfo = get_fast_modinfo($course);
 
 foreach ($modinfo->get_instances_of('homework') as $instanceid => $cm) {
     // Display information about your activity.
-    // echo $cm->modname;
+    echo $cm->modname;
 }

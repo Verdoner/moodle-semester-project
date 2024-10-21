@@ -22,16 +22,19 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  */
-
-global $ADMIN;
 defined('MOODLE_INTERNAL') || die();
+global $ADMIN, $settings;
 
 // Add settings page.
 if ($ADMIN->fulltree) {
     $settings->add(new admin_settingpage('mod_homework', get_string('pluginname', 'mod_homework')));
 
-    $settings->add(new admin_setting_configtext('homework/some_setting',
-        get_string('somesetting', 'mod_homework'), get_string('somesetting_desc', 'mod_homework'), 'default_value'));
+    $settings->add(new admin_setting_configtext(
+        'homework/some_setting',
+        get_string('somesetting', 'mod_homework'),
+        get_string('somesetting_desc', 'mod_homework'),
+        'default_value'
+    ));
 
     $ADMIN->add('modsettings', $settings);
 }

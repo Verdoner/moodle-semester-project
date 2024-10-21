@@ -22,20 +22,19 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['modulename'] = 'Homework';
-$string['modulenameplural'] = 'Homework';
-$string['modulename_help'] = 'Use the homework module to create interactive homework.';
+$string['addhomework'] = 'Add homework';
+$string['duedate'] = 'Due Date';
+$string['duedate_in_past'] = 'The date you are trying to set is in the past! Choose a new one.';
+$string['dueto'] = 'Due to';
 $string['homework:addinstance'] = 'Add a new homework';
 $string['homework:submit'] = 'Submit homework';
 $string['homework:view'] = 'View homework';
+$string['homeworkchooser'] = 'Homework Chooser';
+$string['modulename'] = 'Homework';
+$string['modulename_help'] = 'Use the homework module to create interactive homework.';
+$string['modulenameplural'] = 'Homework';
+$string['openhomeworkchooser'] = 'Open Homework Chooser';
 $string['pluginadministration'] = 'Homework administration';
 $string['pluginname'] = 'Homework';
 $string['somesetting'] = 'Some setting';
 $string['somesetting_desc'] = 'Description of some setting';
-$string['duedate'] = 'Due Date';
-$string['dueto'] = 'Due to';
-$string['addhomework'] = 'Add homework';
-$string['homeworkchooser'] = 'Homework Chooser';
-$string['openhomeworkchooser'] = 'Open Homework Chooser';
-$string['duedate_in_past'] = 'The date you are trying to set is in the past! Choose a new one.';
-
