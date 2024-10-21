@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-// defined('MOODLE_INTERNAL') || die();
 
 /**
  * lib functions for homework plugin
@@ -41,7 +40,7 @@ function homework_add_instance($homeworkdata) {
     if (!empty($homeworkdata->duedateselector)) {
         $homeworkdata->duedate = $homeworkdata->duedateselector;  // Store the due date as a UNIX timestamp.
     } else {
-        $homeworkdata->duedate = 0;  // If no due date is set, store 0 in the database.
+        $homeworkdata->duedate = null;  // If no due date is set, store null in the database.
     }
 
     $homeworkdata->id = $DB->insert_record('homework', $homeworkdata);

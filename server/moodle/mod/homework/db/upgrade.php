@@ -21,7 +21,7 @@
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-function xmldb_homework_upgrade($oldversion) {
+function xmldb_homework_upgrade($oldversion): bool {
     global $DB;
 
     $dbman = $DB->get_manager();
@@ -32,16 +32,82 @@ function xmldb_homework_upgrade($oldversion) {
         $table = new xmldb_table('homework');
 
         // Adding fields to table homework.
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, 'Standard Moodle primary key');
-        $table->add_field('name', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null, 'Name of the homework');
-        $table->add_field('intro', XMLDB_TYPE_TEXT, null, null, null, null, null, 'Introduction text for the homework');
-        $table->add_field('introformat', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, '0', 'Format of the introduction text');
-        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'Timestamp when the record was created');
-        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'Timestamp when the record was last modified');
-        $table->add_field('duedate', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field(
+            'id',
+            XMLDB_TYPE_INTEGER,
+            '10',
+            null,
+            XMLDB_NOTNULL,
+            XMLDB_SEQUENCE,
+            null,
+            'Standard Moodle primary key'
+        );
+        $table->add_field(
+            'name',
+            XMLDB_TYPE_CHAR,
+            '255',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            null,
+            'Name of the homework'
+        );
+        $table->add_field(
+            'intro',
+            XMLDB_TYPE_TEXT,
+            null,
+            null,
+            null,
+            null,
+            null,
+            'Introduction text for the homework'
+        );
+        $table->add_field(
+            'introformat',
+            XMLDB_TYPE_INTEGER,
+            '4',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            '0',
+            'Format of the introduction text'
+        );
+        $table->add_field(
+            'timecreated',
+            XMLDB_TYPE_INTEGER,
+            '10',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            null,
+            'Timestamp when the record was created'
+        );
+        $table->add_field(
+            'timemodified',
+            XMLDB_TYPE_INTEGER,
+            '10',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            null,
+            'Timestamp when the record was last modified'
+        );
+        $table->add_field(
+            'duedate',
+            XMLDB_TYPE_INTEGER,
+            '10',
+            null,
+            null,
+            null,
+            null
+        );
 
         // Adding keys to table homework.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key(
+            'primary',
+            XMLDB_KEY_PRIMARY,
+            ['id']
+        );
 
         // Conditionally launch create table for homework.
         if (!$dbman->table_exists($table)) {
@@ -52,16 +118,83 @@ function xmldb_homework_upgrade($oldversion) {
         $table = new xmldb_table('homework_literature');
 
         // Adding fields to table homework_literature.
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, 'Standard Moodle primary key');
-        $table->add_field('description', XMLDB_TYPE_TEXT, null, null, null, null, null, 'Description of the homework literature');
-        $table->add_field('startpage', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'Start page number');
-        $table->add_field('endpage', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'End page number');
-        $table->add_field('introformat', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, '0', 'Format of the introduction text');
-        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'Timestamp when the record was created');
-        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'Timestamp when the record was last modified');
+        $table->add_field(
+            'id',
+            XMLDB_TYPE_INTEGER,
+            '10',
+            null,
+            XMLDB_NOTNULL,
+            XMLDB_SEQUENCE,
+            null,
+            'Standard Moodle primary key'
+        );
+        $table->add_field(
+            'description',
+            XMLDB_TYPE_TEXT,
+            null,
+            null,
+            null,
+            null,
+            null,
+            'Description of the homework literature'
+        );
+        $table->add_field(
+            'startpage',
+            XMLDB_TYPE_INTEGER,
+            '10',
+            null,
+            null,
+            null,
+            null,
+            'Start page number'
+        );
+        $table->add_field(
+            'endpage',
+            XMLDB_TYPE_INTEGER,
+            '10',
+            null,
+            null,
+            null,
+            null,
+            'End page number'
+        );
+        $table->add_field(
+            'introformat',
+            XMLDB_TYPE_INTEGER,
+            '4',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            '0',
+            'Format of the introduction text'
+        );
+        $table->add_field(
+            'timecreated',
+            XMLDB_TYPE_INTEGER,
+            '10',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            null,
+            'Timestamp when the record was created'
+        );
+        $table->add_field(
+            'timemodified',
+            XMLDB_TYPE_INTEGER,
+            '10',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            null,
+            'Timestamp when the record was last modified'
+        );
 
         // Adding keys to table homework_literature.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key(
+            'primary',
+            XMLDB_KEY_PRIMARY,
+            ['id']
+        );
 
         // Conditionally launch create table for homework_literature.
         if (!$dbman->table_exists($table)) {
@@ -72,16 +205,74 @@ function xmldb_homework_upgrade($oldversion) {
         $table = new xmldb_table('homework_links');
 
         // Adding fields to table homework_links.
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-        $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
-        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
-        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
-        $table->add_field('description', XMLDB_TYPE_TEXT, null, null, null, null, null);
-        $table->add_field('link', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
+        $table->add_field(
+            'id',
+            XMLDB_TYPE_INTEGER,
+            '10',
+            null,
+            XMLDB_NOTNULL,
+            XMLDB_SEQUENCE,
+            null
+        );
+        $table->add_field(
+            'usermodified',
+            XMLDB_TYPE_INTEGER,
+            '10',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            '0'
+        );
+        $table->add_field(
+            'timecreated',
+            XMLDB_TYPE_INTEGER,
+            '10',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            '0'
+        );
+        $table->add_field(
+            'timemodified',
+            XMLDB_TYPE_INTEGER,
+            '10',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            '0'
+        );
+        $table->add_field(
+            'description',
+            XMLDB_TYPE_TEXT,
+            null,
+            null,
+            null,
+            null,
+            null
+        );
+        $table->add_field(
+            'link',
+            XMLDB_TYPE_TEXT,
+            null,
+            null,
+            XMLDB_NOTNULL,
+            null,
+            null
+        );
 
         // Adding keys to table homework_links.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
-        $table->add_key('usermodified', XMLDB_KEY_FOREIGN, ['usermodified'], 'user', ['id']);
+        $table->add_key(
+            'primary',
+            XMLDB_KEY_PRIMARY,
+            ['id']
+        );
+        $table->add_key(
+            'usermodified',
+            XMLDB_KEY_FOREIGN,
+            ['usermodified'],
+            'user',
+            ['id']
+        );
 
         // Conditionally launch create table for homework_links.
         if (!$dbman->table_exists($table)) {
@@ -89,7 +280,7 @@ function xmldb_homework_upgrade($oldversion) {
         }
 
 
-        // homework savepoint reached.
+        // Homework savepoint reached.
         upgrade_mod_savepoint(true, 2024090500, 'homework');
     }
 

@@ -4,9 +4,9 @@ import MyModal from 'mod_homework/modal_homework';
 import ModalEvents from 'core/modal_events';
 
 /**
- * homework/amd/src/homeworkchooser.js
+ * Homework/amd/src/modal_homework.js
  *
- * @package   mod_homework
+ * @package
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
@@ -14,11 +14,11 @@ import ModalEvents from 'core/modal_events';
 
 /**
  * Initializes the Homework Chooser Modal.
- *
- * @param {int} cmid - Course Module ID
- * @param {string} title - Title for the modal
+ * @param {int} cmid
+ * @param {string} title
+ * @returns {Promise<void>}
  */
-export const init = async (cmid, title) => {
+export const init = async(cmid, title) => {
     $('#open-homework-chooser').on('click', () => {
         Ajax.call([{
             methodname: 'mod_homework_get_homework_chooser',
@@ -27,33 +27,32 @@ export const init = async (cmid, title) => {
                 const modal = await MyModal.create({
                     title: title,
                     body: `${response.html}`,
-                    // footer: 'An example footer content',
                     large: true,
                     removeOnClose: true,
                 });
 
-                // Show the modal
-                modal.show();
+                // Show the modal.
+                await modal.show();
 
-                // Initialize elements once the modal content is rendered
+                // Initialize elements once the modal content is rendered.
                 modal.getRoot().on(ModalEvents.shown, () => {
-                    // Initialize the elements after modal is displayed
+                    // Initialize the elements after modal is displayed.
                     const startPageInput = modal.getRoot().find('#startPage')[0];
                     const endPageInput = modal.getRoot().find('#endPage')[0];
                     const radioButtons = modal.getRoot().find('input[name="option"]');
                     const testTextarea = modal.getRoot().find('#page-range-input')[0];
                     const testLink = modal.getRoot().find('#linkDiv')[0];
 
-                    // Attach event listeners for page input validation
+                    // Attach event listeners for page input validation.
                     startPageInput.addEventListener('input', validatePageRange);
                     endPageInput.addEventListener('input', validatePageRange);
 
-                    // Attach event listeners for radio buttons
+                    // Attach event listeners for radio buttons.
                     radioButtons.each((_, radio) => {
                         radio.addEventListener('change', toggleInputs);
                     });
 
-                    // Function to validate page range
+                    // Function to validate page range.
                     /**
                      *
                      */
@@ -72,7 +71,7 @@ export const init = async (cmid, title) => {
                         }
                     }
 
-                    // Function to toggle between text and link inputs
+                    // Function to toggle between text and link inputs.
                     /**
                      *
                      */
@@ -87,11 +86,6 @@ export const init = async (cmid, title) => {
                     }
                 });
 
-                // Attach an event listener to handle the modal hidden event
-                modal.getRoot().on(ModalEvents.hidden, () => {
-                    console.log('Modal closed!');
-                });
-
                 // Attach event listeners for buttons
                 modal.getRoot().on('click', '[data-action="submit"]', (e) => {
                     e.preventDefault();
@@ -104,7 +98,7 @@ export const init = async (cmid, title) => {
                 });
             },
             fail: (error) => {
-                console.error("Failed to load homework chooser content:", error);
+                throw new Error(`Failed to load homework chooser content: ${error}`);
             }
         }]);
     });
@@ -118,52 +112,50 @@ export const init = async (cmid, title) => {
 const handleFormSubmit = (modal) => {
     let inputField = modal.getRoot().find('#inputField').val();
 
-    if (inputField === "") {
-        alert("Please fill in input field.");
-        return;
+    if (inputField.value === "") {
+        inputField.setCustomValidity("Please fill in the input field.");
+        inputField.reportValidity(); // Shows the custom message
+        event.preventDefault(); // Prevents form submission
+    } else {
+        inputField.setCustomValidity(""); // Clear the custom message
     }
 
     if (modal.getRoot().find('#option1').is(':checked')) {
-
         let startPage = modal.getRoot().find('#startPage').val();
         let endPage = modal.getRoot().find('#endPage').val();
 
-        // AJAX call to send data to the server
+        // AJAX call to send data to the server.
         Ajax.call([{
-            methodname: 'mod_homework_save_homework_literature',  // Your PHP function that will handle the data
+            methodname: 'mod_homework_save_homework_literature',
             args: {
                 inputfield: inputField,
                 startpage: startPage,
                 endpage: endPage,
             },
-            done: function(response) {
-                console.log("Data saved successfully:", response);
-                // Close the modal after successful submission
+            done: function() {
+                // Close the modal after successful submission.
                 modal.hide();
             },
             fail: function(error) {
-                console.error("Failed to save data:", error);
+                throw new Error(`Failed to save data: ${error}`);
             }
         }]);
-
     } else if (modal.getRoot().find('#option2').is(':checked')) {
-
         let link = modal.getRoot().find('#link').val();
 
-        // AJAX call to send data to the server
+        // AJAX call to send data to the server.
         Ajax.call([{
-            methodname: 'mod_homework_save_homework_link',  // Your PHP function that will handle the data
+            methodname: 'mod_homework_save_homework_link',
             args: {
                 inputfield: inputField,
                 link: link,
             },
-            done: function(response) {
-                console.log("Data saved successfully:", response);
-                // Close the modal after successful submission
+            done: function() {
+                // Close the modal after successful submission.
                 modal.hide();
             },
             fail: function(error) {
-                console.error("Failed to save data:", error);
+                throw new Error(`Failed to save data: ${error}`);
             }
         }]);
     }

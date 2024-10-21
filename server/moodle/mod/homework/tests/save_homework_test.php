@@ -26,6 +26,7 @@
 namespace mod_homework;
 
 use advanced_testcase;
+use dml_exception;
 
 /**
  *
@@ -42,7 +43,8 @@ final class save_homework_test extends advanced_testcase {
     /**
      * Test saving literature homework with page range.
      * @runInSeparateProcess
-     * @throws \dml_exception
+     * @throws dml_exception
+     * @covers :: \mod_homework\external\save_homework_literature
      */
     public function test_save_homework_literature(): void {
         global $DB;
@@ -73,7 +75,8 @@ final class save_homework_test extends advanced_testcase {
     /**
      * Test saving a homework with a link.
      * @runInSeparateProcess
-     * @throws \dml_exception
+     * @throws dml_exception
+     * @covers :: \mod_homework\external\save_homework_link
      */
     public function test_save_homework_link(): void {
         global $DB;

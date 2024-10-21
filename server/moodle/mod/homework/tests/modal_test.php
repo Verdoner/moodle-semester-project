@@ -38,6 +38,7 @@ final class modal_test extends advanced_testcase {
      * @return void
      * @throws coding_exception
      * @runInSeparateProcess
+     * @covers :: \mod_homework\external\get_homework_chooser
      */
     public function test_get_homework_chooser(): void {
         global $DB;
