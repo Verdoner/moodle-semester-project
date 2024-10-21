@@ -26,6 +26,7 @@
 // Checks for Moodle environment
 defined('MOODLE_INTERNAL') || die();
 
+
 class block_homework extends block_base {
 
     //constructor for the block
@@ -49,12 +50,16 @@ class block_homework extends block_base {
 
         $this->content = new stdClass();
 
+        //If the current page is a course then remove unrelated homework
+        if ($PAGE->pagetype == 'course-view-topics') {
+            $homeworks = $this->filter_homework_content($PAGE->url, $homeworks);
+        }
 
         foreach($homeworks as $homework) {
             $tmp = [];
             $tmp['name'] = $homework->name;
             $tmp['duedate'] = $homework->duedate;
-            $tmp['description'] = $homework->description;
+            $tmp['intro'] = strip_tags($homework->intro);
             $tmp['courseTitle'] = $DB->get_field('course', 'fullname', ['id' => $homework->course]);
 
             $files = [];
@@ -103,6 +108,7 @@ class block_homework extends block_base {
             array_push($data, $tmp);
         }
 
+
         // Render the content using a template and pass the homework data to it
         $this->content->text = $OUTPUT->render_from_template('block_homework/data', ['data' => $data]);
 
@@ -111,6 +117,23 @@ class block_homework extends block_base {
 
         return $this->content;
     }
+
+    public static function filter_homework_content($URL,$homeworks): array
+    {
+        //Use a regex to remove everything but digits from the url
+        $courseid = preg_replace('/\D/', '',$URL);
+        $tmpHomeworks = [];
+
+        //Check each homework to see if the course matches the id
+        foreach ($homeworks as $homework) {
+            if($courseid == $homework->course){
+                array_push($tmpHomeworks, $homework);
+            }
+        }
+        return $tmpHomeworks;
+    }
+
+
     /**
      * Specifies where this block can be displayed in Moodle
      */
@@ -118,7 +141,7 @@ class block_homework extends block_base {
         return [
             'admin' => false,
             'site-index' => false,
-            'course-view' => false,
+            'course-view' => true,
             'mod' => false,
             'my' => true,
         ];
