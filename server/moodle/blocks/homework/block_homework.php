@@ -26,6 +26,7 @@
 // Checks for Moodle environment
 defined('MOODLE_INTERNAL') || die();
 
+
 class block_homework extends block_base {
 
     //constructor for the block
@@ -49,13 +50,12 @@ class block_homework extends block_base {
 
         $this->content = new stdClass();
 
+        //If the current page is a course then remove unrelated homework
+        if ($PAGE->pagetype == 'course-view-topics') {
+            $homeworks = $this->filter_homework_content($PAGE->url, $homeworks);
+        }
 
         foreach($homeworks as $homework) {
-            if ($PAGE->pagetype == 'course-view-topics') {
-                if(preg_replace('/\D/', '',$PAGE->url) != $homework->course){
-                    continue;
-                }
-            }
             $tmp = [];
             $tmp['name'] = $homework->name;
             $tmp['duedate'] = $homework->duedate;
@@ -117,6 +117,23 @@ class block_homework extends block_base {
 
         return $this->content;
     }
+
+    public static function filter_homework_content($URL,$homeworks): array
+    {
+        //Use a regex to remove everything but digits from the url
+        $courseid = preg_replace('/\D/', '',$URL);
+        $tmpHomeworks = [];
+
+        //Check each homework to see if the course matches the id
+        foreach ($homeworks as $homework) {
+            if($courseid == $homework->course){
+                array_push($tmpHomeworks, $homework);
+            }
+        }
+        return $tmpHomeworks;
+    }
+
+
     /**
      * Specifies where this block can be displayed in Moodle
      */
