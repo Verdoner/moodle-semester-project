@@ -33,9 +33,13 @@ $string['pluginname'] = 'Homework';
 $string['somesetting'] = 'Some setting';
 $string['somesetting_desc'] = 'Description of some setting';
 $string['duedate'] = 'Due Date';
-$string['dueto'] = 'Due to';
+$string['dueto'] = 'Due at';
 $string['addhomework'] = 'Add homework';
 $string['homeworkname'] = 'Homework name';
 $string['homeworkname_help'] = 'Fill out homework name';
+$string['name'] = 'Homework name';
+$string['name_help'] = 'Fill out homework name';
+$string['viewsubmissions'] = 'Submissions';
+
 
 
