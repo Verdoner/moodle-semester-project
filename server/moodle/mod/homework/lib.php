@@ -17,71 +17,61 @@
 /**
  * Library of interface functions and constants.
  *
- * @package     mod_homework
- * @copyright   2024 PV 
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
  */
 
+
 /**
- * Return if the plugin supports $feature.
  *
- * @param string $feature Constant representing the feature.
- * @return true | null True if the feature is supported, null otherwise.
+ * @param $homeworkdata - Contains the data from homework to be added to the db
+ * @return bool|int - Returns Homework id
+ * @throws dml_exception - Throws error if database save fails
  */
-function homework_supports($feature) {
-    switch ($feature) {
-        case FEATURE_MOD_INTRO:
-            return true;
-        default:
-            return null;
+function homework_add_instance($homeworkdata) {
+    global $DB;
+
+    $homeworkdata->timecreated = time();
+    $homeworkdata->timemodified = time();
+
+    // Save the due date if it's not empty.
+    if (!empty($homeworkdata->duedateselector)) {
+        $homeworkdata->duedate = $homeworkdata->duedateselector;  // Store the due date as a UNIX timestamp.
+    } else {
+        $homeworkdata->duedate = null;  // If no due date is set, store null in the database.
     }
+
+    $homeworkdata->id = $DB->insert_record('homework', $homeworkdata);
+
+    return $homeworkdata->id;
 }
 
 /**
- * Saves a new instance of the mod_homework into the database.
  *
- * Given an object containing all the necessary data, (defined by the form
- * in mod_form.php) this function will create a new instance and return the id
- * number of the instance.
- *
- * @param object $moduleinstance An object from the form.
- * @param mod_homework_mod_form $mform The form.
- * @return int The id of the newly inserted record.
+ * @param $homeworkdata
+ * @return bool
+ * @throws dml_exception
  */
-function homework_add_instance($moduleinstance, $mform = null) {
+function homework_update_instance($homeworkdata) {
     global $DB;
 
-    $moduleinstance->timecreated = time();
+    $homeworkdata->timemodified = time();
+    $homeworkdata->id = $homeworkdata->instance;
 
-    $id = $DB->insert_record('homework', $moduleinstance);
+    $homeworkdata->duedate = $homeworkdata->duedateselector;
 
-    return $id;
+    $DB->update_record('homework', $homeworkdata);
+
+    return true;
 }
 
 /**
- * Updates an instance of the mod_homework in the database.
  *
- * Given an object containing all the necessary data (defined in mod_form.php),
- * this function will update an existing instance with new data.
- *
- * @param object $moduleinstance An object from the form in mod_form.php.
- * @param mod_homework_mod_form $mform The form.
- * @return bool True if successful, false otherwise.
- */
-function homework_update_instance($moduleinstance, $mform = null) {
-    global $DB;
-
-    $moduleinstance->timemodified = time();
-    $moduleinstance->id = $moduleinstance->instance;
-
-    return $DB->update_record('homework', $moduleinstance);
-}
-
-/**
- * Removes an instance of the mod_homework from the database.
- *
- * @param int $id Id of the module instance.
- * @return bool True if successful, false on failure.
+ * @param $id
+ * @return bool
+ * @throws dml_exception
  */
 function homework_delete_instance($id) {
     global $DB;

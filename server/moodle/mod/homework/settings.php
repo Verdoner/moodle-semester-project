@@ -22,14 +22,18 @@
  * @copyright   2024 PV 
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 defined('MOODLE_INTERNAL') || die();
+global $ADMIN;
+// Add settings page.
+if ($ADMIN->fulltree) {
+    $settings->add(new admin_settingpage('mod_homework', get_string('pluginname', 'mod_homework')));
 
-if ($hassiteconfig) {
-    $settings = new admin_settingpage('mod_homework_settings', new lang_string('pluginname', 'mod_homework'));
+    $settings->add(new admin_setting_configtext(
+        'homework/some_setting',
+        get_string('somesetting', 'mod_homework'),
+        get_string('somesetting_desc', 'mod_homework'),
+        'default_value'
+    ));
 
-    // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedIf
-    if ($ADMIN->fulltree) {
-        // TODO: Define actual plugin settings page and add it to the tree - {@link https://docs.moodle.org/dev/Admin_settings}.
-    }
+    $ADMIN->add('modsettings', $settings);
 }

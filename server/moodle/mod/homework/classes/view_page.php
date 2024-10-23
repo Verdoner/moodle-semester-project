@@ -14,11 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
-namespace mod_homework;
-
-
 /**
  * This class captures all the various information to render the front page of the homework activity.
  *
@@ -28,6 +23,13 @@ namespace mod_homework;
  * @package   mod_homework
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+namespace mod_homework;
+use stdClass;
+
+/**
+ *
  */
 class view_page {
     /** @var array $infomessages of messages with information to display about the quiz. */
@@ -39,8 +41,6 @@ class view_page {
 
     /** @var bool $canedit whether the current user has the capability to edit the quiz. */
     public $canedit;
-    /** @var moodle_url $editurl the URL for editing this quiz. */
-    public $editurl;
     /** @var int $attemptcolumn contains the number of attempts done. */
     public $attemptcolumn;
     /** @var int $gradecolumn contains the grades of any attempts. */
@@ -73,13 +73,6 @@ class view_page {
     /** @var string $buttontext caption for the start attempt button. If this is null, show no
      *      button, or if it is '' show a back to the course button. */
     public $buttontext;
-    /** @var moodle_url $startattempturl URL to start an attempt. */
-    public $startattempturl;
-    /** @var preflight_check_form|null $preflightcheckform confirmation form that must be
-     *       submitted before an attempt is started, if required. */
-    public $preflightcheckform;
-    /** @var moodle_url $startattempturl URL for any Back to the course button. */
-    public $backtocourseurl;
     /** @var bool $showbacktocourse should we show a back to the course button? */
     public $showbacktocourse;
     /** @var bool whether the attempt must take place in a popup window. */
