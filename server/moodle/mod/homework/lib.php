@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,10 +12,10 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * lib functions for homework plugin
+ * Library of interface functions and constants.
  *
  * @package   mod_homework
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
@@ -76,7 +76,12 @@ function homework_update_instance($homeworkdata) {
 function homework_delete_instance($id) {
     global $DB;
 
-    $DB->delete_records('homework', ['id' => $id]);
+    $exists = $DB->get_record('homework', array('id' => $id));
+    if (!$exists) {
+        return false;
+    }
+
+    $DB->delete_records('homework', array('id' => $id));
 
     return true;
 }

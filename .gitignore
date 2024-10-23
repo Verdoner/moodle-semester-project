@@ -31,7 +31,6 @@ server/mysql/data/mysql_error.log
 /server/apache/
 /server/moodle/.grunt/
 /server/moodle/calendar/
-/server/moodle/blocks/
 /server/moodle/grade/
 /server/moodle/enrol/
 /server/moodle/auth/

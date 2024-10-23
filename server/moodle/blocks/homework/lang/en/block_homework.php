@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - https://moodle.org/
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,20 +12,18 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Block definition class for the block_homework plugin.
  *
- * @package     mod_homework
- * @copyright   2024 PV 
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   block_homework
+ * @copyright Year, You Name <your@email.address>
+ * @author    group 11
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->component = 'mod_homework';
-$plugin->release = '0.1.2';
-$plugin->version = 2024101400;
-$plugin->requires = 2022112800;
-$plugin->maturity = MATURITY_ALPHA;
+$string['homework block'] = 'homework block';
+$string['homework'] = 'Homework';
+$string['homework:addinstance'] = 'Add a new homework block';
+$string['homework:myaddinstance'] = 'Add a new homework block to the My Moodle page';

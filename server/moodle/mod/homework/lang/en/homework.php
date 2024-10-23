@@ -25,7 +25,7 @@
 $string['addhomework'] = 'Add homework';
 $string['duedate'] = 'Due Date';
 $string['duedate_in_past'] = 'The date you are trying to set is in the past! Choose a new one.';
-$string['dueto'] = 'Due to';
+$string['dueto'] = 'Due at';
 $string['homework:addinstance'] = 'Add a new homework';
 $string['homework:submit'] = 'Submit homework';
 $string['homework:view'] = 'View homework';
@@ -38,3 +38,11 @@ $string['pluginadministration'] = 'Homework administration';
 $string['pluginname'] = 'Homework';
 $string['somesetting'] = 'Some setting';
 $string['somesetting_desc'] = 'Description of some setting';
+$string['homeworkname'] = 'Homework name';
+$string['homeworkname_help'] = 'Fill out homework name';
+$string['name'] = 'Homework name';
+$string['name_help'] = 'Fill out homework name';
+$string['viewsubmissions'] = 'Submissions';
+
+
+

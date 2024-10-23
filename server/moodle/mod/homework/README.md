@@ -1,12 +1,8 @@
-# Homework module plugin #
+# homework #
 
-The Homework Plugin for Moodle enables instructors to share files, text, videos, and other resources with students. 
-It allows for easy access to materials, providing a centralized space for students to view and engage with assignment-related content.
+TODO Describe the plugin shortly here.
 
-(Future description of details pending)
-
-PS.
-No tests for now as all new code is used from moodles own describtion and no new third-party functions has been made
+TODO Provide more detailed description here.
 
 ## Installing via uploaded ZIP file ##
 
@@ -33,7 +29,7 @@ to complete the installation from the command line.
 
 ## License ##
 
-2024 cs-24-sw-5-01
+2024 PV 
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software

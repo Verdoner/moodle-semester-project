@@ -15,17 +15,22 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Plugin upgrade helper functions are defined here.
  *
  * @package     mod_homework
+ * @category    upgrade
  * @copyright   2024 PV 
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+/**
+ * Helper function used by the upgrade.php file.
+ */
+function mod_homework_helper_function() {
+    global $DB;
 
-$plugin->component = 'mod_homework';
-$plugin->release = '0.1.2';
-$plugin->version = 2024101400;
-$plugin->requires = 2022112800;
-$plugin->maturity = MATURITY_ALPHA;
+    // Please note: you can only use raw low level database access here.
+    // Avoid Moodle API calls in upgrade steps.
+    //
+    // For more information please read {@link https://docs.moodle.org/dev/Upgrade_API}.
+}

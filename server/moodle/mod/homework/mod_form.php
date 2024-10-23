@@ -39,7 +39,7 @@ class mod_homework_mod_form extends moodleform_mod {
     public function definition(): void {
         global $CFG, $DB, $OUTPUT;
 
-        $mform =& $this->_form;
+		$mform =& $this->_form;
 
         // Section for input of Name for the course, and its description.
         $mform->addElement('header', 'general', get_string('general', 'form'));
