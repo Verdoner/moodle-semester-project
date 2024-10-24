@@ -2,9 +2,7 @@ name: PHPUnit Tests for Moodle Homework Plugin
 
 on:
   push:
-    branches: [ "10-homework-teacher-feature-be-able-to-add-links-for-other-sources" ]
-  pull_request:
-    branches: [ "10-homework-teacher-feature-be-able-to-add-links-for-other-sources" ]
+    branches: [ "main" ]
 
 jobs:
   homework-plugin-test:
