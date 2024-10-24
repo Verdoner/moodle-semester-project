@@ -76,12 +76,12 @@ function homework_update_instance($homeworkdata) {
 function homework_delete_instance($id) {
     global $DB;
 
-    $exists = $DB->get_record('homework', array('id' => $id));
+    $exists = $DB->get_record('homework', ['id' => $id]);
     if (!$exists) {
         return false;
     }
 
-    $DB->delete_records('homework', array('id' => $id));
+    $DB->delete_records('homework', ['id' => $id]);
 
     return true;
 }

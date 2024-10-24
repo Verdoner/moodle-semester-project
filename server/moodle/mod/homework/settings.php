@@ -19,11 +19,14 @@
  *
  * @package     mod_homework
  * @category    admin
- * @copyright   2024 PV 
+ * @copyright   2024 PV
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 defined('MOODLE_INTERNAL') || die();
+
 global $ADMIN;
+
 // Add settings page.
 if ($ADMIN->fulltree) {
     $settings->add(new admin_settingpage('mod_homework', get_string('pluginname', 'mod_homework')));

@@ -20,7 +20,7 @@
  *
  * @package     mod_homework
  * @category    upgrade
- * @copyright   2024 PV 
+ * @copyright   2024 PV
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 function xmldb_homework_upgrade($oldversion): bool {
@@ -111,10 +111,10 @@ function xmldb_homework_upgrade($oldversion): bool {
             ['id']
         );
 
-		// Conditionally launch create table for homework.
-		if (!$dbman->table_exists($table)) {
-			$dbman->create_table($table);
-		}
+        // Conditionally launch create table for homework.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
 
         // Upgrade step for creating the 'homework_literature' table.
         $table = new xmldb_table('homework_literature');
@@ -288,4 +288,3 @@ function xmldb_homework_upgrade($oldversion): bool {
 
     return true;
 }
-

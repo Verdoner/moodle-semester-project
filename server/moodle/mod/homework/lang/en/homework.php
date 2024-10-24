@@ -30,19 +30,16 @@ $string['homework:addinstance'] = 'Add a new homework';
 $string['homework:submit'] = 'Submit homework';
 $string['homework:view'] = 'View homework';
 $string['homeworkchooser'] = 'Homework Chooser';
+$string['homeworkname'] = 'Homework name';
+$string['homeworkname_help'] = 'Fill out homework name';
 $string['modulename'] = 'Homework';
 $string['modulename_help'] = 'Use the homework module to create interactive homework.';
 $string['modulenameplural'] = 'Homework';
+$string['name'] = 'Homework name';
+$string['name_help'] = 'Fill out homework name';
 $string['openhomeworkchooser'] = 'Open Homework Chooser';
 $string['pluginadministration'] = 'Homework administration';
 $string['pluginname'] = 'Homework';
 $string['somesetting'] = 'Some setting';
 $string['somesetting_desc'] = 'Description of some setting';
-$string['homeworkname'] = 'Homework name';
-$string['homeworkname_help'] = 'Fill out homework name';
-$string['name'] = 'Homework name';
-$string['name_help'] = 'Fill out homework name';
 $string['viewsubmissions'] = 'Submissions';
-
-
-

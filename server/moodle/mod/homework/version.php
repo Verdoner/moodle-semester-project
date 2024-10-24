@@ -18,7 +18,7 @@
  * Plugin version and other meta-data are defined here.
  *
  * @package     mod_homework
- * @copyright   2024 PV 
+ * @copyright   2024 PV
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

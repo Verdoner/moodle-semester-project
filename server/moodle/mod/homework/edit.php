@@ -22,10 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  */
-defined('MOODLE_INTERNAL') || die();
 
-global $OUTPUT, $PAGE, $DB, $CFG;
 require_once('../../config.php');
+global $OUTPUT, $PAGE, $DB, $CFG;
 
 $id = required_param('id', PARAM_INT); // Course module ID.
 [$course, $cm] = get_course_and_cm_from_cmid($id, 'homework');
