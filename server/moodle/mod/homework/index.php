@@ -14,9 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-require_once('../../config.php');
-global $DB;
-
 /**
  * List of homework in course (Does not work)
  *
@@ -24,6 +21,9 @@ global $DB;
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+require_once('../../config.php');
+global $DB;
 
 // The `id` parameter is the course id.
 $id = required_param('id', PARAM_INT);
