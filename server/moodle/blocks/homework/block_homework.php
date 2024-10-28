@@ -58,7 +58,7 @@ class block_homework extends block_base {
         foreach($homeworks as $homework) {
             $tmp = [];
             $tmp['name'] = $homework->name;
-            $tmp['duedate'] = $homework->duedate;
+            $tmp['duedate'] = date('m-d-Y', $homework->duedate);
             $tmp['intro'] = strip_tags($homework->intro);
             $tmp['courseTitle'] = $DB->get_field('course', 'fullname', ['id' => $homework->course]);
 
