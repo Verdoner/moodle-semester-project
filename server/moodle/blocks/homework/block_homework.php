@@ -66,7 +66,7 @@ class block_homework extends block_base {
 
             //Get ids of homeworkfiles
             $fileids = [];
-            $homeworkfiles = $DB->get_records('files_homework', ['files_id'=>$homework->id]);
+            $homeworkfiles = $DB->get_records('files_homework', ['homework_id'=>$homework->id]);
             foreach ($homeworkfiles as $homeworkfile) {
                 array_push($fileids, $homeworkfile->files_id);
             }
@@ -89,7 +89,8 @@ class block_homework extends block_base {
                         $filearea,
                         $itemid,
                         $filepath,
-                        $filename
+                        $filename,
+                        false
                     );
 
                     //Get appropriate icon for file type
