@@ -40,7 +40,7 @@ class block_homework extends block_base {
 
         global $OUTPUT, $PAGE, $DB;
 
-        //$homeworks = $DB->get_records('homework');
+        $homeworks = $DB->get_records('homework');
         $data = [];
 
         if ($this->content !== null) {
@@ -48,7 +48,6 @@ class block_homework extends block_base {
         }
 
         $this->content = new stdClass();
-
         // If the current page is a course then remove unrelated homework
         if ($PAGE->pagetype == 'course-view-topics') {
             $homeworks = $this->filter_homework_content($PAGE->url, $homeworks);
@@ -113,7 +112,7 @@ class block_homework extends block_base {
 
         // Include JavaScript functionality for scrolling behavior in the block
         $PAGE->requires->js_call_amd('block_homework/scroll', 'init');
-        $PAGE->requires->js_call_amd('block_homework/clickInfo', 'init');
+        $PAGE->requires->js_call_amd('block_homework/clickInfo', 'init',["homework"]);
         return $this->content;
     }
 

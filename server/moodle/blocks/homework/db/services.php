@@ -18,7 +18,7 @@ defined('MOODLE_INTERNAL') || die();
 
 
 $functions = [
-    'block_homework_get_info-homework' => [
+    'block_homework_get_infohomework_modal' => [
     'classname'   => 'block_homework\external\get_infohomework_modal',
     'methodname'  => 'execute',
     'classpath'   => 'blocks/homework/classes/external/get_infohomework_modal.php',
@@ -31,7 +31,7 @@ $functions = [
 $services = [
     'block_homework_services' => [
         'functions' => [
-            'block_homework_get_info-homework',
+            'block_homework_get_infohomework_modal',
         ],
         'restrictedusers' => 0,
         'enabled' => 1,

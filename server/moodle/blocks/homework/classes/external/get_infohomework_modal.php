@@ -1,22 +1,30 @@
 <?php
+namespace block_homework\external;
+
+defined('MOODLE_INTERNAL') || die();
+
+
+global $CFG;
+require_once("$CFG->libdir/externallib.php");
+
+use external_function_parameters;
+use external_value;
+use external_single_structure;
 
 class get_infohomework_modal extends \external_api {
     /**
-     *
-     * @return external_function_parameters Is a definition of the functions parameter type and a description of it.
+     * hej
+     * @return external_function_parameters
      */
     public static function execute_parameters() {
-        return new external_function_parameters([
-            'cmid' => new external_value(PARAM_INT, 'Course Module ID'),
-        ]);
+        return new external_function_parameters([]);
     }
 
     /**
      * The logic making the custom html for modal client-side
-     * @param $cmid - The current modules id
      * @return string[] - The html to be shown client-side
      */
-    public static function execute($cmid) {
+    public static function execute() {
         global $DB;
 
         // Custom HTML for the homework chooser modal.
