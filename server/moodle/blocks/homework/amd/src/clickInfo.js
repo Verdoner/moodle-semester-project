@@ -12,14 +12,22 @@ import ModalEvents from 'core/modal_events';
  *
  */
 
-/**
- * Initializes the Info Homework Modal
- */
 
-export const init = async(title) => {
+/**
+ *
+ * @param {int} homework_id
+ * @param title
+ * @returns {Promise<void>}
+ */
+export const init = async(homework_id, title) => {
+    if (!Number.isInteger(homework_id) || homework_id <= 0) {
+        console.error('Invalid homework ID:', homework_id);
+        return;
+    }
     $('button').on('click', () => {
         Ajax.call([{
             methodname: 'block_homework_get_infohomework_modal',
+            args:{homework_id: 1},
             done: async function(response) {
                 const modal = await MyModal.create({
                     title: title,

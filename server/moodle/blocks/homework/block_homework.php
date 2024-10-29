@@ -38,7 +38,7 @@ class block_homework extends block_base {
      */
     public function get_content() {
 
-        global $OUTPUT, $PAGE, $DB;
+        global $OUTPUT, $PAGE, $DB, $value;
 
         $homeworks = $DB->get_records('homework');
         $data = [];
@@ -112,7 +112,7 @@ class block_homework extends block_base {
 
         // Include JavaScript functionality for scrolling behavior in the block
         $PAGE->requires->js_call_amd('block_homework/scroll', 'init');
-        $PAGE->requires->js_call_amd('block_homework/clickInfo', 'init',["homework"]);
+        $PAGE->requires->js_call_amd('block_homework/clickInfo', 'init',[$value => 1,"homework"]);
         return $this->content;
     }
 
