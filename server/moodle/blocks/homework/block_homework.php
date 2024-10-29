@@ -39,10 +39,34 @@ class block_homework extends block_base {
      */
     public function get_content() {
 
-        global $OUTPUT, $PAGE, $DB;
+        global $OUTPUT, $PAGE, $DB, $USER;
 
+        //Get current time
         $current_time = time();
-        $homeworks = $DB->get_records_select('homework', 'duedate > ?', array($current_time) );
+
+        //Fetch courses user is enrolled in
+        $user_courses = enrol_get_users_courses($USER->id);
+
+        //Extract course IDs
+        $course_ids = array_map(function($course) {
+           return $course->id;
+        }, $user_courses);
+
+
+        //Create a string of ? placeholders for each found course_id, seperated by commas
+        $placeholders = implode(',', array_fill(0, count($course_ids), '?'));
+
+        //Merge parameters
+        $parameters = array_merge(array($current_time), $course_ids);
+
+        //Construct WHERE condition for select
+        $select = "duedate > ? AND course IN ($placeholders)";
+
+
+        // Fetch homeworks using get_records_select
+        $homeworks = $DB->get_records_select('homework', $select, $parameters);
+
+
         $data = [];
 
         if ($this->content !== null) {
