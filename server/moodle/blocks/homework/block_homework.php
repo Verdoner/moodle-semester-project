@@ -41,7 +41,8 @@ class block_homework extends block_base {
 
         global $OUTPUT, $PAGE, $DB;
 
-        $homeworks = $DB->get_records('homework');
+        $current_time = time();
+        $homeworks = $DB->get_records_select('homework', 'duedate > ?', array($current_time) );
         $data = [];
 
         if ($this->content !== null) {
