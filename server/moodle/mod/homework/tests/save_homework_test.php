@@ -53,8 +53,9 @@ final class save_homework_test extends advanced_testcase {
         $inputfield = 'Test Literature';
         $startpage = 1;
         $endpage = 10;
+		$homework = 1;
 
-        $result = \mod_homework\external\save_homework_literature::execute($inputfield, $startpage, $endpage);
+        $result = \mod_homework\external\save_homework_literature::execute($inputfield, $startpage, $endpage, $homework);
 
         // Assert that the status is 'success'.
         $this->assertEquals('success', $result['status']);
@@ -70,6 +71,7 @@ final class save_homework_test extends advanced_testcase {
         );
         $this->assertEquals($startpage, $record->startpage);
         $this->assertEquals($endpage, $record->endpage);
+		$this->assertEquals($homework, $record->homework);
     }
 
     /**
@@ -84,8 +86,9 @@ final class save_homework_test extends advanced_testcase {
         // Call the external class method.
         $inputfield = 'Test Link';
         $link = 'https://www.test.com';
+		$homework = 1;
 
-        $result = \mod_homework\external\save_homework_link::execute($inputfield, $link);
+        $result = \mod_homework\external\save_homework_link::execute($inputfield, $link, $homework);
 
         // Assert that the status is 'success'.
         $this->assertEquals('success', $result['status']);
@@ -100,5 +103,6 @@ final class save_homework_test extends advanced_testcase {
             MUST_EXIST
         );
         $this->assertEquals($link, $record->link);
+		$this->assertEquals($homework, $record->homework);
     }
 }
