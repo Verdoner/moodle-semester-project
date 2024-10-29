@@ -80,18 +80,39 @@ echo $OUTPUT->header();
 
 $viewobj = new view_page();
 $viewobj->canedit = true;
-$viewobj->editurl = new moodle_url('/mod/homework/edit.php', ['cmid' => $cm->id]);
+$viewobj->editurl = new moodle_url('/mod/homework/edit.php', ['id' => $cm->id]);
 
 // Add the actual page content here.
 echo html_writer::tag('div', 'This is the homework view page', ['class' => 'content']);
-$records = $DB->get_records('homework');
+$record = $DB->get_record('homework', array('id' => $cm->instance), '*', MUST_EXIST);
 
-// Iterate and display the records.
-foreach ($records as $record) {
-    echo 'Homework ID: ' . $record->id . '<br>';
-    echo 'Homework Name: ' . $record->name . '<br>';
-    // Add any other fields you'd like to display.
+echo $record->name . '<br>';
+echo $record->duedate . '<br>';
+echo $record->description . '<br>';
+
+$homeworkLiterature = $DB->get_records('homework_literature', array('homework' => $cm->instance));
+$homeworkLinks = $DB->get_records('homework_links', array('homework' => $cm->instance));
+foreach($homeworkLiterature as $literature) {
+	ob_start();
+	?>
+	<div class="literature">
+		<p><?= $literature->description ?></p>
+		<p><?= $literature->startpage." - ".$literature->endpage ?></p>
+	</div>
+	<?php
+	echo ob_get_clean();
 }
+foreach($homeworkLinks as $link) {
+	ob_start();
+	?>
+	<div class="literature">
+		<p><?= $link->description ?></p>
+		<a href="<?= $link->link ?>"><?= $link->link ?></a>
+	</div>
+	<?php
+	echo ob_get_clean();
+}
+
 if ($viewobj->canedit && !$viewobj->hashomework) {
     echo html_writer::link($viewobj->editurl, get_string('addhomework', 'homework'), ['class' => 'btn btn-secondary']);
 }

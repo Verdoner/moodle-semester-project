@@ -47,6 +47,7 @@ class save_homework_link extends \external_api {
         return new external_function_parameters([
             'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
             'link' => new external_value(PARAM_TEXT, 'link field value'),
+	        'homework' => new external_value(PARAM_INT, 'homework field value'),
         ]);
     }
 
@@ -57,7 +58,7 @@ class save_homework_link extends \external_api {
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($inputfield, $link) {
+    public static function execute($inputfield, $link, $homework) {
         global $DB, $USER;
 
         // Handle the input field value here.
@@ -68,6 +69,7 @@ class save_homework_link extends \external_api {
         $record->usermodified = $USER->id;
         $record->timecreated = time();
         $record->timemodified = time();
+		$record->homework = $homework;
 
         // Save to database.
         $DB->insert_record('homework_links', $record);

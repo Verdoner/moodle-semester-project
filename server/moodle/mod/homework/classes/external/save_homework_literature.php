@@ -48,6 +48,7 @@ class save_homework_literature extends \external_api {
             'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
             'startpage' => new external_value(PARAM_INT, 'startPage field value'),
             'endpage' => new external_value(PARAM_INT, 'endPage field value'),
+	        'homework' => new external_value(PARAM_INT, 'homework field value'),
         ]);
     }
 
@@ -59,8 +60,8 @@ class save_homework_literature extends \external_api {
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($inputfield, $startpage, $endpage) {
-        global $DB, $USER;
+    public static function execute($inputfield, $startpage, $endpage, $homework) {
+        global $DB, $USER, $PAGE;
 
         // Handle the input field value here.
         // For example, save to a database.
@@ -71,11 +72,12 @@ class save_homework_literature extends \external_api {
         $record->endpage = $endpage;
         $record->timecreated = time();
         $record->timemodified = time();
+		$record->homework = $homework;
 
         $DB->insert_record('homework_literature', $record);
 
         // Return a success response.
-        return ['status' => 'success', 'message' => 'Data saved successfully'];
+        return ['status' => 'success', 'message' => 'Data saved successfully', 'page' => json_encode($PAGE->cm)];
     }
 
     /**
@@ -86,6 +88,7 @@ class save_homework_literature extends \external_api {
         return new external_single_structure([
             'status' => new external_value(PARAM_TEXT, 'Status of the request'),
             'message' => new external_value(PARAM_TEXT, 'Message with details about the request status'),
+	        'page' => new external_value(PARAM_TEXT, 'Page object'),
         ]);
     }
 }
