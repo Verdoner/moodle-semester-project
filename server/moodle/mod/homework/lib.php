@@ -87,6 +87,7 @@ function homework_delete_instance($id) {
 }
 
 /**
+ * Inspiration taken from https://moodledev.io/docs/4.5/apis/subsystems/files
  * Serve the files from the myplugin file areas.
  *
  * @param stdClass $course the course object
