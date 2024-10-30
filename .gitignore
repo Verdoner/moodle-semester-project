@@ -1,2 +1,3 @@
-/moodle/local.yml
-/moodle/moodle/
+.DS_Store
+/server/local.yml
+/server/moodle/
