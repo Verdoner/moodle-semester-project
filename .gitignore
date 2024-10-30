@@ -69,6 +69,7 @@ phpcs.xml
 jsconfig.json
 UPGRADING-CURRENT.md
 .idea
+.idea/*
 
 # Swap files (vim)
 [._]*.s[a-v][a-z]
