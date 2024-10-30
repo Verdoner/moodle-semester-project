@@ -77,9 +77,7 @@ class get_homework extends \external_api {
 			$homeworkArray = self::sortDueDate($homeworkArray);
 		}
 		/*else if($sort === 'time'){
-			usort($homeworkArray, function($a, $b){
-				return $a['time'] - $b['time'];
-			});
+			$homeworkArray = self::sortTime($homeworkArray);
 		}
 		Implement when time task is done
 		*/
@@ -92,6 +90,21 @@ class get_homework extends \external_api {
 			return $a['duedate'] - $b['duedate'];
 		});
 		return $homeworkArray;
+	}
+
+	public static function sortTime(array $homeworkArray): array{
+		usort($homeworkArray, function($a, $b){
+			return $a['time'] - $b['time'];
+		});
+		return $homeworkArray;
+	}
+
+	/**
+	 *
+	 * @return string - The name of the function
+	 */
+	public static function get_homework_returns() {
+		return 'homework';
 	}
 
     /**

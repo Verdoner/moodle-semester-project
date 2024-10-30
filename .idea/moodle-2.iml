@@ -893,6 +893,7 @@
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/webservice/rest/tests" isTestSource="true" packagePrefix="webservice_rest" />
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/webservice/soap/classes" isTestSource="false" packagePrefix="webservice_soap" />
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/webservice/soap/tests" isTestSource="true" packagePrefix="webservice_soap" />
+      <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/webservice/tests" isTestSource="true" packagePrefix="core_webservice" />
       <excludeFolder url="file://$MODULE_DIR$/server/apache/logs" />
       <excludeFolder url="file://$MODULE_DIR$/server/moodle/admin/tool/pluginskel" />
