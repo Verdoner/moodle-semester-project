@@ -1,0 +1,6 @@
+# Here we support https://docs.docker.com/docker-for-mac/osxfs-caching/
+# for improved performance on mac
+services:
+  webserver:
+    volumes:
+        - "./moodle:/var/www/html:cached"

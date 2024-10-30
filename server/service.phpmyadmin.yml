@@ -1,0 +1,11 @@
+services:
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_USER: moodle
+      PMA_PASSWORD: root 
+    ports:
+      - "8080:80"
+    depends_on:
+      - db

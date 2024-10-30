@@ -1,0 +1,3 @@
+[submodule "server/moodle"]
+	path = server/moodle
+	url = https://github.com/AllanVester/Moodle-Submodule.git
