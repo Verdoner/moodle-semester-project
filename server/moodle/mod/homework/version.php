@@ -26,6 +26,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_homework';
 $plugin->release = '0.1.2';
-$plugin->version = 2024101400;
+$plugin->version =  2024103000;
 $plugin->requires = 2022112800;
 $plugin->maturity = MATURITY_ALPHA;
