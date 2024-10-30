@@ -1,0 +1,18 @@
+# Define the PHP version argument with a default value (e.g., 8.1)
+ARG MOODLE_DOCKER_PHP_VERSION=8.1
+
+# Use the argument in the FROM statement
+FROM moodlehq/moodle-php-apache:${MOODLE_DOCKER_PHP_VERSION}
+
+# Install dependencies and Composer
+RUN apt-get update && \
+    apt-get install -y curl git unzip && \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Configure Composer to allow the phpcodesniffer plugin and then install phpcs and Moodle Coding Standards
+RUN composer global config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true && \
+    composer global require "squizlabs/php_codesniffer=*" && \
+    composer global require "moodlehq/moodle-cs"
+
+# Add Composer's global vendor bin directory to PATH
+ENV PATH="/root/.composer/vendor/bin:${PATH}"

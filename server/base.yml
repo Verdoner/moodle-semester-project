@@ -1,5 +1,8 @@
 services:
   webserver:
+    build:
+      context: .
+      dockerfile: Dockerfile.phpcs
     image: "moodlehq/moodle-php-apache:${MOODLE_DOCKER_PHP_VERSION}"
     depends_on:
       - db
