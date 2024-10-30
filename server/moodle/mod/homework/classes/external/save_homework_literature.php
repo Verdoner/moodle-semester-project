@@ -38,7 +38,7 @@ use external_single_structure;
 /**
  *
  */
-class save_homework_literature extends external_api {
+class save_homework_literature extends \external_api {
     /**
      *
      * @return external_function_parameters Define the parameters expected by this function.
@@ -48,6 +48,7 @@ class save_homework_literature extends external_api {
             'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
             'startpage' => new external_value(PARAM_INT, 'startPage field value'),
             'endpage' => new external_value(PARAM_INT, 'endPage field value'),
+            'instance' => new external_value(PARAM_TEXT, 'instance field value'),
         ]);
     }
 
@@ -59,7 +60,7 @@ class save_homework_literature extends external_api {
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($inputfield, $startpage, $endpage) {
+    public static function execute($inputfield, $startpage, $endpage, $instance) {
         global $DB, $USER;
         // Handle the input field value here.
         // For example, save to a database.
@@ -70,6 +71,7 @@ class save_homework_literature extends external_api {
         $record->endpage = $endpage;
         $record->timecreated = time();
         $record->timemodified = time();
+        $record->homework_id = $instance;
 
         $DB->insert_record('homework_literature', $record);
 
