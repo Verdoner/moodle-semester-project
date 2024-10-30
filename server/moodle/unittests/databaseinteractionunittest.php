@@ -58,7 +58,7 @@ function test_db_get_file(){
         echo "Test test_db_get_file Succeeded";
         return true;
     }
-    echo "Test test_db_get_file Failed, Expected: ".$expected."got: ".$homework;
+    echo "Test test_db_get_file Failed, Expected: ".$expected."got: ".$file;
     return false;
 }
 
