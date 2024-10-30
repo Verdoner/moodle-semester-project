@@ -161,6 +161,16 @@ function xmldb_homework_upgrade($oldversion): bool {
             'End page number'
         );
         $table->add_field(
+            'homework_id',
+            XMLDB_TYPE_INTEGER,
+            '10',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            null,
+            'File id'
+        );
+        $table->add_field(
             'fileid',
             XMLDB_TYPE_INTEGER,
             '10',

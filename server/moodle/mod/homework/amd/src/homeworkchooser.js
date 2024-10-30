@@ -11,8 +11,9 @@ import Dropzone from 'core/dropzone';
  *
  * @param {int} cmid - Course Module ID
  * @param {string} title - Title for the modal
+ * @param {int} cminstance
  */
-export const init = async (cmid, title) => {
+export const init = async (cmid, title, cminstance) => {
     $('#open-homework-chooser').on('click', () => {
         Ajax.call([{
             methodname: 'mod_homework_get_homework_chooser',
@@ -92,7 +93,7 @@ export const init = async (cmid, title) => {
                 // Attach event listeners for buttons
                 modal.getRoot().on('click', '[data-action="submit"]', (e) => {
                     e.preventDefault();
-                    handleFormSubmit(modal);
+                    handleFormSubmit(modal, cminstance);
                 });
 
                 modal.getRoot().on('click', '[data-action="cancel"]', (e) => {
@@ -152,11 +153,8 @@ const uploadDropzoneFiles = async () => {
     dropZoneFiles = []; // Clear stored files after upload
 };
 
-const handleFormSubmit = async (modal) => {
+const handleFormSubmit = async (modal, cminstance) => {
     let inputField = modal.getRoot().find('#inputField').val();
-    let fileid = uploadedFileIds.length ? uploadedFileIds[0] : null; // Use the first uploaded file ID if available
-
-    console.log(fileid);
 
     if (modal.getRoot().find('#option1').is(':checked')) {
         let startPage = modal.getRoot().find('#startPage').val();
@@ -164,15 +162,14 @@ const handleFormSubmit = async (modal) => {
 
         await uploadDropzoneFiles();
 
-        console.log(uploadedFileIds[0])
-
         Ajax.call([{
             methodname: 'mod_homework_save_homework_literature',
             args: {
                 inputfield: inputField,
                 startpage: startPage,
                 endpage: endPage,
-                fileid: uploadedFileIds[0]
+                instance: cminstance,
+                fileid: uploadedFileIds.length ? uploadedFileIds[0] : null
             },
             done: function(response) {
                 console.log("Data saved successfully:", response);
@@ -193,7 +190,8 @@ const handleFormSubmit = async (modal) => {
             methodname: 'mod_homework_save_homework_link',
             args: {
                 inputfield: inputField,
-                link: link
+                link: link,
+                instance: cminstance
             },
             done: function(response) {
                 console.log("Data saved successfully:", response);

@@ -25,10 +25,12 @@
     </TABLE>
     <TABLE NAME="files_homework" COMMENT="table connecting files and homework">
       <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" COMMENT="Standard Moodle primary key."/>
         <FIELD NAME="files_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="homework_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="f_key_files_id" TYPE="foreign" FIELDS="files_id" REFTABLE="files" REFFIELDS="id"/>
         <KEY NAME="f_key_homework_id" TYPE="foreign" FIELDS="homework_id" REFTABLE="homework" REFFIELDS="id"/>
       </KEYS>
@@ -39,6 +41,7 @@
         <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="startpage" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="endpage" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="homework_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="fileid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the introduction text."/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Timestamp when the record was created."/>
@@ -46,6 +49,8 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="f_key_fileid" TYPE="foreign" FIELDS="fileid" REFTABLE="files" REFFIELDS="id"/>
+        <KEY NAME="f_key_homework_id" TYPE="foreign" FIELDS="homework_id" REFTABLE="homework" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
     <TABLE NAME="homework_links" COMMENT="Default comment for the table, please edit me">
