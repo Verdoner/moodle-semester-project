@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir . '/externallib.php');
 
-use external_api;
+use core_external\external_api;
 use external_function_parameters;
 use external_value;
 use external_single_structure;
@@ -38,7 +38,7 @@ use external_single_structure;
 /**
  *
  */
-class save_homework_literature extends \external_api {
+class save_homework_literature extends external_api {
     /**
      *
      * @return external_function_parameters Define the parameters expected by this function.
@@ -61,7 +61,6 @@ class save_homework_literature extends \external_api {
      */
     public static function execute($inputfield, $startpage, $endpage) {
         global $DB, $USER;
-
         // Handle the input field value here.
         // For example, save to a database.
         $record = new \stdClass();

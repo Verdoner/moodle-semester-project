@@ -30,6 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once("$CFG->libdir/externallib.php");
 
+use core_external\external_api;
 use external_function_parameters;
 use external_value;
 use external_single_structure;
@@ -37,7 +38,7 @@ use external_single_structure;
 /**
  *
  */
-class get_homework_chooser extends \external_api {
+class get_homework_chooser extends external_api {
     /**
      *
      * @return external_function_parameters Is a definition of the functions parameter type and a description of it.
