@@ -78,6 +78,10 @@ class get_homework_chooser extends \external_api {
                         <label for="link">Link:</label><br>
                         <input name="link" id="link" type="url" placeholder="Enter URL">
                     </div>
+                    <div id="dropzone-container">
+                        <label for="dropzone">Upload File:</label><br>
+                        <div id="dropzone" class="dropzone"></div>
+                    </div>
                 </form>
             </div>
         ';

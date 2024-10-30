@@ -48,6 +48,7 @@ class save_homework_literature extends \external_api {
             'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
             'startpage' => new external_value(PARAM_INT, 'startPage field value'),
             'endpage' => new external_value(PARAM_INT, 'endPage field value'),
+            'fileid' => new external_value(PARAM_INT, 'Uploaded file ID', VALUE_OPTIONAL),
         ]);
     }
 
@@ -56,10 +57,11 @@ class save_homework_literature extends \external_api {
      * @param $inputfield
      * @param $startpage
      * @param $endpage
+     * @param $fileid
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($inputfield, $startpage, $endpage) {
+    public static function execute($inputfield, $startpage, $endpage, $fileid = null) {
         global $DB, $USER;
 
         // Handle the input field value here.
@@ -69,6 +71,9 @@ class save_homework_literature extends \external_api {
         $record->description = $inputfield;
         $record->startpage = $startpage;
         $record->endpage = $endpage;
+        if ($fileid) {
+            $record->fileid = $fileid;
+        }
         $record->timecreated = time();
         $record->timemodified = time();
 
