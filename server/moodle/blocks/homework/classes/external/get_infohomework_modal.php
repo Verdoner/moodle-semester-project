@@ -50,7 +50,7 @@ class get_infohomework_modal extends external_api {
         $html = '
             <div id="info-homework-modal">
                 <h1>Mark homework completed</h1>
-                <p>Homework ID: ' . htmlspecialchars($homeworkid) . '</p>
+                <p>Homework ID: ' . $homeworkid . '</p>
                 <!-- Add additional content or buttons here -->
             </div>
         ';

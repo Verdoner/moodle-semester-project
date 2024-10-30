@@ -55,19 +55,26 @@ class block_homework extends block_base {
 
         foreach ($homeworks as $homework) {
             $tmp = [];
+            $tmp['id'] = $homework->id;
             $tmp['name'] = $homework->name;
             $tmp['duedate'] = $homework->duedate;
             $tmp['intro'] = strip_tags($homework->intro);
             $tmp['courseTitle'] = $DB->get_field('course', 'fullname', ['id' => $homework->course]);
 
+
+            $literaturerecords = $DB->get_records('homework_literature', ['homework_id' => $homework->id]);
+
+            $linkrecords = $DB->get_records('homework_links', ['homework_id' => $homework->id]);
+
+
             $files = [];
 
             // Get ids of homeworkfiles
             $fileids = [];
-            /*$homeworkfiles = $DB->get_records('files_homework', ['files_id' => $homework->id]);
+            $homeworkfiles = $DB->get_records('files_homework', ['homework_id' => $homework->id]);
             foreach ($homeworkfiles as $homeworkfile) {
                 array_push($fileids, $homeworkfile->files_id);
-            }*/
+            }
 
             // Get file records
             if (!empty($fileids)) {
@@ -102,6 +109,8 @@ class block_homework extends block_base {
             }
 
             $tmp['files'] = $files;
+            $tmp['liturature'] = $literaturerecords;
+            $tmp['link'] = $linkrecords;
 
             array_push($data, $tmp);
         }
@@ -112,7 +121,7 @@ class block_homework extends block_base {
 
         // Include JavaScript functionality for scrolling behavior in the block
         $PAGE->requires->js_call_amd('block_homework/scroll', 'init');
-        $PAGE->requires->js_call_amd('block_homework/clickInfo', 'init',[$value => 1,"homework"]);
+        $PAGE->requires->js_call_amd('block_homework/clickInfo', 'init',[$value => 1,"homework",$data]);
         return $this->content;
     }
 
