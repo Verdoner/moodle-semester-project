@@ -32,7 +32,7 @@ export const init = async(cmid, title) => {
                 });
 
                 // Show the modal.
-                await modal.show();
+                modal.show();
 
                 // Initialize elements once the modal content is rendered.
                 modal.getRoot().on(ModalEvents.shown, () => {
@@ -112,18 +112,14 @@ export const init = async(cmid, title) => {
 const handleFormSubmit = (modal) => {
     let inputField = modal.getRoot().find('#inputField').val();
 
-    if (inputField.value === "") {
-        inputField.setCustomValidity("Please fill in the input field.");
-        inputField.reportValidity(); // Shows the custom message
-        event.preventDefault(); // Prevents form submission
-    } else {
-        inputField.setCustomValidity(""); // Clear the custom message
-    }
-
     if (modal.getRoot().find('#option1').is(':checked')) {
         let startPage = modal.getRoot().find('#startPage').val();
         let endPage = modal.getRoot().find('#endPage').val();
-
+        console.log({
+            inputfield: inputField,
+            startpage: startPage,
+            endpage: endPage,
+        });
         // AJAX call to send data to the server.
         Ajax.call([{
             methodname: 'mod_homework_save_homework_literature',
