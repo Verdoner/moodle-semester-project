@@ -22,4 +22,4 @@ services:
   selenium:
     image: "selenium/standalone-firefox${MOODLE_DOCKER_SELENIUM_SUFFIX:-}:${MOODLE_DOCKER_BROWSER_TAG}"
     volumes:
-      - "/moodle:/var/www/html:ro"
+      - "./moodle:/var/www/html:ro"
