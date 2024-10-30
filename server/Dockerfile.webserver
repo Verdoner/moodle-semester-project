@@ -1,14 +1,15 @@
 FROM moodlehq/moodle-php-apache:8.1
 
-# Install dependencies, Composer, Node.js, and Grunt CLI
+# Install dependencies, Node.js, Grunt CLI, and Watchman
 RUN apt-get update && \
     apt-get install -y curl git unzip && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
     curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install -y nodejs && \
-    npm install -g grunt-cli
+    npm install -g grunt-cli && \
+    apt-get install -y watchman
 
-# Configure Composer to allow phpcodesniffer plugin, install PHP CodeSniffer and Moodle Coding Standards
+# Configure Composer to allow plugins and install Moodle Coding Standards
 RUN composer global config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true && \
     composer global require "squizlabs/php_codesniffer=*" && \
     composer global require "moodlehq/moodle-cs"

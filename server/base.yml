@@ -17,7 +17,7 @@ services:
       MOODLE_DOCKER_BROWSER: firefox
       MOODLE_DOCKER_WEB_HOST: "${MOODLE_DOCKER_WEB_HOST}"
       MOODLE_DOCKER_TIMEOUT_FACTOR: "${MOODLE_DOCKER_TIMEOUT_FACTOR}"
-    command: /bin/bash -c "cd /var/www/html && npm install && apache2-foreground"
+    command: /bin/bash -c "cd /var/www/html && npm install && (grunt watch &) && apache2-foreground"
   exttests:
     image: moodlehq/moodle-exttests
     volumes:
