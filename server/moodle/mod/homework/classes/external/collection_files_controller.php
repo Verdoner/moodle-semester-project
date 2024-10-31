@@ -22,15 +22,16 @@ class collection_files_controller extends \external_api {
     public static function get_collection_file_ids(): array {
         global $DB, $COURSE;
 
-        $sql = "SELECT id FROM homework WHERE course = ".$COURSE->id;
-        $results = $DB->get_records_sql($sql);
+        //$sql = "SELECT id FROM homework WHERE course = ".$COURSE->id;
+        $results = $DB->get_records('homework', ['course'=>$COURSE->id]);
 
 
         $files = array();
         foreach ($results as $result) {
-            $sql = "SELECT files_id FROM files_homework WHERE homework_id = ".$result->id;
-            $temp = $DB->get_records_sql($sql);
-            $files = array_merge($files, $temp);
+            //$sql = "SELECT files_id FROM files_homework WHERE homework_id = ".$result->id;
+            //$temp = $DB->get_records_sql($sql);
+            $temp = $DB->get_record('files_homework', ['homework_id'=>$result->homework_id]);
+            $files = array_merge($files, $temp->files_id);
         }
 
         return $files;

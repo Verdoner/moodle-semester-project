@@ -61,8 +61,10 @@ class get_homework_chooser extends \external_api {
         $choices = '';
         if ($existing_resources != null) {
             foreach ($existing_resources as $resource) {
-                $name = $DB->get_record("SELECT description FROM homework_links, homework_literature WHERE id = ".$resource, [MUST_EXIST]);
-                $choices .= '<option value="'.$name.'"></option>\n';
+                //$file = $DB->get_record("SELECT description FROM homework_links, homework_literature WHERE id = ".$resource, [MUST_EXIST]);
+                $file = $DB->get_record('homework_links', ['id'=>$resource], IGNORE_MISSING);
+                $file = $DB->get_record('homework_literature', ['id'=>$resource], IGNORE_MISSING);
+                $choices .= '<option value="'.$file->description.'"></option>\n';
             }
         }
 
