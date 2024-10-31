@@ -22,6 +22,7 @@ require_once("$CFG->libdir/externallib.php");
 
 use core_external\external_api;
 use external_function_parameters;
+use external_multiple_structure;
 use external_value;
 use external_single_structure;
 
@@ -33,6 +34,34 @@ class get_infohomework_modal extends external_api {
     public static function execute_parameters() {
         return new external_function_parameters([
             'homework_id' => new external_value(PARAM_INT, 'The ID of the homework item'),
+            'data1' => new external_multiple_structure(new external_single_structure([
+                'description' => new external_value(PARAM_TEXT, 'Description of the homework'),
+                'endpage' => new external_value(PARAM_INT, 'End page number'),
+                'homework_id' => new external_value(PARAM_INT, 'The homework ID'),
+                'id' => new external_value(PARAM_INT, 'Unique ID'),
+                'introformat' => new external_value(PARAM_INT, 'Format of the introduction'),
+                'startpage' => new external_value(PARAM_INT, 'Start page number'),
+                'timecreated' => new external_value(PARAM_INT, 'Timestamp when created'),
+                'timemodified' => new external_value(PARAM_INT, 'Timestamp when last modified'),
+            ])),
+            'data2' => new external_multiple_structure(new external_single_structure([
+                'description' => new external_value(PARAM_TEXT, 'Description of the homework'),
+                'link' => new external_value(PARAM_TEXT, 'The link'),
+                'homework_id' => new external_value(PARAM_INT, 'The homework ID'),
+                'id' => new external_value(PARAM_INT, 'Unique ID'),
+                'timecreated' => new external_value(PARAM_INT, 'Timestamp when created'),
+                'timemodified' => new external_value(PARAM_INT, 'Timestamp when last modified'),
+                'usermodified' => new external_value(PARAM_INT, 'User who last modified'),
+            ])),
+            'data3' => new external_multiple_structure(new external_single_structure([
+                'description' => new external_value(PARAM_TEXT, 'Description of the homework'),
+                'homework_id' => new external_value(PARAM_INT, 'The homework ID'),
+                'fileid' => new external_value(PARAM_INT, 'The id of the file'),
+                'id' => new external_value(PARAM_INT, 'Unique ID'),
+                'introformat' => new external_value(PARAM_INT, 'Format of the introduction'),
+                'timecreated' => new external_value(PARAM_INT, 'Timestamp when created'),
+                'timemodified' => new external_value(PARAM_INT, 'Timestamp when last modified'),
+            ])),
         ]);
     }
 
@@ -41,19 +70,25 @@ class get_infohomework_modal extends external_api {
      * @param int $homework_id The ID of the homework item
      * @return string[] - The HTML to be shown client-side
      */
-    public static function execute($homeworkid) {
+    public static function execute($homeworkid, $data1, $data2, $data3) {
         global $DB;
 
-        // Optionally, you can fetch data from the database using $homework_id if needed.
+        // Assuming you have the Mustache engine set up.
+        $mustache = new \Mustache_Engine();
+        $nohomework = "";
+        if (!$data1 && !$data2 && !$data3) {
+            $nohomework = "All completed";
+        }
+        // Prepare data for the template.
+        $content = [
+            'nohomework' => $nohomework,
+            'literature' => $data1,
+            'links' => $data2,
+            'videos' => $data3,
+        ];
 
-        // Custom HTML for the homework chooser modal.
-        $html = '
-            <div id="info-homework-modal">
-                <h1>Mark homework completed</h1>
-                <p>Homework ID: ' . $homeworkid . '</p>
-                <!-- Add additional content or buttons here -->
-            </div>
-        ';
+        // Render the template.
+        $html = $mustache->render(file_get_contents(__DIR__ . "/../../templates/timeinfotemplate.mustache"), $content);
 
         return ['html' => $html];
     }

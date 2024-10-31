@@ -26,12 +26,21 @@ $functions = [
     'type'        => 'read',
     'ajax'        => true,
     ],
+    'block_homework_save_homeworktime' => [
+        'classname'   => 'block_homework\external\save_homeworktime',
+        'methodname'  => 'execute',
+        'classpath'   => 'blocks/homework/classes/external/save_homeworktime.php',
+        'description' => 'Save homework time',
+        'type'        => 'write',
+        'ajax'        => true,
+    ]
 ];
 
 $services = [
     'block_homework_services' => [
         'functions' => [
             'block_homework_get_infohomework_modal',
+            'block_homework_save_homeworktime',
         ],
         'restrictedusers' => 0,
         'enabled' => 1,

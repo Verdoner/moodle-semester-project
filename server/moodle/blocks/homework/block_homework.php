@@ -38,7 +38,7 @@ class block_homework extends block_base {
      */
     public function get_content() {
 
-        global $OUTPUT, $PAGE, $DB, $value;
+        global $OUTPUT, $PAGE, $DB, $value, $USER;
 
         $homeworks = $DB->get_records('homework');
         $data = [];
@@ -65,6 +65,8 @@ class block_homework extends block_base {
             $literaturerecords = $DB->get_records('homework_literature', ['homework_id' => $homework->id]);
 
             $linkrecords = $DB->get_records('homework_links', ['homework_id' => $homework->id]);
+
+            $videorecords = $DB->get_records('homework_video', ['homework_id' => $homework->id]);
 
 
             $files = [];
@@ -109,8 +111,10 @@ class block_homework extends block_base {
             }
 
             $tmp['files'] = $files;
-            $tmp['liturature'] = $literaturerecords;
-            $tmp['link'] = $linkrecords;
+            $tmp['literature'] = $literaturerecords;
+            $tmp['links'] = $linkrecords;
+            $tmp['videos'] = $videorecords;
+            $tmp['completions'] = $homeworkcompletionrecords;
 
             array_push($data, $tmp);
         }
@@ -120,8 +124,9 @@ class block_homework extends block_base {
         $this->content->text = $OUTPUT->render_from_template('block_homework/data', ['data' => $data]);
 
         // Include JavaScript functionality for scrolling behavior in the block
+        $homeworkcompletionrecords = $DB->get_records('completions', ['user_id' => $USER->id]);
         $PAGE->requires->js_call_amd('block_homework/scroll', 'init');
-        $PAGE->requires->js_call_amd('block_homework/clickInfo', 'init',[$value => 1,"homework",$data]);
+        $PAGE->requires->js_call_amd('block_homework/clickInfo', 'init', [$value => 1, "homework", $data, $USER->id,$homeworkcompletionrecords]);
         return $this->content;
     }
 
