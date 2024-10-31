@@ -15,14 +15,14 @@ class collection_files_controller extends \external_api {
     /**
      *The get_collection_file_ids method gets all previously used homework resources for a course and returns their ids
      *
-     * @param $courseid
+     * @param
      * @return int[]
      * @throws \dml_exception
      */
-    public static function get_collection_file_ids($courseid): array {
-        global $DB;
+    public static function get_collection_file_ids(): array {
+        global $DB, $COURSE;
 
-        $sql = "SELECT id FROM homework WHERE course = ".$courseid;
+        $sql = "SELECT id FROM homework WHERE course = ".$COURSE->id;
         $results = $DB->get_records_sql($sql);
 
 

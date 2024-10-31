@@ -54,15 +54,18 @@ class get_homework_chooser extends \external_api {
      * @return string[] - The html to be shown client-side
      */
     public static function execute($cmid) {
-        global $DB, $COURSE;
+        global $DB;
 
-        $existing_resources = collection_files_controller::get_collection_file_ids($COURSE->id);
+        $existing_resources = collection_files_controller::get_collection_file_ids();
 
         $choices = '';
-        foreach ($existing_resources as $resource) {
-            $name = $DB->get_record("SELECT description FROM homework_links, homework_literature WHERE id = ".$resource);
-            $choices .= '<option value="'.$name.'"></option>\n';
+        if ($existing_resources != null) {
+            foreach ($existing_resources as $resource) {
+                $name = $DB->get_record("SELECT description FROM homework_links, homework_literature WHERE id = ".$resource, [MUST_EXIST]);
+                $choices .= '<option value="'.$name.'"></option>\n';
+            }
         }
+
 
         // Custom HTML for the homework chooser modal.
         $html = '
