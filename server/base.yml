@@ -8,6 +8,7 @@ services:
       - db
     volumes:
       - "./moodle:/var/www/html"
+      - "./moodledata:/var/www/moodledata"
       - "${ASSETDIR}/web/apache2_faildumps.conf:/etc/apache2/conf-enabled/apache2_faildumps.conf"
     environment:
       MOODLE_DOCKER_RUNNING: 1
