@@ -4,12 +4,12 @@ unset($CFG);
 global $CFG;
 $CFG = new stdClass();
 
-$CFG->dbtype    = 'mariadb'; // getenv('MOODLE_DOCKER_DBTYPE')
+$CFG->dbtype    = 'mariadb'; // default: $CFG->dbtype = getenv('MOODLE_DOCKER_DBTYPE')
 $CFG->dblibrary = 'native';
 $CFG->dbhost    = 'db';
-$CFG->dbname    = 'moodle'; // getenv('MOODLE_DOCKER_DBNAME')
-$CFG->dbuser    = 'moodle'; // getenv('MOODLE_DOCKER_DBUSER')
-$CFG->dbpass    = 'root'; // getenv('MOODLE_DOCKER_DBPASS')
+$CFG->dbname    = 'moodle'; // default: $CFG->dbname = getenv('MOODLE_DOCKER_DBNAME')
+$CFG->dbuser    = 'moodle'; // default: $CFG->dbuser = getenv('MOODLE_DOCKER_DBUSER')
+$CFG->dbpass    = 'root'; // default: $CFG->dbpass = getenv('MOODLE_DOCKER_DBPASS')
 $CFG->prefix    = 'mdl_';
 $CFG->dboptions = ['dbcollation' => getenv('MOODLE_DOCKER_DBCOLLATION')];
 
@@ -51,18 +51,18 @@ if (strpos($_SERVER['HTTP_HOST'], '.gitpod.io') !== false) {
 $CFG->dataroot  = '/var/www/moodledata';
 $CFG->admin     = 'admin';
 $CFG->directorypermissions = 0777;
-$CFG->smtphosts = 'mailpit:1025';
-$CFG->noreplyaddress = 'noreply@example.com';
+// $CFG->smtphosts = 'mailpit:1025'; // Uncomment if needed
+// $CFG->noreplyaddress = 'noreply@example.com'; // Uncomment if needed
 
 // Debug options - possible to be controlled by flag in future..
-$CFG->debug = (E_ALL | E_STRICT); // DEBUG_DEVELOPER
-$CFG->debugdisplay = 1;
-$CFG->debugstringids = 1; // Add strings=1 to url to get string ids.
-$CFG->perfdebug = 15;
-$CFG->debugpageinfo = 1;
-$CFG->allowthemechangeonurl = 1;
-$CFG->passwordpolicy = 0;
-$CFG->cronclionly = 0;
+// $CFG->debug = (E_ALL | E_STRICT); // Uncomment if needed // DEBUG_DEVELOPER - makes Moodle very slow
+// $CFG->debugdisplay = 1; // Uncomment if needed
+// $CFG->debugstringids = 1; // Uncomment if needed // Add strings=1 to url to get string ids.
+// $CFG->perfdebug = 15; // Uncomment if needed
+// $CFG->debugpageinfo = 1; // Uncomment if needed
+// $CFG->allowthemechangeonurl = 1; // Uncomment if needed
+// $CFG->passwordpolicy = 0; // Uncomment if needed
+// $CFG->cronclionly = 0; // Uncomment if needed
 $CFG->pathtophp = '/usr/local/bin/php';
 
 $CFG->phpunit_dataroot  = '/var/www/phpunitdata';
