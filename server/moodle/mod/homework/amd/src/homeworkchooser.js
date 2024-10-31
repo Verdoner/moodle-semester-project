@@ -210,7 +210,7 @@ const handleFormSubmit = async (modal, cminstance) => {
                 console.log("Data saved successfully:", response);
                 dropZoneFiles = [];
                 uploadedFileIds = [];
-                modal.hide();
+                modal.destroy();
             },
             fail: function(error) {
                 console.error("Failed to save data:", error);
@@ -228,7 +228,7 @@ const handleFormSubmit = async (modal, cminstance) => {
             },
             done: function(response) {
                 console.log("Data saved successfully:", response);
-                modal.hide();
+                modal.destroy();
             },
             fail: function(error) {
                 console.error("Failed to save data:", error);
@@ -246,7 +246,7 @@ const handleFormSubmit = async (modal, cminstance) => {
             },
             done: function(response) {
                 console.log("Data saved successfully:", response);
-                modal.hide();
+                modal.destroy();
             },
             fail: function(error) {
                 console.error("Failed to save data:", error);
