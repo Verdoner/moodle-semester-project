@@ -6,6 +6,9 @@ import MyModal from 'mod_homework/modal_homework';
 import ModalEvents from 'core/modal_events';
 import Dropzone from 'core/dropzone';
 
+let dropZoneFiles = []; // Store files to upload later
+let uploadedFileIds = []; // Store file IDs after successful upload
+
 /**
  * Initializes the Homework Chooser Modal.
  *
@@ -38,7 +41,8 @@ export const init = async (cmid, title, cminstance) => {
                     const radioButtons = modal.getRoot().find('input[name="option"]');
                     const testTextarea = modal.getRoot().find('#page-range-input')[0];
                     const testLink = modal.getRoot().find('#linkDiv')[0];
-                    const dropzoneContainer = modal.getRoot().find('#dropzone-container')[0];
+                    const dropzonePdfContainer = modal.getRoot().find('#dropzone-pdf-container')[0];
+                    const dropzoneVideoContainer = modal.getRoot().find('#dropzone-video-container')[0];
 
                     // Attach event listeners for page input validation
                     startPageInput.addEventListener('input', validatePageRange);
@@ -49,7 +53,8 @@ export const init = async (cmid, title, cminstance) => {
                         radio.addEventListener('change', toggleInputs);
                     });
 
-                    initializeDropzone(dropzoneContainer);
+                    initializePDFDropzone(dropzonePdfContainer);
+                    initializeVideoDropzone(dropzoneVideoContainer)
 
                     // Function to validate page range
                     /**
@@ -78,9 +83,27 @@ export const init = async (cmid, title, cminstance) => {
                         if (document.getElementById("option1").checked) {
                             testTextarea.style.display = "block";
                             testLink.style.display = "none";
+                            dropzonePdfContainer.style.display = "block";
+                            dropzoneVideoContainer.style.display = "none";
+
+                            dropZoneFiles = [];
+                            uploadedFileIds = [];
                         } else if (document.getElementById("option2").checked) {
                             testTextarea.style.display = "none";
                             testLink.style.display = "block";
+                            dropzonePdfContainer.style.display = "none";
+                            dropzoneVideoContainer.style.display = "none";
+
+                            dropZoneFiles = [];
+                            uploadedFileIds = [];
+                        } else if (document.getElementById("option3").checked) {
+                            testTextarea.style.display = "none";
+                            testLink.style.display = "none";
+                            dropzonePdfContainer.style.display = "none";
+                            dropzoneVideoContainer.style.display = "block";
+
+                            dropZoneFiles = [];
+                            uploadedFileIds = [];
                         }
                     }
                 });
@@ -108,10 +131,7 @@ export const init = async (cmid, title, cminstance) => {
     });
 };
 
-let dropZoneFiles = []; // Store files to upload later
-let uploadedFileIds = []; // Store file IDs after successful upload
-
-const initializeDropzone = (container) => {
+const initializePDFDropzone = (container) => {
     const dropZone = new Dropzone(container, "application/pdf", (files) => {
         for (let file of files) {
             if (file.type === "application/pdf") {
@@ -122,7 +142,22 @@ const initializeDropzone = (container) => {
         }
     });
 
-    dropZone.setLabel("(Optional) Drop PDF files here");
+    dropZone.setLabel("Drop PDF files here (Optional)");
+    dropZone.init();
+};
+
+const initializeVideoDropzone = (container) => {
+    const dropZone = new Dropzone(container, "video/*", (files) => {
+        for (let file of files) {
+            if (file.type.startsWith("video/")) {
+                dropZoneFiles.push(file); // Store file for later upload
+            } else {
+                console.warn("Invalid file type:", file.type);
+            }
+        }
+    });
+
+    dropZone.setLabel("Drop video files here (Optional)");
     dropZone.init();
 };
 
@@ -132,7 +167,7 @@ const uploadDropzoneFiles = async () => {
             const formData = new FormData();
             formData.append("file", file);
 
-            const response = await fetch("/mod/homework/save_homework_file.php", {
+            const response = await fetch("/mod/homework/upload_file.php", {
                 method: "POST",
                 body: formData
             });
@@ -184,14 +219,30 @@ const handleFormSubmit = async (modal, cminstance) => {
     } else if (modal.getRoot().find('#option2').is(':checked')) {
         let link = modal.getRoot().find('#link').val();
 
-        await uploadDropzoneFiles();
-
         Ajax.call([{
             methodname: 'mod_homework_save_homework_link',
             args: {
                 inputfield: inputField,
                 link: link,
                 instance: cminstance
+            },
+            done: function(response) {
+                console.log("Data saved successfully:", response);
+                modal.hide();
+            },
+            fail: function(error) {
+                console.error("Failed to save data:", error);
+            }
+        }]);
+    } else if (modal.getRoot().find('#option3').is(':checked')) {
+        await uploadDropzoneFiles();
+
+        Ajax.call([{
+            methodname: 'mod_homework_save_homework_video',
+            args: {
+                inputfield: inputField,
+                instance: cminstance,
+                fileid: uploadedFileIds.length ? uploadedFileIds[0] : null
             },
             done: function(response) {
                 console.log("Data saved successfully:", response);

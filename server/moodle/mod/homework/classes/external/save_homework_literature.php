@@ -66,8 +66,6 @@ class save_homework_literature extends \external_api {
     public static function execute($inputfield, $startpage, $endpage, $instance, $fileid = null) {
         global $DB, $USER;
 
-        // Handle the input field value here.
-        // For example, save to a database.
         $record = new \stdClass();
         $filesrecord = new \stdClass();
 

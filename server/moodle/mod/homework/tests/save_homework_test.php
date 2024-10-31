@@ -53,8 +53,9 @@ final class save_homework_test extends advanced_testcase {
         $inputfield = 'Test Literature';
         $startpage = 1;
         $endpage = 10;
+        $instance = 1;
 
-        $result = \mod_homework\external\save_homework_literature::execute($inputfield, $startpage, $endpage);
+        $result = \mod_homework\external\save_homework_literature::execute($inputfield, $startpage, $endpage, $instance, null);
 
         // Assert that the status is 'success'.
         $this->assertEquals('success', $result['status']);
@@ -70,6 +71,7 @@ final class save_homework_test extends advanced_testcase {
         );
         $this->assertEquals($startpage, $record->startpage);
         $this->assertEquals($endpage, $record->endpage);
+        $this->assertEquals($instance, $record->homework_id);
     }
 
     /**
@@ -84,8 +86,9 @@ final class save_homework_test extends advanced_testcase {
         // Call the external class method.
         $inputfield = 'Test Link';
         $link = 'https://www.test.com';
+        $instance = 1;
 
-        $result = \mod_homework\external\save_homework_link::execute($inputfield, $link);
+        $result = \mod_homework\external\save_homework_link::execute($inputfield, $link, $instance);
 
         // Assert that the status is 'success'.
         $this->assertEquals('success', $result['status']);
@@ -100,5 +103,50 @@ final class save_homework_test extends advanced_testcase {
             MUST_EXIST
         );
         $this->assertEquals($link, $record->link);
+    }
+
+    /**
+     * Test saving a homework file.
+     * @runInSeparateProcess
+     * @throws dml_exception
+     * @covers :: \mod_homework\save_homework_file
+     */
+    public function test_file_upload(): void {
+        global $CFG, $USER;
+
+        // Create a test user.
+        $user = self::getDataGenerator()->create_user();
+
+        // Log in as the test user.
+        self::setUser($user);
+
+        // Mock Moodle's file storage system.
+        $mockfilestorage = $this->createMock(\file_storage::class);
+        $mockfile = $this->createMock(\stored_file::class);
+
+        // Mock context and methods.
+        $context = $this->createMock(\context_user::class);
+        $context->method('instance')->willReturn($context);
+
+        // Mock file options.
+        $_FILES['file'] = [
+            'name' => 'testfile.txt',
+            'tmp_name' => __DIR__ . '/assets/testfile.txt',
+        ];
+
+        // Mock file existence check and file creation.
+        $mockfilestorage->method('file_exists')->willReturn(false);
+        $mockfilestorage->method('create_file_from_pathname')->willReturn($mockfile);
+
+        // Mock file ID for response.
+        // $mockfile->method('get_id')->willReturn(12345);
+
+        // Include the script and capture output.
+        ob_start();
+        include(__DIR__ . '/../upload_file.php');
+        $output = ob_get_clean();
+
+        // Assert that the output contains a success message.
+        $this->assertStringContainsString('"status":"success","message":"File uploaded successfully"', $output);
     }
 }

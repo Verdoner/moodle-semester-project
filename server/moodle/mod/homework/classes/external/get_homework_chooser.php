@@ -66,7 +66,9 @@ class get_homework_chooser extends \external_api {
                     <input checked type="radio" id="option1" name="option" value="option1">
                     <label for="option1">Literature</label><br>
                     <input type="radio" id="option2" name="option" value="option2">
-                    <label for="option2">Link</label><br><br>
+                    <label for="option2">Link</label><br>
+                    <input type="radio" id="option3" name="option" value="option3">
+                    <label for="option3">Video</label><br><br>
                      <div id="page-range-input">
                         <label for="startPage">Page Range:</label><br>
                         <input type="number" id="startPage" name="startPage" min="1" placeholder="Start Page" style="width: 50px;">
@@ -78,9 +80,9 @@ class get_homework_chooser extends \external_api {
                         <label for="link">Link:</label><br>
                         <input name="link" id="link" type="url" placeholder="Enter URL">
                     </div>
-                    <div id="dropzone-container">
-                        <label for="dropzone">Upload File:</label><br>
-                        <div id="dropzone" class="dropzone"></div>
+                    <div id="dropzone-pdf-container">
+                    </div>
+                    <div id="dropzone-video-container" style="display:none;">
                     </div>
                 </form>
             </div>

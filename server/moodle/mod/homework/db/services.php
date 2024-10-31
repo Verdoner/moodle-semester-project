@@ -41,6 +41,14 @@ $functions = [
         'type'        => 'write',
         'ajax'        => true,
     ],
+    'mod_homework_save_homework_video' => [
+        'classname'   => 'mod_homework\external\save_homework_video',
+        'methodname'  => 'execute',
+        'classpath'   => 'mod/homework/classes/external/save_homework_video.php',
+        'description' => 'Saves the homework chooser video field value',
+        'type'        => 'write',
+        'ajax'        => true,
+    ],
     'mod_homework_get_homework_chooser' => [
         'classname'   => 'mod_homework\external\get_homework_chooser',
         'methodname'  => 'execute',
@@ -49,6 +57,16 @@ $functions = [
         'type'        => 'read',
         'ajax'        => true,
     ],
+    /*
+    'mod_homework_save_homework_file' => [
+        'classname'   => 'mod_homework\external\save_homework_file',
+        'methodname'  => 'execute',
+        'classpath'   => 'mod/homework/classes/external/save_homework_file.php',
+        'description' => 'Uploads a file to the homework file area',
+        'type'        => 'write',
+        'ajax'        => true,
+    ],
+    */
 ];
 
 $services = [
@@ -56,6 +74,7 @@ $services = [
         'functions' => [
             'mod_homework_save_homework_literature',
             'mod_homework_save_homework_link',
+            'mod_homework_save_homework_video',
             'mod_homework_get_homework_chooser',
         ],
         'restrictedusers' => 0,

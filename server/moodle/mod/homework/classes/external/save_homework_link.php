@@ -47,6 +47,7 @@ class save_homework_link extends \external_api {
         return new external_function_parameters([
             'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
             'link' => new external_value(PARAM_TEXT, 'link field value'),
+            'instance' => new external_value(PARAM_INT, 'Instance field value'),
         ]);
     }
 
@@ -54,10 +55,11 @@ class save_homework_link extends \external_api {
      * The main function to handle the request.
      * @param $inputfield
      * @param $link
+     * @param $instance
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($inputfield, $link) {
+    public static function execute($inputfield, $link, $instance) {
         global $DB, $USER;
 
         // Handle the input field value here.
@@ -65,12 +67,18 @@ class save_homework_link extends \external_api {
         $record = new \stdClass();
         $record->description = $inputfield;
         $record->link = $link;
+        $record->homework_id = $instance;
         $record->usermodified = $USER->id;
         $record->timecreated = time();
         $record->timemodified = time();
 
         // Save to database.
-        $DB->insert_record('homework_links', $record);
+        try {
+            $DB->insert_record('homework_links', $record);
+        } catch (\dml_exception $e) {
+            debugging("Error inserting into homework_links: " . $e->getMessage(), DEBUG_DEVELOPER);
+            return ['status' => 'error', 'message' => 'Failed to save homework record'];
+        }
 
         // Return a success response.
         return ['status' => 'success', 'message' => 'Data saved successfully'];
