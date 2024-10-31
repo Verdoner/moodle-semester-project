@@ -10,9 +10,6 @@ global $CFG;
 require_once($CFG->libdir . '/externallib.php');
 
 
-/**
- *
- */
 class collection_files_controller extends \external_api {
 
     /**

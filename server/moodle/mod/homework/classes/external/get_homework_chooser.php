@@ -54,7 +54,15 @@ class get_homework_chooser extends \external_api {
      * @return string[] - The html to be shown client-side
      */
     public static function execute($cmid) {
-        global $DB;
+        global $DB, $COURSE;
+
+        $existing_resources = collection_files_controller::get_collection_file_ids($COURSE->id);
+
+        $choices = '';
+        foreach ($existing_resources as $resource) {
+            $name = $DB->get_record("SELECT description FROM homework_links, homework_literature WHERE id = ".$resource);
+            $choices .= '<option value="'.$name.'"></option>\n';
+        }
 
         // Custom HTML for the homework chooser modal.
         $html = '
@@ -67,7 +75,9 @@ class get_homework_chooser extends \external_api {
                     <label for="option1">Literature</label><br>
                     <input type="radio" id="option2" name="option" value="option2">
                     <label for="option2">Link</label><br><br>
-                     <div id="page-range-input">
+                    <input type="radio" id="option3" name="option" value="option3">
+                    <label for="option3">Existing Resource</label><br><br>
+                    <div id="page-range-input">
                         <label for="startPage">Page Range:</label><br>
                         <input type="number" id="startPage" name="startPage" min="1" placeholder="Start Page" style="width: 50px;">
                         <span>-</span>
@@ -77,6 +87,11 @@ class get_homework_chooser extends \external_api {
                     <div id="linkDiv" style="display:none">
                         <label for="link">Link:</label><br>
                         <input name="link" id="link" type="url" placeholder="Enter URL">
+                    </div>
+                    <div id="ExiResDiv" style="display:none">
+                        <label for="existingresource">Existing Resource:</label><br>
+                        <select name="existingresource" id="existingresource">
+                            '.$choices.'
                     </div>
                 </form>
             </div>
