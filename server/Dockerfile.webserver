@@ -22,14 +22,5 @@ RUN if ! command -v watchman > /dev/null; then \
         apt-get install -y watchman; \
     fi
 
-# Configure Composer for Moodle coding standards only if configuration not already set
-RUN if ! composer global show | grep -q "moodlehq/moodle-cs"; then \
-        composer global config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true && \
-        composer global require "squizlabs/php_codesniffer=*" && \
-        composer global require "moodlehq/moodle-cs" && \
-        composer global show -l && \
-        composer global update; \
-    fi
-
 # Add Composer's global vendor bin directory to PATH
 ENV PATH="/root/.composer/vendor/bin:${PATH}"
