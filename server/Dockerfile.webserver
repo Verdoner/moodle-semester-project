@@ -1,18 +1,33 @@
 FROM moodlehq/moodle-php-apache:8.1
 
-# Install dependencies, Node.js, Grunt CLI, and Watchman
+# Update package list and install common dependencies
 RUN apt-get update && \
-    apt-get install -y curl git unzip && \
-    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
-    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y nodejs && \
-    npm install -g grunt-cli && \
-    apt-get install -y watchman
+    apt-get install -y curl git unzip
 
-# Configure Composer to allow plugins and install Moodle Coding Standards
-RUN composer global config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true && \
-    composer global require "squizlabs/php_codesniffer=*" && \
-    composer global require "moodlehq/moodle-cs"
+# Install Composer if not already installed
+RUN if ! command -v composer > /dev/null; then \
+        curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer; \
+    fi
+
+# Install Node.js and Grunt CLI if not already installed
+RUN if ! command -v node > /dev/null; then \
+        curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt-get install -y nodejs; \
+    fi && \
+    if ! command -v grunt > /dev/null; then \
+        npm install -g grunt-cli; \
+    fi
+
+# Install Watchman if not already installed
+RUN if ! command -v watchman > /dev/null; then \
+        apt-get install -y watchman; \
+    fi
+
+# Configure Composer for Moodle coding standards only if configuration not already set
+RUN if ! composer global show | grep -q "moodlehq/moodle-cs"; then \
+        composer global config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true && \
+        composer global require "squizlabs/php_codesniffer=*" && \
+        composer global require "moodlehq/moodle-cs"; \
+    fi
 
 # Add Composer's global vendor bin directory to PATH
 ENV PATH="/root/.composer/vendor/bin:${PATH}"
