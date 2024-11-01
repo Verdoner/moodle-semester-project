@@ -1,3 +1,4 @@
 .DS_Store
 /server/local.yml
 /server/moodle/
+/server/moodledata/
