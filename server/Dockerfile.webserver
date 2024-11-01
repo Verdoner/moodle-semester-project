@@ -26,7 +26,9 @@ RUN if ! command -v watchman > /dev/null; then \
 RUN if ! composer global show | grep -q "moodlehq/moodle-cs"; then \
         composer global config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true && \
         composer global require "squizlabs/php_codesniffer=*" && \
-        composer global require "moodlehq/moodle-cs"; \
+        composer global require "moodlehq/moodle-cs" && \
+        composer global show -l && \
+        composer global update; \
     fi
 
 # Add Composer's global vendor bin directory to PATH

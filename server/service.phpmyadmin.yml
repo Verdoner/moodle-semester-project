@@ -3,7 +3,7 @@ services:
     image: phpmyadmin/phpmyadmin
     environment:
       PMA_HOST: db
-      PMA_USER: moodle
+      PMA_USER: root
       PMA_PASSWORD: root 
     ports:
       - "8080:80"

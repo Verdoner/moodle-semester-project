@@ -65,14 +65,30 @@ $CFG->directorypermissions = 0777;
 // $CFG->cronclionly = 0; // Uncomment if needed
 $CFG->pathtophp = '/usr/local/bin/php';
 
-$CFG->phpunit_dataroot  = '/var/www/phpunitdata';
+$CFG->phpunit_dbtype = 'mariadb'; // default: $CFG->phpunit_dbtype = getenv('MOODLE_DOCKER_DBTYPE')
+$CFG->phpunit_dblibrary = 'native';
+$CFG->phpunit_dbhost = 'db';
+$CFG->phpunit_dbname = 'moodle'; // default: $CFG->phpunit_dbname = getenv('MOODLE_DOCKER_DBNAME')
+$CFG->phpunit_dbuser = 'root'; // default: $CFG->phpunit_dbuser = getenv('MOODLE_DOCKER_DBUSER')
+$CFG->phpunit_dbpass = 'root'; // default: $CFG->phpunit_dbpass = getenv('MOODLE_DOCKER_DBPASS')
+$CFG->phpunit_dbname = 'phpu_moodle';
+$CFG->phpunit_dboptions = ['dbcollation' => getenv('MOODLE_DOCKER_DBCOLLATION')];
 $CFG->phpunit_prefix = 'phpu_';
+$CFG->phpunit_dataroot  = '/var/www/phpunitdata';
 define('TEST_EXTERNAL_FILES_HTTP_URL', 'http://exttests:9000');
 define('TEST_EXTERNAL_FILES_HTTPS_URL', 'http://exttests:9000');
 
+$CFG->behat_dbtype = 'mariadb'; // default: $CFG->behat_dbtype = getenv('MOODLE_DOCKER_DBTYPE')
+$CFG->behat_dblibrary = 'native';
+$CFG->behat_dbhost = 'db';
+$CFG->behat_dbname = 'moodle'; // default: $CFG->behat_dbname = getenv('MOODLE_DOCKER_DBNAME')
+$CFG->behat_dbuser = 'root'; // default: $CFG->behat_dbuser = getenv('MOODLE_DOCKER_DBUSER')
+$CFG->behat_dbpass = 'root'; // default: $CFG->behat_dbpass = getenv('MOODLE_DOCKER_DBPASS')
+$CFG->behat_dbname = 'bht_moodle';
+$CFG->behat_dboptions = ['dbcollation' => getenv('MOODLE_DOCKER_DBCOLLATION')];
+$CFG->behat_prefix = 'bht_';
 $CFG->behat_wwwroot   = 'http://webserver';
 $CFG->behat_dataroot  = '/var/www/behatdata';
-$CFG->behat_prefix = 'bht_';
 $CFG->behat_profiles = array(
     'default' => array(
         'browser' => getenv('MOODLE_DOCKER_BROWSER'),

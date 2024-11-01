@@ -14,9 +14,14 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+-- Dumping database structure for bht_moodle
+CREATE DATABASE IF NOT EXISTS `bht_moodle` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
+
+-- Dumping database structure for phpu_moodle
+CREATE DATABASE IF NOT EXISTS `phpu_moodle` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
 
 -- Dumping database structure for moodle
-CREATE DATABASE IF NOT EXISTS `moodle` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
+CREATE DATABASE IF NOT EXISTS `moodle` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
 USE `moodle`;
 
 -- Dumping structure for table moodle.mdl_adminpresets
