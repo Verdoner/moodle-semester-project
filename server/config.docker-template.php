@@ -8,7 +8,7 @@ $CFG->dbtype    = 'mariadb'; // default: $CFG->dbtype = getenv('MOODLE_DOCKER_DB
 $CFG->dblibrary = 'native';
 $CFG->dbhost    = 'db';
 $CFG->dbname    = 'moodle'; // default: $CFG->dbname = getenv('MOODLE_DOCKER_DBNAME')
-$CFG->dbuser    = 'moodle'; // default: $CFG->dbuser = getenv('MOODLE_DOCKER_DBUSER')
+$CFG->dbuser    = 'root'; // default: $CFG->dbuser = getenv('MOODLE_DOCKER_DBUSER')
 $CFG->dbpass    = 'root'; // default: $CFG->dbpass = getenv('MOODLE_DOCKER_DBPASS')
 $CFG->prefix    = 'mdl_';
 $CFG->dboptions = ['dbcollation' => getenv('MOODLE_DOCKER_DBCOLLATION')];
