@@ -250,4 +250,4 @@ jobs:
         run: |
           cd server/moodle
           
-          vendor/bin/behat --config `realpath ../moodledata/bht_moodledata/behatrun/behat/behat.yml` --profile=headlessfirefox --tags=@mod_url
+          vendor/bin/behat --config `realpath ../moodledata/bht_moodledata/behatrun/behat/behat.yml` --profile=headlessfirefox --tags=@mod_homework
