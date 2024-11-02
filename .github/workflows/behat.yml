@@ -5,7 +5,7 @@ on:
     branches: [ "32-codebase-add-behat-to-github-actions" ]
 
 jobs:
-  build-test:
+  homework-plugin-behat:
     runs-on: ubuntu-latest
 
     steps:
@@ -250,4 +250,4 @@ jobs:
         run: |
           cd server/moodle
           
-          vendor/bin/behat --config `realpath ../moodledata/bht_moodledata/behatrun/behat/behat.yml` --profile=headlessfirefox --tags=@mod_quiz
+          vendor/bin/behat --config `realpath ../moodledata/bht_moodledata/behatrun/behat/behat.yml` --profile=headlessfirefox --tags=@mod_url
