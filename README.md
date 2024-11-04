@@ -21,7 +21,7 @@ Before setting up the Moodle Docker environment, ensure the following prerequisi
 ### Without the Default Moodle Folder:
 This command clones only the repository without the default Moodle folder submodule.
 
-On Unix, run:
+On Unix (Linux & MacOS), run:
 ```bash
 ( rm -rf .* || true ) && git clone -b Docker-Setup https://github.com/AAU-P5-Moodle/moodle-2.git . && ( rm -rf .git || true )
 ```
@@ -32,7 +32,7 @@ del /f /q *.* && for /d %i in (*) do rmdir /s /q "%i" && git clone -b Docker-Set
 ### With the Default Moodle Folder:
 This command clones the repository along with the default Moodle folder submodule.
 
-On Unix, run:
+On Unix (Linux & MacOS), run:
 ```bash
 ( rm -rf .* || true ) && git clone -b Docker-Setup --recursive https://github.com/AAU-P5-Moodle/moodle-2.git . && ( rm -rf .git || true )
 ```
@@ -42,7 +42,7 @@ del /f /q *.* && for /d %i in (*) do rmdir /s /q "%i" &&  git clone -b Docker-Se
 ```
 
 ## Set Up Sparse Checkout
-Inside the newly created folder, run:
+Now run:
 ```bash
 git init && git config core.sparseCheckout true && git remote add -f origin https://github.com/AAU-P5-Moodle/moodle-2.git && echo server/moodle > .git/info/sparse-checkout
 ```
@@ -53,7 +53,7 @@ git checkout [branchname] # e.g., main
 ## Copy Docker Template Files
 Copy the template files for Docker into the Moodle folder:
 
-On Unix, run:
+On Unix (Linux & MacOS), run:
 ```bash
 cp server/composer.docker-template.json server/moodle/composer.json && cp server/config.docker-template.php server/moodle/config.php && cp server/package.docker-template.json server/moodle/package.json
 ```
@@ -63,7 +63,7 @@ copy server\composer.docker-template.json server\moodle\composer.json && copy se
 ```
 
 ## Start Moodle
-On Unix, run: `sh start_moodle_unix.sh`
+On Unix (Linux & MacOS), run: `sh start_moodle_unix.sh`
 
 On Windows, run: `start_moodle_windows.bat`
 
@@ -72,7 +72,7 @@ On Windows, run: `start_moodle_windows.bat`
 ## Access Docker Terminal
 You can open a terminal inside Docker with:
 
-On Unix, run: `sh bash_moodle_unix.sh`
+On Unix (Linux & MacOS), run: `sh bash_moodle_unix.sh`
 
 On Windows, run: `bash_moodle_windows.bat`
 
