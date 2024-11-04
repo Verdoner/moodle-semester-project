@@ -27,7 +27,7 @@ On Unix, run:
 ```
 On Windows, run:
 ```bash
-( rmdir /S /Q .* || true ) && git clone -b Docker-Setup https://github.com/AAU-P5-Moodle/moodle-2.git . && ( rmdir /S /Q .git || true )
+rmdir /S /Q .* && git clone -b Docker-Setup https://github.com/AAU-P5-Moodle/moodle-2.git . && rmdir /S /Q .git
 ```
 ### With the Default Moodle Folder:
 This command clones the repository along with the default Moodle folder submodule.
@@ -38,7 +38,7 @@ On Unix, run:
 ```
 On Windows, run:
 ```bash
-( rmdir /S /Q .* || true ) && git clone -b Docker-Setup --recursive https://github.com/AAU-P5-Moodle/moodle-2.git . && ( rmdir /S /Q .git || true )
+rmdir /S /Q .* && git clone -b Docker-Setup --recursive https://github.com/AAU-P5-Moodle/moodle-2.git . && rmdir /S /Q .git
 ```
 
 ## Set Up Sparse Checkout
