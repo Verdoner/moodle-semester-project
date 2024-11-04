@@ -53,8 +53,9 @@ final class save_homework_test extends advanced_testcase {
         $inputfield = 'Test Literature';
         $startpage = 1;
         $endpage = 10;
+        $instance = 1;
 
-        $result = \mod_homework\external\save_homework_literature::execute($inputfield, $startpage, $endpage);
+        $result = \mod_homework\external\save_homework_literature::execute($inputfield, $startpage, $endpage, $instance);
 
         // Assert that the status is 'success'.
         $this->assertEquals('success', $result['status']);
@@ -84,8 +85,9 @@ final class save_homework_test extends advanced_testcase {
         // Call the external class method.
         $inputfield = 'Test Link';
         $link = 'https://www.test.com';
+        $instance = 1;
 
-        $result = \mod_homework\external\save_homework_link::execute($inputfield, $link);
+        $result = \mod_homework\external\save_homework_link::execute($inputfield, $link, $instance);
 
         // Assert that the status is 'success'.
         $this->assertEquals('success', $result['status']);

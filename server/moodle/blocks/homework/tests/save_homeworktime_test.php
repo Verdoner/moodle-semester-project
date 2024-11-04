@@ -30,6 +30,7 @@ final class save_homeworktime_test extends advanced_testcase {
      * Test the save_homeworktime execute function
      * @throws \dml_exception
      * @covers :: \block_homework\external\save_homeworktime
+     * @runInSeparateProcess
      */
     public function test_save_timeindb(): void {
         global $DB;
