@@ -76,6 +76,9 @@ On Unix (Linux & MacOS), run: `sh bash_moodle_unix.sh`
 
 On Windows, run: `bash_moodle_windows.bat`
 
+## Exit Docker Terminal
+You can exit the Docker terminal with: `exit`
+
 ## Initialize Testing and Tools
 Once inside the Docker terminal, initialize the following tools:
 ### PHPUnit
