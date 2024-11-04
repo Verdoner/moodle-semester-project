@@ -45,7 +45,8 @@ del /f /q *.* && for /d %i in (*) do rmdir /s /q "%i" &&  git clone -b Docker-Se
 Inside the newly created folder, run:
 ```bash
 git init && git config core.sparseCheckout true && git remote add -f origin https://github.com/AAU-P5-Moodle/moodle-2.git && echo server/moodle > .git/info/sparse-checkout
-
+```
+```bash
 git checkout [branchname] # e.g., main
 ```
 
