@@ -20,13 +20,25 @@ Before setting up the Moodle Docker environment, ensure the following prerequisi
 
 ### Without the Default Moodle Folder:
 This command clones only the repository without the default Moodle folder submodule.
+
+On Unix, run:
 ```bash
-( rm -rf .* || rmdir /S /Q .* || true ) && git clone -b Docker-Setup https://github.com/AAU-P5-Moodle/moodle-2.git . && ( rm -rf .git || rmdir /S /Q .git  || true )
+( rm -rf .* || true ) && git clone -b Docker-Setup https://github.com/AAU-P5-Moodle/moodle-2.git . && ( rm -rf .git || true )
+```
+On Windows, run:
+```bash
+( rmdir /S /Q .* || true ) && git clone -b Docker-Setup https://github.com/AAU-P5-Moodle/moodle-2.git . && ( rmdir /S /Q .git || true )
 ```
 ### With the Default Moodle Folder:
 This command clones the repository along with the default Moodle folder submodule.
+
+On Unix, run:
 ```bash
-( rm -rf .* || rmdir /S /Q .* || true ) && git clone -b Docker-Setup --recursive https://github.com/AAU-P5-Moodle/moodle-2.git . && ( rm -rf .git || rmdir /S /Q .git || true )
+( rm -rf .* || true ) && git clone -b Docker-Setup --recursive https://github.com/AAU-P5-Moodle/moodle-2.git . && ( rm -rf .git || true )
+```
+On Windows, run:
+```bash
+( rmdir /S /Q .* || true ) && git clone -b Docker-Setup --recursive https://github.com/AAU-P5-Moodle/moodle-2.git . && ( rmdir /S /Q .git || true )
 ```
 
 ## Set Up Sparse Checkout
@@ -39,8 +51,14 @@ git checkout [branchname] # e.g., main
 
 ## Copy Docker Template Files
 Copy the template files for Docker into the Moodle folder:
+
+On Unix, run:
 ```bash
-( cp server/composer.docker-template.json server/moodle/composer.json || copy server\composer.docker-template.json server\moodle\composer.json ) && ( cp server/config.docker-template.php server/moodle/config.php || copy server\config.docker-template.php server\moodle\config.php ) && ( cp server/package.docker-template.json server/moodle/package.json || copy server\package.docker-template.json server\moodle\package.json )
+cp server/composer.docker-template.json server/moodle/composer.json && cp server/config.docker-template.php server/moodle/config.php && cp server/package.docker-template.json server/moodle/package.json
+```
+On Windows, run:
+```bash
+copy server\composer.docker-template.json server\moodle\composer.json && copy server\config.docker-template.php server\moodle\config.php && copy server\package.docker-template.json server\moodle\package.json
 ```
 
 ## Start Moodle
