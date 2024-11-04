@@ -14,23 +14,22 @@ import ModalEvents from 'core/modal_events';
 
 
 /**
- *
- * @param {int} homework_id
- * @param title
- * @param data
- * @returns {Promise<void>}
+ * Fetches and initializes the completion modal for the homework module that was clicked on.
+ * @param title Title of modal to be displayed on click
+ * @param data Data retrieved from the database for the homework module and its materials
+ * @param user_id ID of currently logged in user.
+ * @param completions The completions of the currently logged in user.
+ * @returns {Promise<void>} A promise that, when fulfilled, opens the modal
  */
-export const init = async(homework_id, title, data, user_id, completions) => {
+export const init = async(title, data, user_id, completions) => {
     let homeworkid;
     let literaturelist = [];
     let linkslist = [];
     let videoslist =[];
-    console.log(data);
-    console.log("UserID: " + user_id);
-    console.log(completions);
 
     const buttons = document.getElementsByClassName("timebutton");
 
+    //For each button, retrieve the ID, as it points to the homework material
     for(let i = 0; i < buttons.length; i++) {
         (function(index) {
             buttons[index].addEventListener("click", function(event) {
@@ -38,6 +37,7 @@ export const init = async(homework_id, title, data, user_id, completions) => {
                 literaturelist = [];
                 linkslist = [];
                 videoslist = [];
+                // Finding the ID of the homework module that matches the button ID.
                 for (let item of data) {
                     if(!(item.hasOwnProperty('id'))){
                         throw new Error("missing id in homework")
@@ -49,6 +49,7 @@ export const init = async(homework_id, title, data, user_id, completions) => {
                         if(!(item.hasOwnProperty('literature'))) {
                             throw new Error("missing id in homework")
                         }
+                        // For each literature item, push it to the literature list if it is not in completions
                         for (let literature of Object.values(item.literature)) {
                             let foundLiterature =  Object.values(completions).some(entry => entry.literature_id === literature.id);
                             if (!foundLiterature) {
@@ -58,6 +59,7 @@ export const init = async(homework_id, title, data, user_id, completions) => {
                         if(!(item.hasOwnProperty('links'))) {
                             throw new Error("missing id in homework")
                         }
+                    // For each link item, push it to the link list if it is not in completions
                         for (let links of Object.values(item.links)) {
                         let foundLinks =  Object.values(completions).some(entry => entry.link_id === links.id);
                         if (!foundLinks) {
@@ -67,6 +69,7 @@ export const init = async(homework_id, title, data, user_id, completions) => {
                         if(!item.hasOwnProperty('videos')) {
                             throw new Error("missing id in homework")
                         }
+                    // For each video item, push it to the video list if it is not in completions
                     for (let videos of Object.values(item.videos)) {
                         let foundVideos =  Object.values(completions).some(entry => entry.video_id === videos.id);
                         if (!foundVideos) {
@@ -80,7 +83,7 @@ export const init = async(homework_id, title, data, user_id, completions) => {
         })(i);
     }
 
-
+    // Create the modal using block_homework_get_infohomework_modal
     $(document).ready(function() {
         $('.timebutton').on('click', () => {
             Ajax.call([{
@@ -132,7 +135,11 @@ export const init = async(homework_id, title, data, user_id, completions) => {
     });
 };
 
-
+/**
+ * Handle clicking the submit button of the form and updating the database with completion and times
+ * @param user_id ID of currently logged in user
+ * @param modal The modal that is being submitted
+ */
 const handleFormSubmit = (user_id, modal) => {
     let literatureInputFields = document.querySelectorAll('.homework-time-literature');
     let linksInputFields = document.querySelectorAll('.homework-time-links');
@@ -140,6 +147,7 @@ const handleFormSubmit = (user_id, modal) => {
     let timeData1 = [];
     let timeData2 = [];
     let timeData3 = [];
+    // Finds the data of all input fields, both literature, link and video, and adds the ID and time to an array.
     for (let inputField of literatureInputFields) {
         if(inputField.value !== "") {
             timeData1.push({
@@ -164,14 +172,14 @@ const handleFormSubmit = (user_id, modal) => {
             })
         }
     }
-    console.log(timeData1);
-    console.log(timeData2);
-    console.log(timeData3);
 
+    // If no data has been filled, do nothing.
     if(!timeData1.length && !timeData2.length && !timeData3.length){
         modal.destroy();
         return;
     }
+
+    // If data has been filled, call block_homework_save_homeworktime with the user ID and data
     Ajax.call([{
         methodname: 'block_homework_save_homeworktime',  // Your PHP function that will handle the data
         args: {

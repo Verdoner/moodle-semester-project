@@ -26,6 +26,10 @@ use external_multiple_structure;
 use external_value;
 use external_single_structure;
 class save_homeworktime extends external_api {
+    /**
+     * Use the official Moodle execute_parameters syntax to set up the parameters as a user id and 3 arrays of ID and time.
+     * @return external_function_parameters Returns the parameters with the correct strucutre.
+     */
     public static function execute_parameters() {
         return new external_function_parameters([
             'user' => new external_value(PARAM_INT, 'user id'),
@@ -45,10 +49,19 @@ class save_homeworktime extends external_api {
         ]);
     }
 
+    /**
+     * @param $user ID of currently logged in user.
+     * @param $timecompletedliterature Array of objects containing an ID and a time.
+     * @param $timecompletedlinks Array of objects containing an ID and a time.
+     * @param $timecompletedvideos Array of objects containing an ID and a time.
+     * @return string[] Returns a success message if successful
+     * @throws \dml_exception On error, throws a dml exception as per Moodle standards
+     */
     public static function execute($user, $timecompletedliterature, $timecompletedlinks, $timecompletedvideos) {
         global $DB;
         // Handle the input field value here.
         // For example, save to a database.
+        // For each completed literature material, add the time taken and ID to a new completion.
         foreach ($timecompletedliterature as $currtimecompletedliterature) {
             $record = new \stdClass();
             $record->user_id = $user;
@@ -57,6 +70,7 @@ class save_homeworktime extends external_api {
             $DB->insert_record('completions', $record);
         }
 
+        // For each completed link material, add the time taken and ID to a new completion.
         foreach ($timecompletedlinks as $timecompletedlink) {
             $record = new \stdClass();
             $record->user_id = $user;
@@ -65,6 +79,7 @@ class save_homeworktime extends external_api {
             $DB->insert_record('completions', $record);
         }
 
+        // For each completed video material, add the time taken and ID to a new completion.
         foreach ($timecompletedvideos as $timecompletedvideo) {
             $record = new \stdClass();
             $record->user_id = $user;

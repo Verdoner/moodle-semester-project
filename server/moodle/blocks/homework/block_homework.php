@@ -53,6 +53,10 @@ class block_homework extends block_base {
             $homeworks = $this->filter_homework_content($PAGE->url, $homeworks);
         }
 
+        // Retrieving all of the user's completions.
+        $homeworkcompletionrecords = $DB->get_records('completions', ['user_id' => $USER->id]);
+
+        // Adding the details of each homework module to an associative array that will be pushed to the data array.
         foreach ($homeworks as $homework) {
             $tmp = [];
             $tmp['id'] = $homework->id;
@@ -62,11 +66,11 @@ class block_homework extends block_base {
             $tmp['courseTitle'] = $DB->get_field('course', 'fullname', ['id' => $homework->course]);
 
 
+            // Retrieving the records of all material of the current homework module.
             $literaturerecords = $DB->get_records('homework_literature', ['homework_id' => $homework->id]);
-
             $linkrecords = $DB->get_records('homework_links', ['homework_id' => $homework->id]);
-
             $videorecords = $DB->get_records('homework_video', ['homework_id' => $homework->id]);
+
 
 
             $files = [];
@@ -124,9 +128,8 @@ class block_homework extends block_base {
         $this->content->text = $OUTPUT->render_from_template('block_homework/data', ['data' => $data]);
 
         // Include JavaScript functionality for scrolling behavior in the block
-        $homeworkcompletionrecords = $DB->get_records('completions', ['user_id' => $USER->id]);
         $PAGE->requires->js_call_amd('block_homework/scroll', 'init');
-        $PAGE->requires->js_call_amd('block_homework/clickInfo', 'init', [$value => 1, "homework", $data, $USER->id,$homeworkcompletionrecords]);
+        $PAGE->requires->js_call_amd('block_homework/clickInfo', 'init', ["homework", $data, $USER->id,$homeworkcompletionrecords]);
         return $this->content;
     }
 
