@@ -138,9 +138,6 @@ final class save_homework_test extends advanced_testcase {
         $mockfilestorage->method('file_exists')->willReturn(false);
         $mockfilestorage->method('create_file_from_pathname')->willReturn($mockfile);
 
-        // Mock file ID for response.
-        // $mockfile->method('get_id')->willReturn(12345);
-
         // Include the script and capture output.
         ob_start();
         include(__DIR__ . '/../upload_file.php');

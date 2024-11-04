@@ -57,16 +57,6 @@ $functions = [
         'type'        => 'read',
         'ajax'        => true,
     ],
-    /*
-    'mod_homework_save_homework_file' => [
-        'classname'   => 'mod_homework\external\save_homework_file',
-        'methodname'  => 'execute',
-        'classpath'   => 'mod/homework/classes/external/save_homework_file.php',
-        'description' => 'Uploads a file to the homework file area',
-        'type'        => 'write',
-        'ajax'        => true,
-    ],
-    */
 ];
 
 $services = [
