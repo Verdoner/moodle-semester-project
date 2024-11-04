@@ -30,7 +30,10 @@ use core\exception\coding_exception;
 use DOMDocument;
 
 /**
- *
+ * Test for modal rendering.
+ * @copyright group 1
+ * @package block_homework
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class block_homeworkinfomodal_test extends advanced_testcase {
     /**

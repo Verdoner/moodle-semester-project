@@ -19,12 +19,19 @@ namespace block_homework;
 use advanced_testcase;
 use block_homework\external\save_homeworktime;
 
+/**
+ * Test for the external function saving time taken for homework
+ * @copyright group 1
+ * @package block_homework
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class save_homeworktime_test extends advanced_testcase {
     /**
      * Test the save_homeworktime execute function
-     * @throws \coding_exception
+     * @throws \dml_exception
+     * @covers :: \block_homework\external\save_homeworktime
      */
-    public function test_save_timeindb() {
+    public function test_save_timeindb(): void {
         global $DB;
 
         // Reset the database after each test.
@@ -92,8 +99,10 @@ final class save_homeworktime_test extends advanced_testcase {
      *
      * @param string $table The database table name.
      * @param array $conditions Array of conditions to match.
+     * @throws \dml_exception
      */
-    private function assertrecordexists(string $table, array $conditions) {
+    private function assertrecordexists(string $table, array $conditions): void
+    {
         global $DB;
         $exists = $DB->record_exists($table, $conditions);
         $this->assertTrue($exists, 'Record does not exist in ' . $table . ' table for conditions: ' . json_encode($conditions));
