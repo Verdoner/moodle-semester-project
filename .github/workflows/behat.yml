@@ -248,8 +248,16 @@ jobs:
           composer install
           php admin/tool/behat/cli/init.php
           
-      - name: Run Behat tests
+      - name: Run Behat tests on mod_homework
+        if: always()
         run: |
           cd server/moodle
           
           vendor/bin/behat --config `realpath ../moodledata/bht_moodledata/behatrun/behat/behat.yml` --profile=headlessfirefox --tags=@mod_homework
+
+      - name: Run Behat tests on block_homework
+        if: always()
+        run: |
+          cd server/moodle
+          
+          vendor/bin/behat --config `realpath ../moodledata/bht_moodledata/behatrun/behat/behat.yml` --profile=headlessfirefox --tags=@block_homework
