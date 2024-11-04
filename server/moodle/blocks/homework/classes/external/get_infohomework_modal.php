@@ -26,6 +26,12 @@ use external_multiple_structure;
 use external_value;
 use external_single_structure;
 
+/**
+ * The external function for requesting the modal for plugin.
+ * @copyright group 1
+ * @package block_homework
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class get_infohomework_modal extends external_api {
     /**
      * Returns the parameters for the execute function.

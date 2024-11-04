@@ -18,13 +18,22 @@ namespace block_homework\external;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-// require_once("$CFG->libdir/externallib.php");
+// Comment out line below for test if phpunit does not respond to putting run in separate process.
+require_once("$CFG->libdir/externallib.php");
+
 
 use core_external\external_api;
 use external_function_parameters;
 use external_multiple_structure;
 use external_value;
 use external_single_structure;
+
+/**
+ * The class describing the external function, its parameters, and also its return value
+ * @copyright group 1
+ * @package block_homework
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class save_homeworktime extends external_api {
     /**
      * Use the official Moodle execute_parameters syntax to set up the parameters as a user id and 3 arrays of ID and time.
@@ -50,6 +59,7 @@ class save_homeworktime extends external_api {
     }
 
     /**
+     * The external function to save the time taken for homework data
      * @param $user ID of currently logged in user.
      * @param $timecompletedliterature Array of objects containing an ID and a time.
      * @param $timecompletedlinks Array of objects containing an ID and a time.
@@ -92,6 +102,10 @@ class save_homeworktime extends external_api {
         return ['status' => 'success', 'message' => 'Data saved successfully'];
     }
 
+    /**
+     * The method describing the return value
+     * @return external_single_structure
+     */
     public static function execute_returns() {
         return new external_single_structure([
             'status' => new external_value(PARAM_TEXT, 'Status of the request'),
