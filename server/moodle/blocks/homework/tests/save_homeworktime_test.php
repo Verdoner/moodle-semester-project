@@ -101,8 +101,7 @@ final class save_homeworktime_test extends advanced_testcase {
      * @param array $conditions Array of conditions to match.
      * @throws \dml_exception
      */
-    private function assertrecordexists(string $table, array $conditions): void
-    {
+    private function assertrecordexists(string $table, array $conditions): void {
         global $DB;
         $exists = $DB->record_exists($table, $conditions);
         $this->assertTrue($exists, 'Record does not exist in ' . $table . ' table for conditions: ' . json_encode($conditions));
