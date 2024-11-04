@@ -18,18 +18,14 @@ namespace block_homework\external;
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once("$CFG->libdir/externallib.php");
+// require_once("$CFG->libdir/externallib.php");
 
 use core_external\external_api;
 use external_function_parameters;
 use external_multiple_structure;
 use external_value;
 use external_single_structure;
-use function DI\value;
-
 class save_homeworktime extends external_api {
-
-
     public static function execute_parameters() {
         return new external_function_parameters([
             'user' => new external_value(PARAM_INT, 'user id'),
@@ -47,34 +43,33 @@ class save_homeworktime extends external_api {
             ])),
 
         ]);
-
     }
 
-    public static function execute($user,$timeCompletedLiterature,$timeCompletedLinks,$timeCompletedVideos) {
+    public static function execute($user, $timecompletedliterature, $timecompletedlinks, $timecompletedvideos) {
         global $DB;
         // Handle the input field value here.
         // For example, save to a database.
-        foreach ($timeCompletedLiterature as $currTimeCompletedLiterature) {
+        foreach ($timecompletedliterature as $currtimecompletedliterature) {
             $record = new \stdClass();
             $record->user_id = $user;
-            $record->literature_id = $currTimeCompletedLiterature['id'];
-            $record->time_taken = $currTimeCompletedLiterature['time'];
+            $record->literature_id = $currtimecompletedliterature['id'];
+            $record->time_taken = $currtimecompletedliterature['time'];
             $DB->insert_record('completions', $record);
         }
 
-        foreach ($timeCompletedLinks as $timeCompletedLink) {
+        foreach ($timecompletedlinks as $timecompletedlink) {
             $record = new \stdClass();
             $record->user_id = $user;
-            $record->link_id = $timeCompletedLink['id'];
-            $record->time_taken = $timeCompletedLink['time'];
+            $record->link_id = $timecompletedlink['id'];
+            $record->time_taken = $timecompletedlink['time'];
             $DB->insert_record('completions', $record);
         }
 
-        foreach ($timeCompletedVideos as $timeCompletedVideo) {
+        foreach ($timecompletedvideos as $timecompletedvideo) {
             $record = new \stdClass();
             $record->user_id = $user;
-            $record->video_id = $timeCompletedVideo['id'];
-            $record->time_taken = $timeCompletedVideo['time'];
+            $record->video_id = $timecompletedvideo['id'];
+            $record->time_taken = $timecompletedvideo['time'];
             $DB->insert_record('completions', $record);
         }
 

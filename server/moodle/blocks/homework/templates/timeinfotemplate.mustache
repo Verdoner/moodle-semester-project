@@ -3,7 +3,7 @@
     <p>{{nohomework}}</p>
     <!-- Add additional content or buttons here -->
         {{#literature}}
-            <div id={{id}}>
+            <div id="literature-{{id}}">
             <h3>{{description}}</h3>
             <form>
                     <label for="homework-time">Time for Homework (in minutes):</label>
@@ -13,7 +13,7 @@
         {{/literature}}
 
         {{#links}}
-                    <div id={{id}}>
+                    <div id="links-{{id}}">
                     <h3>{{description}}</h3>
                     <form>
                             <label for="homework-time">Time for Homework (in minutes):</label>
@@ -23,7 +23,7 @@
         {{/links}}
 
         {{#videos}}
-                    <div id={{id}}>
+                    <div id="videos-{{id}}">
                     <h3>{{description}}</h3>
                     <form>
                             <label for="homework-time">Time for Homework (in minutes):</label>

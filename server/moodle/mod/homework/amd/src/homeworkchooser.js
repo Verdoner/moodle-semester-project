@@ -110,7 +110,7 @@ export const init = async (cmid, title, cminstance) => {
 
 /**
  * Handles form submission inside the modal.
- * @param {int} instance
+ * @param {int} cminstance
  * @param {Modal} modal - The instance of the modal containing the form.
  */
 const handleFormSubmit = (cminstance,modal) => {

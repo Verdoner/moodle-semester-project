@@ -293,6 +293,91 @@ function xmldb_homework_upgrade($oldversion): bool {
         upgrade_mod_savepoint(true, 3024091300, 'homework');
     }
 
+    if ($oldversion < 3024091309) {
+
+        // Define table completions to be created.
+        $table = new xmldb_table('completions');
+
+        // Adding fields to table completions.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('user_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('literature_id', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('time_taken', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('link_id', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+
+        // Adding keys to table completions.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('f_key_user_id', XMLDB_KEY_FOREIGN, ['user_id'], 'user', ['id']);
+        $table->add_key('f_key_literature_id', XMLDB_KEY_FOREIGN, ['literature_id'], 'homework_literature', ['id']);
+        $table->add_key('f_key_link_id', XMLDB_KEY_FOREIGN, ['link_id'], 'homework_links', ['id']);
+
+        // Conditionally launch create table for completions.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Homework savepoint reached.
+        upgrade_mod_savepoint(true, 3024091409, 'homework');
+    }
+
+    if ($oldversion < 3024091409) {
+
+        // Define table homework_video to be created.
+        $table = new xmldb_table('homework_video');
+
+        // Adding fields to table homework_video.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('description', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('homework_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('fileid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('introformat', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+        // Adding keys to table homework_video.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('f_key_fileid', XMLDB_KEY_FOREIGN, ['fileid'], 'files', ['id']);
+        $table->add_key('f_key_homework_id', XMLDB_KEY_FOREIGN, ['homework_id'], 'homework', ['id']);
+
+        // Conditionally launch create table for homework_video.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Homework savepoint reached.
+        upgrade_mod_savepoint(true, 3024091409, 'homework');
+    }
+
+    if ($oldversion < 3024091409) {
+
+        // Define field video_id to be added to completions.
+        $table = new xmldb_table('completions');
+        $field = new xmldb_field('video_id', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'link_id');
+
+        // Conditionally launch add field video_id.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Homework savepoint reached.
+        upgrade_mod_savepoint(true, 3024091409, 'homework');
+    }
+
+    if ($oldversion < 3024091409) {
+
+        // Define key f_key_video_id (foreign) to be added to completions.
+        $table = new xmldb_table('completions');
+        $key = new xmldb_key('f_key_video_id', XMLDB_KEY_FOREIGN, ['video_id'], 'homework_video', ['id']);
+
+        // Launch add key f_key_video_id.
+        $dbman->add_key($table, $key);
+
+        // Homework savepoint reached.
+        upgrade_mod_savepoint(true, 3024091409, 'homework');
+    }
+
+
+
 
 
 
