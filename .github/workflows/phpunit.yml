@@ -273,16 +273,15 @@ jobs:
           php admin/tool/phpunit/cli/init.php
 
       - name: Run tests on mod_homework
+        if: always()
         run: |
           pwd
           cd server/moodle
           vendor/bin/phpunit --testsuite mod_homework_testsuite
 
       - name: Run tests on block_homework
+        if: always()
         run: |
           pwd
           cd server/moodle
           vendor/bin/phpunit --testsuite block_homework_testsuite
-              
-
-      
