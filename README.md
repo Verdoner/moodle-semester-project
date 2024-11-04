@@ -10,7 +10,7 @@ Before setting up the Moodle Docker environment, ensure the following prerequisi
 2. **Git**: [Install Git](https://git-scm.com/downloads)  
    Git is required to clone the repository and manage version control.
 
-> **Note**: Ensure all environment variables for Docker, and Git are properly configured in your system.
+> **Note**: Ensure all environment variables for Docker and Git are properly configured in your system.
 
 ## Clone the Repository
 
