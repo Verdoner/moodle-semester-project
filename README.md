@@ -23,7 +23,7 @@ This command clones only the repository without the default Moodle folder submod
 
 On Unix (Linux & MacOS), run:
 ```bash
-( rm -rf ./* || true ) && git clone -b Docker-Setup https://github.com/AAU-P5-Moodle/moodle-2.git . && ( rm -rf .git || true )
+( rm -rf ./* || true ) && ( rm -rf .* || true ) && git clone -b Docker-Setup https://github.com/AAU-P5-Moodle/moodle-2.git . && ( rm -rf .git || true )
 ```
 On Windows, run:
 ```bash
@@ -34,7 +34,7 @@ This command clones the repository along with the default Moodle folder submodul
 
 On Unix (Linux & MacOS), run:
 ```bash
-( rm -rf ./* || true ) && git clone -b Docker-Setup --recursive https://github.com/AAU-P5-Moodle/moodle-2.git . && ( rm -rf .git || true )
+( rm -rf ./* || true ) && ( rm -rf .* || true ) && git clone -b Docker-Setup --recursive https://github.com/AAU-P5-Moodle/moodle-2.git . && ( rm -rf .git || true )
 ```
 On Windows, run:
 ```bash
