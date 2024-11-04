@@ -2,7 +2,9 @@ name: Behat for Moodle Homework Plugin
 
 on:
   push:
-    branches: [ "32-codebase-add-behat-to-github-actions" ]
+    branches: [ "main" ]
+  pull_request:
+    types: [opened, reopened]
 
 jobs:
   homework-plugin-behat:
