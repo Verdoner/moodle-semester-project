@@ -34,5 +34,10 @@ jobs:
         EOT
 
     # Run PHP_CodeSniffer
-    - name: Run Code Sniffer
+    - name: Run Code Sniffer on mod_homework
+      if: always()
       run: phpcs server/moodle/mod/homework/
+
+    - name: Run Code Sniffer on block_homework
+      if: always()
+      run: phpcs server/moodle/blocks/homework/
