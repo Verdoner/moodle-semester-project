@@ -238,7 +238,6 @@ function xmldb_homework_upgrade($oldversion): bool {
     }
 
     if ($oldversion < 3024091000) {
-
         // Define field homework_id to be added to homework_literature.
         $table = new xmldb_table('homework_literature');
         $field = new xmldb_field('homework_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'timemodified');
@@ -253,7 +252,6 @@ function xmldb_homework_upgrade($oldversion): bool {
     }
 
     if ($oldversion < 3024091100) {
-
         // Define key f_key_homework_id (foreign) to be added to homework_literature.
         $table = new xmldb_table('homework_literature');
         $key = new xmldb_key('f_key_homework_id', XMLDB_KEY_FOREIGN, ['homework_id'], 'homework', ['id']);
@@ -266,7 +264,6 @@ function xmldb_homework_upgrade($oldversion): bool {
     }
 
     if ($oldversion < 3024091200) {
-
         // Define field homework_id to be added to homework_links.
         $table = new xmldb_table('homework_links');
         $field = new xmldb_field('homework_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'link');
@@ -281,7 +278,6 @@ function xmldb_homework_upgrade($oldversion): bool {
     }
 
     if ($oldversion < 3024091300) {
-
         // Define key f_key_homework_id (foreign) to be added to homework_links.
         $table = new xmldb_table('homework_links');
         $key = new xmldb_key('f_key_homework_id', XMLDB_KEY_FOREIGN, ['homework_id'], 'homework', ['id']);
@@ -294,7 +290,6 @@ function xmldb_homework_upgrade($oldversion): bool {
     }
 
     if ($oldversion < 3024091309) {
-
         // Define table completions to be created.
         $table = new xmldb_table('completions');
 
@@ -321,7 +316,6 @@ function xmldb_homework_upgrade($oldversion): bool {
     }
 
     if ($oldversion < 3024091409) {
-
         // Define table homework_video to be created.
         $table = new xmldb_table('homework_video');
 
@@ -349,7 +343,6 @@ function xmldb_homework_upgrade($oldversion): bool {
     }
 
     if ($oldversion < 3024091409) {
-
         // Define field video_id to be added to completions.
         $table = new xmldb_table('completions');
         $field = new xmldb_field('video_id', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'link_id');
@@ -364,7 +357,6 @@ function xmldb_homework_upgrade($oldversion): bool {
     }
 
     if ($oldversion < 3024091409) {
-
         // Define key f_key_video_id (foreign) to be added to completions.
         $table = new xmldb_table('completions');
         $key = new xmldb_key('f_key_video_id', XMLDB_KEY_FOREIGN, ['video_id'], 'homework_video', ['id']);
