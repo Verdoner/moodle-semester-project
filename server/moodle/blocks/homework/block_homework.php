@@ -114,6 +114,8 @@ class block_homework extends block_base {
 
         // Include JavaScript functionality for scrolling behavior in the block
         $PAGE->requires->js_call_amd('block_homework/scroll', 'init');
+        $PAGE->requires->js_call_amd('block_homework/homework_injector', 'init',[$homeworks]);
+
 
         return $this->content;
     }
