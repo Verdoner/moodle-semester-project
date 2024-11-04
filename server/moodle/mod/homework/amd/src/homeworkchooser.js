@@ -38,15 +38,22 @@ export const init = async (cmid, title, cminstance) => {
                     // Initialize the elements after modal is displayed
                     const startPageInput = modal.getRoot().find('#startPage')[0];
                     const endPageInput = modal.getRoot().find('#endPage')[0];
+                    const startTimeInput = modal.getRoot().find('#startTime')[0];
+                    const endTimeInput = modal.getRoot().find('#endTime')[0];
                     const radioButtons = modal.getRoot().find('input[name="option"]');
-                    const testTextarea = modal.getRoot().find('#page-range-input')[0];
-                    const testLink = modal.getRoot().find('#linkDiv')[0];
+                    const pageRangeInput = modal.getRoot().find('#page-range-input')[0];
+                    const videoTimeInput = modal.getRoot().find('#video-time-input')[0];
+                    const linkDiv = modal.getRoot().find('#linkDiv')[0];
                     const dropzonePdfContainer = modal.getRoot().find('#dropzone-pdf-container')[0];
                     const dropzoneVideoContainer = modal.getRoot().find('#dropzone-video-container')[0];
 
                     // Attach event listeners for page input validation
                     startPageInput.addEventListener('input', validatePageRange);
                     endPageInput.addEventListener('input', validatePageRange);
+
+                    // Attach event listeners for time input validation
+                    startTimeInput.addEventListener('input', validateTimeRange);
+                    endTimeInput.addEventListener('input', validateTimeRange);
 
                     // Attach event listeners for radio buttons
                     radioButtons.each((_, radio) => {
@@ -75,30 +82,48 @@ export const init = async (cmid, title, cminstance) => {
                         }
                     }
 
+                    function validateTimeRange() {
+                        const startTime = parseInt(startTimeInput.value, 10);
+                        const endTime = parseInt(endTimeInput.value, 10);
+
+                        if (endTimeInput.value !== "" && startTimeInput.value !== "") {
+                            if (endTime < startTime) {
+                                endTimeInput.setCustomValidity("End Time must be greater than or equal to Start Page");
+                            } else {
+                                endTimeInput.setCustomValidity(""); // Clear error message if valid
+                            }
+                        } else {
+                            endTimeInput.setCustomValidity(""); // Clear error if either field is empty
+                        }
+                    }
+
                     // Function to toggle between text and link inputs
                     /**
                      *
                      */
                     function toggleInputs() {
                         if (document.getElementById("option1").checked) {
-                            testTextarea.style.display = "block";
-                            testLink.style.display = "none";
+                            pageRangeInput.style.display = "block";
+                            videoTimeInput.style.display = "none";
+                            linkDiv.style.display = "none";
                             dropzonePdfContainer.style.display = "block";
                             dropzoneVideoContainer.style.display = "none";
 
                             dropZoneFiles = [];
                             uploadedFileIds = [];
                         } else if (document.getElementById("option2").checked) {
-                            testTextarea.style.display = "none";
-                            testLink.style.display = "block";
+                            pageRangeInput.style.display = "none";
+                            videoTimeInput.style.display = "none";
+                            linkDiv.style.display = "block";
                             dropzonePdfContainer.style.display = "none";
                             dropzoneVideoContainer.style.display = "none";
 
                             dropZoneFiles = [];
                             uploadedFileIds = [];
                         } else if (document.getElementById("option3").checked) {
-                            testTextarea.style.display = "none";
-                            testLink.style.display = "none";
+                            pageRangeInput.style.display = "none";
+                            videoTimeInput.style.display = "block";
+                            linkDiv.style.display = "none";
                             dropzonePdfContainer.style.display = "none";
                             dropzoneVideoContainer.style.display = "block";
 
@@ -235,12 +260,17 @@ const handleFormSubmit = async (modal, cminstance) => {
             }
         }]);
     } else if (modal.getRoot().find('#option3').is(':checked')) {
+        let startTime = modal.getRoot().find('#startTime').val();
+        let endTime = modal.getRoot().find('#endTime').val();
+
         await uploadDropzoneFiles();
 
         Ajax.call([{
             methodname: 'mod_homework_save_homework_video',
             args: {
                 inputfield: inputField,
+                starttime: startTime,
+                endtime: endTime,
                 instance: cminstance,
                 fileid: uploadedFileIds.length ? uploadedFileIds[0] : null
             },

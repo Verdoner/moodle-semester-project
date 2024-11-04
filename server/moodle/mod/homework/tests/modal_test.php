@@ -68,6 +68,9 @@ final class modal_test extends advanced_testcase {
         $this->assertNotNull($dom->getElementById('page-range-input'), 'Page range input container is missing');
         $this->assertNotNull($dom->getElementById('startPage'), 'Start page input is missing');
         $this->assertNotNull($dom->getElementById('endPage'), 'End page input is missing');
+        $this->assertNotNull($dom->getElementById('video-range-input'), 'Video range input container is missing');
+        $this->assertNotNull($dom->getElementById('startTime'), 'Start time input is missing');
+        $this->assertNotNull($dom->getElementById('endTime'), 'End time input is missing');
         $this->assertNotNull($dom->getElementById('linkDiv'), 'Link div is missing');
         $this->assertNotNull($dom->getElementById('link'), 'Link input field is missing');
         $this->assertNotNull($dom->getElementById('dropzone-pdf-container'), 'Container dropzone pdf is missing');

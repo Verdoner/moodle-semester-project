@@ -76,6 +76,13 @@ class get_homework_chooser extends \external_api {
                         <label for="endPage"></label>
                         <input type="number" id="endPage" name="endPage" min="1" placeholder="End Page" style="width: 50px;">
                     </div>
+                    <div id="video-time-input" style="display:none">
+                        <label for="startTime">Time Range (seconds):</label><br>
+                        <input type="number" id="startTime" name="startTime" min="1" placeholder="Start Time" style="width: 50px;">
+                        <span>-</span>
+                        <label for="endTime"></label>
+                        <input type="number" id="endTime" name="endTime" min="1" placeholder="End Time" style="width: 50px;">
+                    </div>
                     <div id="linkDiv" style="display:none">
                         <label for="link">Link:</label><br>
                         <input name="link" id="link" type="url" placeholder="Enter URL">
