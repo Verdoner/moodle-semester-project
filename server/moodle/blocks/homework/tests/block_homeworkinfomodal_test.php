@@ -98,7 +98,7 @@ final class block_homeworkinfomodal_test extends advanced_testcase {
         // Data3.
         $data3 = [
             [
-                'description' => 'Submission file for math homework',
+                'description' => 'Presentation for math homework',
                 'homework_id' => $homeworkid,
                 'fileid' => 501,
                 'id' => 1,
@@ -107,7 +107,7 @@ final class block_homeworkinfomodal_test extends advanced_testcase {
                 'timemodified' => strtotime('2023-10-02 12:00:00'),
             ],
             [
-                'description' => 'Submission file for science project',
+                'description' => 'Presentation for science project',
                 'homework_id' => $homeworkid,
                 'fileid' => 502,
                 'id' => 2,
@@ -132,14 +132,36 @@ final class block_homeworkinfomodal_test extends advanced_testcase {
         $this->assertNotNull($dom->getElementById('info-homework-modal'), 'Modal container is missing');
         $modaltitle = $dom->getElementsByTagName('h1')->item(0);
         $this->assertEquals('Mark homework completed', $modaltitle->textContent, 'Modal title is incorrect');
+        $xpath = new \DOMXPath($dom);
         $this->assertNotNull($dom->getElementById('literature-1'));
         // Check for input with specific attributes & their labels.
-        $xpath = new \DOMXPath($dom);
         $litlabel1 = $xpath->query('//div[@id="literature-1"]//h3')->item(0);
         $this->assertEquals('Math homework on integrals', $litlabel1->textContent, 'Modal title is incorrect');
         $input = $xpath->query("//input[@class='homework-time-literature'][@id='1'][@name='homework-time'][@min='1']");
-        $this->assertEquals(1, $input->length, 'Expected input with class `homework-time-literature` and min attribute 1 not found');
+        $this->assertEquals(1, $input->length, 'Expected input with class \'homework-time-literature\'');
+        $litlabel1 = $xpath->query('//div[@id="literature-2"]//h3')->item(0);
+        $this->assertEquals('Science project on climate change', $litlabel1->textContent, 'Modal title is incorrect');
         $input = $xpath->query("//input[@class='homework-time-literature'][@id='2'][@name='homework-time'][@min='1']");
-        $this->assertEquals(1, $input->length, 'Expected input with class `homework-time-literature` and min attribute 1 not found');
+        $this->assertEquals(1, $input->length, 'Expected input with class \'homework-time-literature\'');
+        $this->assertNotNull($dom->getElementById('literature-1'));
+        // Check for input with specific attributes & their labels for links.
+        $litlabel1 = $xpath->query('//div[@id="links-1"]//h3')->item(0);
+        $this->assertEquals('Project guidelines', $litlabel1->textContent, 'Modal title is incorrect');
+        $input = $xpath->query("//input[@class='homework-time-links'][@id='1'][@name='homework-time'][@min='1']");
+        $this->assertEquals(1, $input->length, 'Expected input with class \'homework-time-links\'');
+        $litlabel1 = $xpath->query('//div[@id="links-2"]//h3')->item(0);
+        $this->assertEquals('Reference materials', $litlabel1->textContent, 'Modal title is incorrect');
+        $input = $xpath->query("//input[@class='homework-time-links'][@id='2'][@name='homework-time'][@min='1']");
+        $this->assertEquals(1, $input->length, 'Expected input with class \'homework-time-links\'');
+        $this->assertNotNull($dom->getElementById('literature-1'));
+        // Check for input with specific attributes & their labels, for videos.
+        $litlabel1 = $xpath->query('//div[@id="videos-1"]//h3')->item(0);
+        $this->assertEquals('Presentation for math homework', $litlabel1->textContent, 'Modal title is incorrect');
+        $input = $xpath->query("//input[@class='homework-time-videos'][@id='1'][@name='homework-time'][@min='1']");
+        $this->assertEquals(1, $input->length, 'Expected input with class \'homework-time-videos\'');
+        $litlabel1 = $xpath->query('//div[@id="videos-2"]//h3')->item(0);
+        $this->assertEquals('Presentation for science project', $litlabel1->textContent, 'Modal title is incorrect');
+        $input = $xpath->query("//input[@class='homework-time-videos'][@id='2'][@name='homework-time'][@min='1']");
+        $this->assertEquals(1, $input->length, 'Expected input with class \'homework-time-videos\'');
     }
 }
