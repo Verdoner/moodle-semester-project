@@ -2,6 +2,7 @@
 
 namespace block_homework\tests;
 
+use block_homework;
 use block_homework\external\get_homework;
 use stdClass;
 
@@ -41,12 +42,12 @@ class block_homework_test extends \basic_testcase {
 
         //Assert that a course belonging to the correct course is returned
         array_push($homeworks, $testhomework1);
-        $tmpArray = \block_homework::filter_homework_content('http://localhost/course/view.php?id=3',$homeworks);
+        $tmpArray = block_homework::filter_homework_content('http://localhost/course/view.php?id=3',$homeworks);
         $this->assertEquals($tmpArray, $homeworks);
 
         //Assert that homework can be removed if the ids don't match
         array_push($homeworks, $testhomework2);
-        $tmpArray = \block_homework::filter_homework_content('http://localhost/course/view.php?id=3',$homeworks);
+        $tmpArray = block_homework::filter_homework_content('http://localhost/course/view.php?id=3',$homeworks);
         $this->assertNotContains($testhomework2, $tmpArray);
 
 		$this->assertEquals($homeworks[0], $testhomework1);
