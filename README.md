@@ -108,22 +108,32 @@ Run: `sh bash_moodle_unix.sh`
 ## Initialize Testing and Tools
 Once inside the Docker terminal, initialize the following tools:
 ### PHPUnit
+Initialize PHPUnit:
 ```bash
 php admin/tool/phpunit/cli/init.php
+```
+Run PHPUnit with the specified test suite:
+```bash
 vendor/bin/phpunit --testsuite=mod_homework_testsuite
 ```
 ### Behat
+Set up Behat:
 ```bash
 php admin/tool/behat/cli/init.php
+```
+Execute Behat tests with the desired tags:
+```bash
 php admin/tool/behat/cli/run.php --tags=@mod_homework
 ```
 ### Codesniffer
+Run PHP CodeSniffer in a desired directory using the Moodle-extra standard:
 ```bash
 vendor/bin/phpcs --standard=moodle-extra mod/homework
 ```
 ### Grunt
+Compile JavaScript with Grunt in a desired directory:
 ```bash
-grunt amd --root="./mod/homework" --force
+grunt amd --force --root=/mod/homework
 ```
 
 ## Exit Docker Terminal
