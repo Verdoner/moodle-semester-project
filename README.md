@@ -56,16 +56,12 @@ Now you’re ready to proceed with configuring your Moodle Docker environment in
 Choose one of the following commands based on your needs:
 
 ### Without the Default Moodle Folder:
-This command clones only the repository without the default Moodle folder submodule.
-
-Run:
+This command clones only the repository without the default Moodle folder submodule:
 ```bash
 git config --global credential.helper store && git clone -b Docker-Setup https://github.com/AAU-P5-Moodle/moodle-2.git && cd ./moodle-2 && chmod -R 0777 ./server/moodledata && ( rm -rf .git || true )
 ```
 ### With the Default Moodle Folder:
-This command clones the repository along with the default Moodle folder submodule.
-
-Run:
+This command clones the repository along with the default Moodle folder submodule:
 ```bash
 git config --global credential.helper store && git clone -b Docker-Setup --recursive https://github.com/AAU-P5-Moodle/moodle-2.git && cd ./moodle-2 && chmod -R 0777 ./server/moodledata && ( rm -rf .git || true )
 ```
@@ -92,8 +88,6 @@ git checkout [branchname] # e.g., main
 
 ## Copy Docker Template Files
 Copy the template files for Docker into the Moodle folder:
-
-Run:
 ```bash
 cp server/composer.docker-template.json server/moodle/composer.json && cp server/config.docker-template.php server/moodle/config.php && cp server/Gruntfile.docker-template.js server/moodle/Gruntfile.js && cp server/package.docker-template.json server/moodle/package.json
 ```
