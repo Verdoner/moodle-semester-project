@@ -16,42 +16,43 @@
 
 /**
  * Code for viewing each homework module for details (not done)
+ *
  * @package   mod_homework
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../../config.php');
+require_once ('../../config.php');
 global $OUTPUT, $PAGE, $DB, $CFG;
 
 use mod_homework\view_page;
 
-$id = required_param('id', PARAM_INT);// Course module ID.
-[$course, $cm] = get_course_and_cm_from_cmid($id, 'homework');
-$instance = $DB->get_record('homework', ['id' => $cm->instance], '*', MUST_EXIST);
+$id = required_param ('id', PARAM_INT);// Course module ID.
+[$course, $cm] = get_course_and_cm_from_cmid ($id, 'homework');
+$instance = $DB->get_record ('homework', ['id' => $cm->instance], '*', MUST_EXIST);
 
-$context = context_module::instance($cm->id);
-require_login($course, true, $cm);
+$context = context_module::instance ($cm->id);
+require_login ($course, true, $cm);
 
-try{
-	$PAGE->set_url('/mod/homework/view.php', ['id' => $id]);
+try {
+	$PAGE->set_url ('/mod/homework/view.php', ['id' => $id]);
 }
-catch(coding_exception $e){
-	debugging($e->getMessage(), DEBUG_DEVELOPER);
+catch (coding_exception $e) {
+	debugging ($e->getMessage (), DEBUG_DEVELOPER);
 }
-try{
-	$PAGE->set_title(get_string('modulename', 'homework'));
+try {
+	$PAGE->set_title (get_string ('modulename', 'homework'));
 }
-catch(coding_exception $e){
-	debugging($e->getMessage(), DEBUG_DEVELOPER);
+catch (coding_exception $e) {
+	debugging ($e->getMessage (), DEBUG_DEVELOPER);
 }
-$PAGE->set_heading(get_string('modulename', 'homework'));
+$PAGE->set_heading (get_string ('modulename', 'homework'));
 
 // Adding secondary navigation links.
-if($PAGE->has_secondary_navigation()){
+if ($PAGE->has_secondary_navigation ()) {
 	// Create a new navigation node for 'Submissions'.
-	$submissionsnode = navigation_node::create(
-		get_string('viewsubmissions', 'mod_homework'), // The label.
+	$submissionsnode = navigation_node::create (
+		get_string ('viewsubmissions', 'mod_homework'), // The label.
 		new moodle_url('/mod/homework/submissions.php', ['id' => $cm->id]), // URL for the link.
 		navigation_node::TYPE_CUSTOM, // Type of node (custom link).
 		null, // Icon or image (null by default).
@@ -59,65 +60,65 @@ if($PAGE->has_secondary_navigation()){
 	);
 
 	// Add the submissions node to the secondary navigation.
-	$PAGE->secondarynav->add_node($submissionsnode);
+	$PAGE->secondarynav->add_node ($submissionsnode);
 
 	// Example: Add another node, e.g., 'Edit Homework'.
-	try{
-		$editnode = navigation_node::create(
-			get_string('edit', 'moodle'),
+	try {
+		$editnode = navigation_node::create (
+			get_string ('edit', 'moodle'),
 			new moodle_url('/mod/homework/edit.php', ['id' => $cm->id]),
 			navigation_node::TYPE_CUSTOM,
 			null,
 			'editnav'
 		);
-		$PAGE->secondarynav->add_node($editnode);
+		$PAGE->secondarynav->add_node ($editnode);
 	}
-	catch(coding_exception|\core\exception\moodle_exception $e){
-		debugging($e->getMessage(), DEBUG_DEVELOPER);
+	catch (coding_exception|\core\exception\moodle_exception $e) {
+		debugging ($e->getMessage (), DEBUG_DEVELOPER);
 	}
 }
 
 // Output the header - REQUIRED.
-echo $OUTPUT->header();
+echo $OUTPUT->header ();
 
 $viewobj = new view_page();
 $viewobj->canedit = true;
 $viewobj->editurl = new moodle_url('/mod/homework/edit.php', ['id' => $cm->id]);
 
 // Add the actual page content here.
-echo html_writer::tag('div', 'This is the homework view page', ['class' => 'content']);
-$record = $DB->get_record('homework', ['id' => $cm->instance], '*', MUST_EXIST);
+echo html_writer::tag ('div', 'This is the homework view page', ['class' => 'content']);
+$record = $DB->get_record ('homework', ['id' => $cm->instance], '*', MUST_EXIST);
 
 echo $record->name . '<br>';
 echo $record->duedate . '<br>';
 echo $record->description . '<br>';
 
-$homeworkliterature = $DB->get_records('homework_literature', ['homework' => $cm->instance]);
-$homeworklinks = $DB->get_records('homework_links', ['homework' => $cm->instance]);
-foreach($homeworkliterature as $literature){
-	ob_start();
+$homeworkliterature = $DB->get_records ('homework_literature', ['homework' => $cm->instance]);
+$homeworklinks = $DB->get_records ('homework_links', ['homework' => $cm->instance]);
+foreach ($homeworkliterature as $literature) {
+	ob_start ();
 	?>
     <div class="literature">
         <p><?= $literature->description ?></p>
         <p><?= $literature->startpage . " - " . $literature->endpage ?></p>
     </div>
 	<?php
-	echo ob_get_clean();
+	echo ob_get_clean ();
 }
-foreach($homeworklinks as $link){
-	ob_start();
+foreach ($homeworklinks as $link) {
+	ob_start ();
 	?>
     <div class="literature">
         <p><?= $link->description ?></p>
         <a href="<?= $link->link ?>"><?= $link->link ?></a>
     </div>
 	<?php
-	echo ob_get_clean();
+	echo ob_get_clean ();
 }
 
-if($viewobj->canedit && !$viewobj->hashomework){
-	echo html_writer::link($viewobj->editurl, get_string('addhomework', 'homework'), ['class' => 'btn btn-secondary']);
+if ($viewobj->canedit && !$viewobj->hashomework) {
+	echo html_writer::link ($viewobj->editurl, get_string ('addhomework', 'homework'), ['class' => 'btn btn-secondary']);
 }
 
 // Output the footer - REQUIRED.
-echo $OUTPUT->footer();
+echo $OUTPUT->footer ();
