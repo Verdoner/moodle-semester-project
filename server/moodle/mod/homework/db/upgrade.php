@@ -17,19 +17,18 @@
 /**
  * Plugin upgrade steps are defined here.
  * homework/db/upgrade.php
- *
  * @package     mod_homework
  * @category    upgrade
  * @copyright   2024 PV
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-function xmldb_homework_upgrade($oldversion): bool {
-    global $DB;
+function xmldb_homework_upgrade($oldversion): bool{
+	global $DB;
 
-    $dbman = $DB->get_manager();
+	$dbman = $DB->get_manager();
 
 
-	if ($oldversion < 2024102802) {
+	if($oldversion < 2024102802){
 		// Literature
 		// Define field homework to be added to homework_literature.
 		$table = new xmldb_table('homework_literature');
@@ -37,7 +36,7 @@ function xmldb_homework_upgrade($oldversion): bool {
 		$key = new xmldb_key('homework', XMLDB_KEY_FOREIGN, ['homework'], 'homework', ['id']);
 
 		// Conditionally launch add field homework.
-		if ($dbman->field_exists($table, $field)) {
+		if($dbman->field_exists($table, $field)){
 			$dbman->drop_key($table, $key);
 			$dbman->drop_field($table, $field);
 		}
@@ -51,7 +50,7 @@ function xmldb_homework_upgrade($oldversion): bool {
 		$key = new xmldb_key('homework', XMLDB_KEY_FOREIGN, ['homework'], 'homework', ['id']);
 
 		// Conditionally launch add field id.
-		if ($dbman->field_exists($table, $field)) {
+		if($dbman->field_exists($table, $field)){
 			$dbman->drop_key($table, $key);
 			$dbman->drop_field($table, $field);
 		}
