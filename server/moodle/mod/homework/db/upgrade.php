@@ -30,7 +30,7 @@ function xmldb_homework_upgrade($oldversion): bool {
 
 
 	if ($oldversion < 2024102802) {
-		//Literature
+		// Literature
 		// Define field homework to be added to homework_literature.
 		$table = new xmldb_table('homework_literature');
 		$field = new xmldb_field('homework', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'timemodified');
@@ -44,7 +44,7 @@ function xmldb_homework_upgrade($oldversion): bool {
 		$dbman->add_field($table, $field);
 		$dbman->add_key($table, $key);
 
-		//Links
+		// Links
 		// Define field id to be added to homework_links.
 		$table = new xmldb_table('homework_links');
 		$field = new xmldb_field('homework', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'timemodified');

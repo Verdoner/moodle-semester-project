@@ -84,25 +84,25 @@ $viewobj->editurl = new moodle_url('/mod/homework/edit.php', ['id' => $cm->id]);
 
 // Add the actual page content here.
 echo html_writer::tag('div', 'This is the homework view page', ['class' => 'content']);
-$record = $DB->get_record('homework', array('id' => $cm->instance), '*', MUST_EXIST);
+$record = $DB->get_record('homework', ['id' => $cm->instance], '*', MUST_EXIST);
 
 echo $record->name . '<br>';
 echo $record->duedate . '<br>';
 echo $record->description . '<br>';
 
-$homeworkLiterature = $DB->get_records('homework_literature', array('homework' => $cm->instance));
-$homeworkLinks = $DB->get_records('homework_links', array('homework' => $cm->instance));
-foreach($homeworkLiterature as $literature) {
-	ob_start();
-	?>
-	<div class="literature">
-		<p><?= $literature->description ?></p>
-		<p><?= $literature->startpage." - ".$literature->endpage ?></p>
+$homework_literature = $DB->get_records('homework_literature', ['homework' => $cm->instance]);
+$homework_links = $DB->get_records('homework_links', ['homework' => $cm->instance]);
+foreach ($homework_literature as $literature) {
+    ob_start();
+    ?>
+    <div class="literature">
+        <p><?= $literature->description ?></p>
+        <p><?= $literature->startpage . " - " . $literature->endpage ?></p>
 	</div>
 	<?php
 	echo ob_get_clean();
 }
-foreach($homeworkLinks as $link) {
+foreach ($homework_links as $link) {
 	ob_start();
 	?>
 	<div class="literature">
