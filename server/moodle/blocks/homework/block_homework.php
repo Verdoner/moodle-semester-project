@@ -22,14 +22,11 @@
  * @author    group 11
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-// Checks for Moodle environment.
-defined('MOODLE_INTERNAL') || die();
-
-
 class block_homework extends block_base {
     /*
      * Constructor for the block.
+     *
+     * @return void
      */
     public function init() {
         $this->title = get_string('homework', 'block_homework');
@@ -37,6 +34,8 @@ class block_homework extends block_base {
 
     /**
      * Retrieves and prepares the content to be displayed by the block
+     *
+     * @return stdClass|null
      */
     public function get_content() {
 
@@ -146,6 +145,8 @@ class block_homework extends block_base {
 
     /*
      * Filters homework
+     *
+     * @return array
      */
     public static function filter_homework_content($url, $homeworks): array {
         // Use a regex to remove everything but digits from the url.

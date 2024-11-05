@@ -1,5 +1,20 @@
 <?php
-// File: mod/myplugin/tests/sample_test.php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+// File: mod/myplugin/tests/sample_test.php.
 
 namespace block_homework\tests;
 
@@ -7,10 +22,11 @@ use stdClass;
 
 /*
  * This class is responsible for testing the homework block functionality
- * @copyright
- * @license
+ *
  * @package block_homework
- * @author Daniel
+ * @copyright Year, You Name <your@email.address>
+ * @author group 5
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class block_homework_test extends \basic_testcase {
     /*
@@ -23,26 +39,26 @@ final class block_homework_test extends \basic_testcase {
         $homeworks = [];
 
         $testhomework1 = new stdClass();
-            $testhomework1->id = 1;
-            $testhomework1->course = 2;
-            $testhomework1->name = 'test 1';
-            $testhomework1->timecreated = time();
-            $testhomework1->timemodified = 0;
-            $testhomework1->intro = '<p> test 1 </p>';
-            $testhomework1->introformat = 1;
-            $testhomework1->description = '';
-            $testhomework1->eventid = 0;
+        $testhomework1->id = 1;
+        $testhomework1->course = 2;
+        $testhomework1->name = 'test 1';
+        $testhomework1->timecreated = time();
+        $testhomework1->timemodified = 0;
+        $testhomework1->intro = '<p> test 1 </p>';
+        $testhomework1->introformat = 1;
+        $testhomework1->description = '';
+        $testhomework1->eventid = 0;
 
         $testhomework2 = new stdClass();
-            $testhomework2->id = 2;
-            $testhomework2->course = 3;
-            $testhomework2->name = 'test 1';
-            $testhomework2->timecreated = time();
-            $testhomework2->timemodified = 0;
-            $testhomework2->intro = '<p> test 2 </p>';
-            $testhomework2->introformat = 1;
-            $testhomework2->description = '';
-            $testhomework2->eventid = 0;
+        $testhomework2->id = 2;
+        $testhomework2->course = 3;
+        $testhomework2->name = 'test 1';
+        $testhomework2->timecreated = time();
+        $testhomework2->timemodified = 0;
+        $testhomework2->intro = '<p> test 2 </p>';
+        $testhomework2->introformat = 1;
+        $testhomework2->description = '';
+        $testhomework2->eventid = 0;
 
 
         // Assert that a course belonging to the correct course is returned.
