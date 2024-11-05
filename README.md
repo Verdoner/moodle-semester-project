@@ -52,6 +52,7 @@ Once Ubuntu is installed from the Microsoft Store, follow these steps to complet
 Now you’re ready to proceed with configuring your Moodle Docker environment in this directory.
 
 ## Clone the Repository
+
 Choose one of the following commands based on your needs:
 
 ### Without the Default Moodle Folder:
@@ -59,15 +60,25 @@ This command clones only the repository without the default Moodle folder submod
 
 Run:
 ```bash
-git clone -b Docker-Setup https://github.com/AAU-P5-Moodle/moodle-2.git && cd ./moodle-2 && chmod -R 0777 ./server/moodledata && ( rm -rf .git || true )
+git config --global credential.helper store && git clone -b Docker-Setup https://github.com/AAU-P5-Moodle/moodle-2.git && cd ./moodle-2 && chmod -R 0777 ./server/moodledata && ( rm -rf .git || true )
 ```
 ### With the Default Moodle Folder:
 This command clones the repository along with the default Moodle folder submodule.
 
 Run:
 ```bash
-git clone -b Docker-Setup --recursive https://github.com/AAU-P5-Moodle/moodle-2.git && cd ./moodle-2 && chmod -R 0777 ./server/moodledata && ( rm -rf .git || true )
+git config --global credential.helper store && git clone -b Docker-Setup --recursive https://github.com/AAU-P5-Moodle/moodle-2.git && cd ./moodle-2 && chmod -R 0777 ./server/moodledata && ( rm -rf .git || true )
 ```
+
+If this is your first time cloning the repository in Ubuntu, you may be prompted to sign in to GitHub. 
+Follow these steps:
+1. **GitHub Username:** Enter your GitHub username when prompted.
+2. **Personal Access Token:** Instead of using your GitHub password, you will need to enter a personal access token for authentication. You can generate a token by visiting [GitHub Token Settings](https://github.com/settings/tokens/).
+   - **Steps to generate the token:**
+      - Go to the [Personal Access Tokens](https://github.com/settings/tokens/new) page.
+      - Give your token a descriptive name, select the necessary scopes (e.g., `repo` for full repository access), and click **Generate token**.
+      - Copy the generated token immediately, as it will not be displayed again.
+> **Note: When prompted for your password in the terminal, paste your personal access token instead.**
 
 ## Set Up Sparse Checkout
 Now run:
