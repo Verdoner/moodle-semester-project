@@ -59,14 +59,14 @@ This command clones only the repository without the default Moodle folder submod
 
 Run:
 ```bash
-git clone -b Docker-Setup https://github.com/AAU-P5-Moodle/moodle-2.git && cd ./moodle-2 && ( rm -rf .git || true )
+git clone -b Docker-Setup https://github.com/AAU-P5-Moodle/moodle-2.git && cd ./moodle-2 && chmod -R 0777 ./server/moodledata && ( rm -rf .git || true )
 ```
 ### With the Default Moodle Folder:
 This command clones the repository along with the default Moodle folder submodule.
 
 Run:
 ```bash
-git clone -b Docker-Setup --recursive https://github.com/AAU-P5-Moodle/moodle-2.git && cd ./moodle-2 && ( rm -rf .git || true )
+git clone -b Docker-Setup --recursive https://github.com/AAU-P5-Moodle/moodle-2.git && cd ./moodle-2 && chmod -R 0777 ./server/moodledata && ( rm -rf .git || true )
 ```
 
 ## Set Up Sparse Checkout
