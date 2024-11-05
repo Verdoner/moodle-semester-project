@@ -41,7 +41,7 @@ Once Ubuntu is installed from the Microsoft Store, follow these steps to complet
       ```bash
       /home/USERNAME
       ```
-      ...but if you are not in your home directory, then you can navigate to it using the command below:
+   - If you are in another directory, you can return to your home directory with the following command:
       ```bash
       cd ~
       ```
