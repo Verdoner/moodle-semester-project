@@ -1,4 +1,4 @@
-# Moodle Docker Setup
+# Moodle Docker Setup on Windows using WSL 2 & Ubuntu
 
 ## Prerequisites
 
