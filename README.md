@@ -96,7 +96,7 @@ cp server/composer.docker-template.json server/moodle/composer.json && cp server
 ```
 
 ## Start Moodle
-1. Ensure you're in the correct directory.
+1. Ensure you're in the cloned directory, e.g., `/home/USERNAME/moodle-2`.
 2. Start Moodle by running:
    ```bash
    sh start_moodle_unix.sh
@@ -104,7 +104,7 @@ cp server/composer.docker-template.json server/moodle/composer.json && cp server
 > Note: The first start may take a long time, as it needs to install many composer and node modules.
 
 ## Access Docker Terminal
-1. To open a terminal inside Docker, confirm you're in the correct directory.
+1. To open a terminal inside Docker, confirm you're in the cloned directory, e.g., `/home/USERNAME/moodle-2`.
 2. Run the following command:
    ```bash
    sh bash_moodle_unix.sh
