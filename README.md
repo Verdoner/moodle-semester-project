@@ -101,7 +101,7 @@ cp server/composer.docker-template.json server/moodle/composer.json && cp server
    ```bash
    sh start_moodle_unix.sh
    ```
-> Note: The first start may take a long time, as it needs to install many composer and node modules.
+   > Note: The initial startup may take some time, as it will install various Composer and Node modules.
 
 ## Access Docker Terminal
 1. To open a terminal inside Docker, confirm you're in the cloned directory, e.g., `/home/USERNAME/moodle-2`.
