@@ -23,9 +23,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// Checks for Moodle environment
+// Checks for Moodle environment.
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'block_homework'; // Plugin name
-$plugin->version = 2024101400; // Plugin version
-$plugin->requires = 2016052300; // Moodle version
+$plugin->component = 'block_homework'; // Plugin name.
+$plugin->version = 2024101400; // Plugin version.
+$plugin->requires = 2016052300; // Moodle version.
