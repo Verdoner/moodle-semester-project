@@ -80,14 +80,14 @@ Follow these steps:
 > **Note: When prompted for your password in the terminal, paste your personal access token instead.**
 
 ## Set Up Sparse Checkout
-Now run:
-```bash
-git init && git config core.sparseCheckout true && git remote add -f origin https://github.com/AAU-P5-Moodle/moodle-2.git && echo server/moodle > .git/info/sparse-checkout
-```
-Now you can checkout the branch you were working on:
-```bash
-git checkout [branchname] # e.g., main
-```
+1. Initialize the sparse checkout configuration by running:
+   ```bash
+   git init && git config core.sparseCheckout true && git remote add -f origin https://github.com/AAU-P5-Moodle/moodle-2.git && echo server/moodle > .git/info/sparse-checkout
+   ```
+2. Now, check out the branch you were working on:
+   ```bash
+   git checkout [branchname]  # Replace [branchname] with your branch name, e.g., main
+   ```
 
 ## Copy Docker Template Files
 Copy the template files for Docker into the Moodle folder:
@@ -96,14 +96,19 @@ cp server/composer.docker-template.json server/moodle/composer.json && cp server
 ```
 
 ## Start Moodle
-Run: `sh start_moodle_unix.sh`
-
+1. Ensure you're in the correct directory.
+2. Start Moodle by running:
+   ```bash
+   sh start_moodle_unix.sh
+   ```
 > Note: The first start may take a long time, as it needs to install many composer and node modules.
 
 ## Access Docker Terminal
-You can open a terminal inside Docker with:
-
-Run: `sh bash_moodle_unix.sh`
+1. To open a terminal inside Docker, confirm you're in the correct directory.
+2. Run the following command:
+   ```bash
+   sh bash_moodle_unix.sh
+   ```
 
 ## Initialize Testing and Tools
 Once inside the Docker terminal, initialize the following tools:
