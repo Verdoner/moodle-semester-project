@@ -45,7 +45,6 @@ Once Ubuntu is installed from the Microsoft Store, follow these steps to complet
       ```bash
       cd ~
       ```
-   - Replace USERNAME with the name you created in the previous step if needed. This is where your user-specific files and configurations are stored.
 4. **Confirm Access to Home Directory:**
    - To verify your current directory, you can run:
      ```bash
