@@ -39,6 +39,10 @@ Once Ubuntu is installed from the Microsoft Store, follow these steps to complet
 3. **Navigate to the User's Home Directory:**
    - By default, you will start in your home directory, which is located at:
       ```bash
+      /home/USERNAME
+      ```
+      ...but if you are not in your home directory, then you can navigate to it using the command below:
+      ```bash
       cd ~
       ```
    - Replace USERNAME with the name you created in the previous step if needed. This is where your user-specific files and configurations are stored.
