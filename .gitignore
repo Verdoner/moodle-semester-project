@@ -80,7 +80,6 @@ UPGRADING-CURRENT.md
 
 # Temporary files including undo
 *~
-/server/moodledata/cache
-/server/moodledata/localcache
-/server/moodledata/sessions
+/server/moodledata/
+/server/moodledata/*
 custom_php.ini
