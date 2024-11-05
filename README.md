@@ -7,7 +7,7 @@ Before setting up the Moodle Docker environment, ensure the following prerequisi
 1. **Docker Desktop**: [Install Docker](https://docs.docker.com/get-docker/)  
    Docker is required to build and run the Moodle Docker container.
 
-2. **WSL 2**: [Install WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install)  
+2. **WSL 2** (if not installed at Docker Desktop): [Install WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install)  
    If WSL 2 was not installed during the installation of Docker Desktop, then install WSL 2 by running the following command in PowerShell as Administrator:
    ```bash
    wsl --install
