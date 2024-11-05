@@ -23,43 +23,44 @@
  * @copyright   2024 PV
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-function xmldb_homework_upgrade ($oldversion): bool {
-	global $DB;
+function xmldb_homework_upgrade($oldversion): bool
+{
+    global $DB;
 
-	$dbman = $DB->get_manager ();
+    $dbman = $DB->get_manager();
 
-	if ($oldversion < 2024102802) {
-		// Literature
-		// Define field homework to be added to homework_literature.
-		$table = new xmldb_table('homework_literature');
-		$field = new xmldb_field('homework', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'timemodified');
-		$key = new xmldb_key('homework', XMLDB_KEY_FOREIGN, ['homework'], 'homework', ['id']);
+    if ($oldversion < 2024102802) {
+        // Literature
+        // Define field homework to be added to homework_literature.
+        $table = new xmldb_table('homework_literature');
+        $field = new xmldb_field('homework', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'timemodified');
+        $key = new xmldb_key('homework', XMLDB_KEY_FOREIGN, ['homework'], 'homework', ['id']);
 
-		// Conditionally launch add field homework.
-		if ($dbman->field_exists ($table, $field)) {
-			$dbman->drop_key ($table, $key);
-			$dbman->drop_field ($table, $field);
-		}
-		$dbman->add_field ($table, $field);
-		$dbman->add_key ($table, $key);
+        // Conditionally launch add field homework.
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_key($table, $key);
+            $dbman->drop_field($table, $field);
+        }
+        $dbman->add_field($table, $field);
+        $dbman->add_key($table, $key);
 
-		// Links
-		// Define field id to be added to homework_links.
-		$table = new xmldb_table('homework_links');
-		$field = new xmldb_field('homework', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'timemodified');
-		$key = new xmldb_key('homework', XMLDB_KEY_FOREIGN, ['homework'], 'homework', ['id']);
+        // Links
+        // Define field id to be added to homework_links.
+        $table = new xmldb_table('homework_links');
+        $field = new xmldb_field('homework', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'timemodified');
+        $key = new xmldb_key('homework', XMLDB_KEY_FOREIGN, ['homework'], 'homework', ['id']);
 
-		// Conditionally launch add field id.
-		if ($dbman->field_exists ($table, $field)) {
-			$dbman->drop_key ($table, $key);
-			$dbman->drop_field ($table, $field);
-		}
-		$dbman->add_field ($table, $field);
-		$dbman->add_key ($table, $key);
+        // Conditionally launch add field id.
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_key($table, $key);
+            $dbman->drop_field($table, $field);
+        }
+        $dbman->add_field($table, $field);
+        $dbman->add_key($table, $key);
 
-		// Homework savepoint reached.
-		upgrade_mod_savepoint (true, 2024102802, 'homework');
-	}
+        // Homework savepoint reached.
+        upgrade_mod_savepoint(true, 2024102802, 'homework');
+    }
 
-	return true;
+    return true;
 }

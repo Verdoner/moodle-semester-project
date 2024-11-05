@@ -30,80 +30,84 @@ use dml_exception;
 /**
  *
  */
-final class save_homework_test extends advanced_testcase {
-	/**
-	 * Setup routine before running each test.
-	 */
-	protected function setUp (): void {
-		parent::setUp ();
-		$this->resetAfterTest (true); // Reset the Moodle environment after each test.
-	}
+final class save_homework_test extends advanced_testcase
+{
+    /**
+     * Setup routine before running each test.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->resetAfterTest(true); // Reset the Moodle environment after each test.
+    }
 
-	/**
-	 * Test saving literature homework with page range.
-	 *
-	 * @runInSeparateProcess
-	 * @throws dml_exception
-	 * @covers :: \mod_homework\external\save_homework_literature
-	 */
-	public function test_save_homework_literature (): void {
-		global $DB;
+    /**
+     * Test saving literature homework with page range.
+     *
+     * @runInSeparateProcess
+     * @throws dml_exception
+     * @covers :: \mod_homework\external\save_homework_literature
+     */
+    public function test_save_homework_literature(): void
+    {
+        global $DB;
 
-		// Call the external class method.
-		$inputfield = 'Test Literature';
-		$startpage = 1;
-		$endpage = 10;
-		$homework = 1;
+        // Call the external class method.
+        $inputfield = 'Test Literature';
+        $startpage = 1;
+        $endpage = 10;
+        $homework = 1;
 
-		$result = \mod_homework\external\save_homework_literature::execute ($inputfield, $startpage, $endpage, $homework);
+        $result = \mod_homework\external\save_homework_literature::execute($inputfield, $startpage, $endpage, $homework);
 
-		// Assert that the status is 'success'.
-		$this->assertEquals ('success', $result['status']);
-		$this->assertEquals ('Data saved successfully', $result['message']);
+        // Assert that the status is 'success'.
+        $this->assertEquals('success', $result['status']);
+        $this->assertEquals('Data saved successfully', $result['message']);
 
-		// Verify that the data was saved in the database.
-		$record = $DB->get_record_select (
-			'homework_literature',
-			$DB->sql_compare_text ('description') . ' = :description',
-			['description' => $inputfield],
-			'*',
-			MUST_EXIST
-		);
-		$this->assertEquals ($startpage, $record->startpage);
-		$this->assertEquals ($endpage, $record->endpage);
-		$this->assertEquals ($homework, $record->homework);
-	}
+        // Verify that the data was saved in the database.
+        $record = $DB->get_record_select(
+            'homework_literature',
+            $DB->sql_compare_text('description') . ' = :description',
+            ['description' => $inputfield],
+            '*',
+            MUST_EXIST
+        );
+        $this->assertEquals($startpage, $record->startpage);
+        $this->assertEquals($endpage, $record->endpage);
+        $this->assertEquals($homework, $record->homework);
+    }
 
-	/**
-	 * Test saving a homework with a link.
-	 *
-	 * @runInSeparateProcess
-	 * @throws dml_exception
-	 * @covers :: \mod_homework\external\save_homework_link
-	 */
-	public function test_save_homework_link (): void {
-		global $DB;
+    /**
+     * Test saving a homework with a link.
+     *
+     * @runInSeparateProcess
+     * @throws dml_exception
+     * @covers :: \mod_homework\external\save_homework_link
+     */
+    public function test_save_homework_link(): void
+    {
+        global $DB;
 
-		// Call the external class method.
-		$inputfield = 'Test Link';
-		$link = 'https://www.test.com';
-		$homework = 1;
+        // Call the external class method.
+        $inputfield = 'Test Link';
+        $link = 'https://www.test.com';
+        $homework = 1;
 
-		$result = \mod_homework\external\save_homework_link::execute ($inputfield, $link, $homework);
+        $result = \mod_homework\external\save_homework_link::execute($inputfield, $link, $homework);
 
-		// Assert that the status is 'success'.
-		$this->assertEquals ('success', $result['status']);
-		$this->assertEquals ('Data saved successfully', $result['message']);
+        // Assert that the status is 'success'.
+        $this->assertEquals('success', $result['status']);
+        $this->assertEquals('Data saved successfully', $result['message']);
 
-		// Verify that the data was saved in the database.
-		$record = $DB->get_record_select (
-			'homework_links',
-			$DB->sql_compare_text ('description') . ' = :description',
-			['description' => $inputfield],
-			'*',
-			MUST_EXIST
-		);
-		$this->assertEquals ($link, $record->link);
-		$this->assertEquals ($homework, $record->homework);
-	}
+        // Verify that the data was saved in the database.
+        $record = $DB->get_record_select(
+            'homework_links',
+            $DB->sql_compare_text('description') . ' = :description',
+            ['description' => $inputfield],
+            '*',
+            MUST_EXIST
+        );
+        $this->assertEquals($link, $record->link);
+        $this->assertEquals($homework, $record->homework);
+    }
 }
