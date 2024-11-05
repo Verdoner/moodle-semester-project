@@ -1,14 +1,25 @@
-<?php // File: mod/myplugin/tests/sample_test.php
+<?php
+// File: mod/myplugin/tests/sample_test.php
 
 namespace block_homework\tests;
 
 use stdClass;
 
-class block_homework_test extends \basic_testcase {
-    public function test_course_homeworkfilter(){
+/*
+ * This class is responsible for testing the homework block functionality
+ * @copyright
+ * @license
+ * @package block_homework
+ * @author Daniel
+ */
+final class block_homework_test extends \basic_testcase {
+    /*
+     * @covers \homework
+     */
+    public function test_course_homeworkfilter(): void {
 
-        //Create test data
-        $tmpArray =[];
+        // Create test data.
+        $tmparray = [];
         $homeworks = [];
 
         $testhomework1 = new stdClass();
@@ -34,17 +45,14 @@ class block_homework_test extends \basic_testcase {
             $testhomework2->eventid = 0;
 
 
-        //Assert that a course belonging to the correct course is returned
+        // Assert that a course belonging to the correct course is returned.
         array_push($homeworks, $testhomework1);
-        $tmpArray = \block_homework::filter_homework_content('http://localhost/course/view.php?id=3',$homeworks);
-        $this->assertEquals($tmpArray, $homeworks);
+        $tmparray = \block_homework::filter_homework_content('http://localhost/course/view.php?id=3',$homeworks);
+        $this->assertEquals($tmparray, $homeworks);
 
-        //Assert that homework can be removed if the ids don't match
+        // Assert that homework can be removed if the ids don't match.
         array_push($homeworks, $testhomework2);
-        $tmpArray = \block_homework::filter_homework_content('http://localhost/course/view.php?id=3',$homeworks);
-        $this->assertNotContains($testhomework2, $tmpArray);
-
+        $tmparray = \block_homework::filter_homework_content('http://localhost/course/view.php?id=3', $homeworks);
+        $this->assertNotContains($testhomework2, $tmparray);
     }
-
-
 }
