@@ -20,11 +20,12 @@
  * @package   mod_homework
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *
  */
 
 require_once('../../config.php');
 global $OUTPUT, $PAGE, $DB, $CFG;
+
+use mod_homework\view_page;
 
 $id = required_param('id', PARAM_INT);// Course module ID.
 [$course, $cm] = get_course_and_cm_from_cmid($id, 'homework');
@@ -69,7 +70,7 @@ if ($PAGE->has_secondary_navigation()) {
             'editnav'
         );
         $PAGE->secondarynav->add_node($editnode);
-    } catch (coding_exception | \core\exception\moodle_exception $e) {
+    } catch (coding_exception|\core\exception\moodle_exception $e) {
         debugging($e->getMessage(), DEBUG_DEVELOPER);
     }
 }
@@ -79,18 +80,39 @@ echo $OUTPUT->header();
 
 $viewobj = new view_page();
 $viewobj->canedit = true;
-$viewobj->editurl = new moodle_url('/mod/homework/edit.php', ['cmid' => $cm->id]);
+$viewobj->editurl = new moodle_url('/mod/homework/edit.php', ['id' => $cm->id]);
 
 // Add the actual page content here.
 echo html_writer::tag('div', 'This is the homework view page', ['class' => 'content']);
-$records = $DB->get_records('homework');
+$record = $DB->get_record('homework', ['id' => $cm->instance], '*', MUST_EXIST);
 
-// Iterate and display the records.
-foreach ($records as $record) {
-    echo 'Homework ID: ' . $record->id . '<br>';
-    echo 'Homework Name: ' . $record->name . '<br>';
-    // Add any other fields you'd like to display.
+echo $record->name . '<br>';
+echo $record->duedate . '<br>';
+echo $record->description . '<br>';
+
+$homeworkliterature = $DB->get_records('homework_literature', ['homework' => $cm->instance]);
+$homeworklinks = $DB->get_records('homework_links', ['homework' => $cm->instance]);
+foreach ($homeworkliterature as $literature) {
+    ob_start();
+    ?>
+    <div class="literature">
+        <p><?= $literature->description ?></p>
+        <p><?= $literature->startpage . " - " . $literature->endpage ?></p>
+    </div>
+    <?php
+    echo ob_get_clean();
 }
+foreach ($homeworklinks as $link) {
+    ob_start();
+    ?>
+    <div class="literature">
+        <p><?= $link->description ?></p>
+        <a href="<?= $link->link ?>"><?= $link->link ?></a>
+    </div>
+    <?php
+    echo ob_get_clean();
+}
+
 if ($viewobj->canedit && !$viewobj->hashomework) {
     echo html_writer::link($viewobj->editurl, get_string('addhomework', 'homework'), ['class' => 'btn btn-secondary']);
 }
