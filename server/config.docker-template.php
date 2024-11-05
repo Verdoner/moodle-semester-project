@@ -48,7 +48,7 @@ if (strpos($_SERVER['HTTP_HOST'], '.gitpod.io') !== false) {
     }
 }
 
-$CFG->dataroot  = '/var/www/moodledata';
+$CFG->dataroot  = __DIR__ . '/../moodledata';
 $CFG->admin     = 'admin';
 $CFG->directorypermissions = 0777;
 // $CFG->smtphosts = 'mailpit:1025'; // Uncomment if needed
@@ -63,7 +63,7 @@ $CFG->directorypermissions = 0777;
 // $CFG->allowthemechangeonurl = 1; // Uncomment if needed
 // $CFG->passwordpolicy = 0; // Uncomment if needed
 // $CFG->cronclionly = 0; // Uncomment if needed
-$CFG->pathtophp = '/usr/local/bin/php';
+// $CFG->pathtophp = '/usr/local/bin/php'; // Uncomment if needed
 
 $CFG->phpunit_dbtype = 'mariadb'; // default: $CFG->phpunit_dbtype = getenv('MOODLE_DOCKER_DBTYPE')
 $CFG->phpunit_dblibrary = 'native';
@@ -74,7 +74,7 @@ $CFG->phpunit_dbpass = 'root'; // default: $CFG->phpunit_dbpass = getenv('MOODLE
 $CFG->phpunit_dbname = 'phpu_moodle';
 $CFG->phpunit_dboptions = ['dbcollation' => getenv('MOODLE_DOCKER_DBCOLLATION')];
 $CFG->phpunit_prefix = 'phpu_';
-$CFG->phpunit_dataroot  = '/var/www/phpunitdata';
+$CFG->phpunit_dataroot  = __DIR__ . '/../phpunitdata';
 define('TEST_EXTERNAL_FILES_HTTP_URL', 'http://exttests:9000');
 define('TEST_EXTERNAL_FILES_HTTPS_URL', 'http://exttests:9000');
 
@@ -88,14 +88,14 @@ $CFG->behat_dbname = 'bht_moodle';
 $CFG->behat_dboptions = ['dbcollation' => getenv('MOODLE_DOCKER_DBCOLLATION')];
 $CFG->behat_prefix = 'bht_';
 $CFG->behat_wwwroot   = 'http://webserver';
-$CFG->behat_dataroot  = '/var/www/behatdata';
+$CFG->behat_dataroot  = __DIR__ . '/../behatdata';
 $CFG->behat_profiles = array(
     'default' => array(
         'browser' => getenv('MOODLE_DOCKER_BROWSER'),
         'wd_host' => 'http://selenium:4444/wd/hub',
     ),
 );
-$CFG->behat_faildump_path = '/var/www/behatfaildumps';
+$CFG->behat_faildump_path = __DIR__ . '/../behatfaildumps';
 $CFG->behat_increasetimeout = getenv('MOODLE_DOCKER_TIMEOUT_FACTOR');
 
 define('PHPUNIT_LONGTEST', true);
