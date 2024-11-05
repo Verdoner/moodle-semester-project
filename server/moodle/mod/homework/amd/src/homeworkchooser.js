@@ -16,9 +16,10 @@ import ModalEvents from 'core/modal_events';
  * Initializes the Homework Chooser Modal.
  * @param {int} cmid
  * @param {string} title
+ * @param {int} currentHomework
  * @returns {Promise<void>}
  */
-export const init = async(cmid, title) => {
+export const init = async(cmid, title, currentHomework) => {
     $('#open-homework-chooser').on('click', () => {
         Ajax.call([{
             methodname: 'mod_homework_get_homework_chooser',
@@ -28,11 +29,9 @@ export const init = async(cmid, title) => {
                     title: title,
                     body: `${response.html}`,
                     large: true,
-                    removeOnClose: true,
+                    removeOnClose: true
                 });
 
-                // Show the modal.
-                await modal.show();
 
                 // Initialize elements once the modal content is rendered.
                 modal.getRoot().on(ModalEvents.shown, () => {
@@ -86,10 +85,13 @@ export const init = async(cmid, title) => {
                     }
                 });
 
+                // Show the modal.
+                await modal.show();
+
                 // Attach event listeners for buttons
                 modal.getRoot().on('click', '[data-action="submit"]', (e) => {
                     e.preventDefault();
-                    handleFormSubmit(modal);
+                    handleFormSubmit(modal, currentHomework);
                 });
 
                 modal.getRoot().on('click', '[data-action="cancel"]', (e) => {
@@ -108,9 +110,10 @@ export const init = async(cmid, title) => {
  * Handles form submission inside the modal.
  *
  * @param {Modal} modal - The instance of the modal containing the form.
+ * @param currentHomework - The id of the homework which is being edited.
  */
-const handleFormSubmit = (modal) => {
-    let inputField = modal.getRoot().find('#inputField').val();
+const handleFormSubmit = (modal, currentHomework) => {
+    let inputField = modal.getRoot().find('#inputField')[0];
 
     if (inputField.value === "") {
         inputField.setCustomValidity("Please fill in the input field.");
@@ -128,9 +131,10 @@ const handleFormSubmit = (modal) => {
         Ajax.call([{
             methodname: 'mod_homework_save_homework_literature',
             args: {
-                inputfield: inputField,
+                inputfield: inputField.value,
                 startpage: startPage,
                 endpage: endPage,
+                homework: currentHomework,
             },
             done: function() {
                 // Close the modal after successful submission.
@@ -147,8 +151,9 @@ const handleFormSubmit = (modal) => {
         Ajax.call([{
             methodname: 'mod_homework_save_homework_link',
             args: {
-                inputfield: inputField,
+                inputfield: inputField.value,
                 link: link,
+                homework: currentHomework,
             },
             done: function() {
                 // Close the modal after successful submission.
