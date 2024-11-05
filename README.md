@@ -30,7 +30,7 @@ Before setting up the Moodle Docker environment, ensure the following prerequisi
 ## Setting Up Ubuntu and Creating a User
 Once Ubuntu is installed from the Microsoft Store, follow these steps to complete the initial setup:
 1. **Open Ubuntu:**
-   - Launch Ubuntu by searching for it in the Start menu or by running the command `wsl` in a PowerShell or Command Prompt window.
+   - Launch Ubuntu by searching for it in the Start menu or by running the command `wsl -d Ubuntu` in a PowerShell or Command Prompt window.
    - On the first run, Ubuntu will prompt you to create a new user account.
 2. **Create a New User:**
    - Enter a username when prompted (this will be your default user in Ubuntu).
@@ -39,7 +39,7 @@ Once Ubuntu is installed from the Microsoft Store, follow these steps to complet
 3. **Navigate to the User's Home Directory:**
    - By default, you will start in your home directory, which is located at:
       ```bash
-      /home/USERNAME/
+      cd ~
       ```
    - Replace USERNAME with the name you created in the previous step if needed. This is where your user-specific files and configurations are stored.
 4. **Confirm Access to Home Directory:**
