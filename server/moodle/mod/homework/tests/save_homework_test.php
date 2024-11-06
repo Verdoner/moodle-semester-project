@@ -30,13 +30,11 @@ use dml_exception;
 /**
  *
  */
-final class save_homework_test extends advanced_testcase
-{
+final class save_homework_test extends advanced_testcase {
     /**
      * Setup routine before running each test.
      */
-    protected function setUp(): void
-    {
+    protected function setUp(): void {
         parent::setUp();
         $this->resetAfterTest(true); // Reset the Moodle environment after each test.
     }
@@ -48,8 +46,7 @@ final class save_homework_test extends advanced_testcase
      * @throws dml_exception
      * @covers :: \mod_homework\external\save_homework_literature
      */
-    public function test_save_homework_literature(): void
-    {
+    public function test_save_homework_literature(): void {
         global $DB;
 
         // Call the external class method.
@@ -84,8 +81,7 @@ final class save_homework_test extends advanced_testcase
      * @throws dml_exception
      * @covers :: \mod_homework\external\save_homework_link
      */
-    public function test_save_homework_link(): void
-    {
+    public function test_save_homework_link(): void {
         global $DB;
 
         // Call the external class method.
@@ -94,6 +90,7 @@ final class save_homework_test extends advanced_testcase
         $homework = 1;
 
         $result = \mod_homework\external\save_homework_link::execute($inputfield, $link, $homework);
+
 
         // Assert that the status is 'success'.
         $this->assertEquals('success', $result['status']);

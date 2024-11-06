@@ -84,7 +84,7 @@ echo html_writer::start_tag('div', ['class' => 'mod-quiz-edit-content']);
 
 // Include the AMD module.
 $PAGE->requires->js_call_amd('mod_homework/homeworkchooser', 'init', [$cm->id,
-    get_string('homeworkchooser', 'mod_homework'), $instance->id]);
+get_string('homeworkchooser', 'mod_homework'), $instance->id]);
 
 // Output the footer - REQUIRED.
 echo $OUTPUT->footer();

@@ -1,16 +1,10 @@
+// homeworkchooser.js (Updated Version)
+
 import $ from 'jquery';
 import Ajax from 'core/ajax';
 import MyModal from 'mod_homework/modal_homework';
 import ModalEvents from 'core/modal_events';
-
-/**
- * Homework/amd/src/modal_homework.js
- *
- * @package
- * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *
- */
+import Dropzone from 'core/dropzone';
 
 /**
  * Initializes the Homework Chooser Modal.
@@ -28,30 +22,34 @@ export const init = async(cmid, title, currentHomework) => {
                 const modal = await MyModal.create({
                     title: title,
                     body: `${response.html}`,
+                    // footer: 'An example footer content',
                     large: true,
                     removeOnClose: true
                 });
 
 
-                // Initialize elements once the modal content is rendered.
+                // Initialize elements once the modal content is rendered
                 modal.getRoot().on(ModalEvents.shown, () => {
-                    // Initialize the elements after modal is displayed.
+                    // Initialize the elements after modal is displayed
                     const startPageInput = modal.getRoot().find('#startPage')[0];
                     const endPageInput = modal.getRoot().find('#endPage')[0];
                     const radioButtons = modal.getRoot().find('input[name="option"]');
                     const testTextarea = modal.getRoot().find('#page-range-input')[0];
                     const testLink = modal.getRoot().find('#linkDiv')[0];
+                    const dropzoneContainer = modal.getRoot().find('#dropzone-container')[0];
 
-                    // Attach event listeners for page input validation.
+                    // Attach event listeners for page input validation
                     startPageInput.addEventListener('input', validatePageRange);
                     endPageInput.addEventListener('input', validatePageRange);
 
-                    // Attach event listeners for radio buttons.
+                    // Attach event listeners for radio buttons
                     radioButtons.each((_, radio) => {
                         radio.addEventListener('change', toggleInputs);
                     });
 
-                    // Function to validate page range.
+                    initializeDropzone(dropzoneContainer);
+
+                    // Function to validate page range
                     /**
                      *
                      */
@@ -70,7 +68,7 @@ export const init = async(cmid, title, currentHomework) => {
                         }
                     }
 
-                    // Function to toggle between text and link inputs.
+                    // Function to toggle between text and link inputs
                     /**
                      *
                      */
@@ -85,12 +83,14 @@ export const init = async(cmid, title, currentHomework) => {
                     }
                 });
 
+
                 // Show the modal.
                 await modal.show();
 
                 // Attach event listeners for buttons
                 modal.getRoot().on('click', '[data-action="submit"]', (e) => {
                     e.preventDefault();
+
                     handleFormSubmit(modal, currentHomework);
                 });
 
@@ -100,7 +100,7 @@ export const init = async(cmid, title, currentHomework) => {
                 });
             },
             fail: (error) => {
-                throw new Error(`Failed to load homework chooser content: ${error}`);
+                console.error("Failed to load homework chooser content:", error);
             }
         }]);
     });
@@ -108,60 +108,88 @@ export const init = async(cmid, title, currentHomework) => {
 
 /**
  * Handles form submission inside the modal.
- *
+ * @param {int} cminstance
  * @param {Modal} modal - The instance of the modal containing the form.
  * @param currentHomework - The id of the homework which is being edited.
  */
 const handleFormSubmit = (modal, currentHomework) => {
     let inputField = modal.getRoot().find('#inputField')[0];
 
-    if (inputField.value === "") {
-        inputField.setCustomValidity("Please fill in the input field.");
-        inputField.reportValidity(); // Shows the custom message
-        event.preventDefault(); // Prevents form submission
-    } else {
-        inputField.setCustomValidity(""); // Clear the custom message
-    }
-
     if (modal.getRoot().find('#option1').is(':checked')) {
+
         let startPage = modal.getRoot().find('#startPage').val();
         let endPage = modal.getRoot().find('#endPage').val();
 
-        // AJAX call to send data to the server.
+        // AJAX call to send data to the server
         Ajax.call([{
-            methodname: 'mod_homework_save_homework_literature',
+            methodname: 'mod_homework_save_homework_literature',  // Your PHP function that will handle the data
             args: {
                 inputfield: inputField.value,
                 startpage: startPage,
                 endpage: endPage,
                 homework: currentHomework,
             },
-            done: function() {
-                // Close the modal after successful submission.
+            done: function(response) {
+                console.log("Data saved successfully:", response);
+                // Close the modal after successful submission
                 modal.hide();
             },
             fail: function(error) {
-                throw new Error(`Failed to save data: ${error}`);
+                console.error("Failed to save data:", error);
             }
         }]);
+
     } else if (modal.getRoot().find('#option2').is(':checked')) {
+
         let link = modal.getRoot().find('#link').val();
 
-        // AJAX call to send data to the server.
+        // AJAX call to send data to the server
         Ajax.call([{
-            methodname: 'mod_homework_save_homework_link',
+            methodname: 'mod_homework_save_homework_link',  // Your PHP function that will handle the data
             args: {
                 inputfield: inputField.value,
                 link: link,
                 homework: currentHomework,
             },
-            done: function() {
-                // Close the modal after successful submission.
+            done: function(response) {
+                console.log("Data saved successfully:", response);
+                // Close the modal after successful submission
                 modal.hide();
             },
             fail: function(error) {
-                throw new Error(`Failed to save data: ${error}`);
+                console.error("Failed to save data:", error);
             }
         }]);
     }
+};
+
+const initializeDropzone = (container) => {
+    const dropZone = new Dropzone(container, "application/pdf", async (files) => {
+        for (let file of files) {
+            if (file.type === "application/pdf") { // Validate file type
+                try {
+                    const formData = new FormData();
+                    formData.append("file", file);
+
+                    const response = await fetch("/mod/homework/save_homework_file.php", {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        console.log("File uploaded successfully:", file.name);
+                    } else {
+                        console.error("Failed to upload file:", file.name);
+                    }
+                } catch (error) {
+                    console.error("Error uploading file:", file.name, error);
+                }
+            } else {
+                console.warn("Invalid file type:", file.type);
+            }
+        }
+    });
+
+    dropZone.setLabel("(Optional) Drop PDF files here");
+    dropZone.init();
 };

@@ -1,0 +1,34 @@
+<div id="info-homework-modal">
+    <h1>Mark homework completed</h1>
+    <p>{{nohomework}}</p>
+    <!-- Add additional content or buttons here -->
+        {{#literature}}
+            <div id="literature-{{id}}">
+            <h3>{{description}}</h3>
+            <form>
+                    <label for="homework-time">Time for Homework (in minutes):</label>
+                    <input type="number" class="homework-time-literature" id="{{id}}" name="homework-time" min="1">
+            </form>
+            </div>
+        {{/literature}}
+
+        {{#links}}
+                    <div id="links-{{id}}">
+                    <h3>{{description}}</h3>
+                    <form>
+                            <label for="homework-time">Time for Homework (in minutes):</label>
+                            <input type="number" class="homework-time-links" id="{{id}}" name="homework-time" min="1">
+                    </form>
+                    </div>
+        {{/links}}
+
+        {{#videos}}
+                    <div id="videos-{{id}}">
+                    <h3>{{description}}</h3>
+                    <form>
+                            <label for="homework-time">Time for Homework (in minutes):</label>
+                            <input type="number" class="homework-time-videos" id="{{id}}" name="homework-time" min="1">
+                    </form>
+                    </div>
+         {{/videos}}
+</div>

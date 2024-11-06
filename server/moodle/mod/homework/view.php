@@ -70,7 +70,7 @@ if ($PAGE->has_secondary_navigation()) {
             'editnav'
         );
         $PAGE->secondarynav->add_node($editnode);
-    } catch (coding_exception|\core\exception\moodle_exception $e) {
+    } catch (coding_exception | \core\exception\moodle_exception $e) {
         debugging($e->getMessage(), DEBUG_DEVELOPER);
     }
 }
@@ -92,27 +92,51 @@ echo $record->description . '<br>';
 
 $homeworkliterature = $DB->get_records('homework_literature', ['homework' => $cm->instance]);
 $homeworklinks = $DB->get_records('homework_links', ['homework' => $cm->instance]);
-foreach ($homeworkliterature as $literature) {
-    ob_start();
-    ?>
+?>
+<?php
+/**
+ * Loop through each item in the homework literature and display it.
+ *
+ * @var object $literature Literature item with description, startpage, and endpage properties.
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+foreach ($homeworkliterature as $literature) : ?>
     <div class="literature">
-        <p><?= $literature->description ?></p>
-        <p><?= $literature->startpage . " - " . $literature->endpage ?></p>
+        <p><?= htmlspecialchars($literature->description) ?></p>
+        <p><?= htmlspecialchars($literature->startpage) . " - " . htmlspecialchars($literature->endpage) ?></p>
+    </div>
+<?php endforeach; ?>
+<?php
+/**
+ * Loop through each item in the homework links and display it.
+ *
+ * @var object $link Link item with description and link properties.
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+foreach ($homeworklinks as $link) : ?>
+    <div class="literature">
+        <p><?= htmlspecialchars($link->description) ?></p>
+        <a href="<?= htmlspecialchars($link->link) ?>"><?= htmlspecialchars($link->link) ?></a>
     </div>
     <?php
-    echo ob_get_clean();
-}
-foreach ($homeworklinks as $link) {
-    ob_start();
-    ?>
-    <div class="literature">
-        <p><?= $link->description ?></p>
-        <a href="<?= $link->link ?>"><?= $link->link ?></a>
-    </div>
-    <?php
-    echo ob_get_clean();
-}
-
+/**
+ *
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+endforeach; ?>
+<?php
+/**
+ *
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 if ($viewobj->canedit && !$viewobj->hashomework) {
     echo html_writer::link($viewobj->editurl, get_string('addhomework', 'homework'), ['class' => 'btn btn-secondary']);
 }

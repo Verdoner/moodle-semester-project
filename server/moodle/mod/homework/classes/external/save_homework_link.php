@@ -37,15 +37,13 @@ use external_single_structure;
 /**
  *
  */
-class save_homework_link extends \external_api
-{
+class save_homework_link extends \external_api {
     /**
      * Define the parameters expected by this function.
      *
      * @return external_function_parameters
      */
-    public static function execute_parameters()
-    {
+    public static function execute_parameters() {
         return new external_function_parameters([
             'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
             'link' => new external_value(PARAM_TEXT, 'link field value'),
@@ -61,8 +59,7 @@ class save_homework_link extends \external_api
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($inputfield, $link, $homework)
-    {
+    public static function execute($inputfield, $link, $homework) {
         global $DB, $USER;
 
         // Handle the input field value here.
@@ -74,6 +71,7 @@ class save_homework_link extends \external_api
         $record->timecreated = time();
         $record->timemodified = time();
         $record->homework = $homework;
+        $record->homework_id = $homework;
 
         // Save to database.
         $DB->insert_record('homework_links', $record);
@@ -83,10 +81,10 @@ class save_homework_link extends \external_api
     }
 
     /**
+     *
      * @return external_single_structure Define the return values.
      */
-    public static function execute_returns()
-    {
+    public static function execute_returns() {
         return new external_single_structure([
             'status' => new external_value(PARAM_TEXT, 'Status of the request'),
             'message' => new external_value(PARAM_TEXT, 'Message with details about the request status'),

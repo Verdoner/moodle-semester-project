@@ -17,14 +17,32 @@
 /**
  * homework/db/services.php
  *
- * @package   blocks_homework
- * @copyright 2024, cs-24-sw-5-13 <cs-24-sw-5-13@student.aau.dk>
+ * @package   block_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>, cs-24-sw-5-13 <cs-24-sw-5-13@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  */
+
 defined('MOODLE_INTERNAL') || die();
 
+
 $functions = [
+    'block_homework_get_infohomework_modal' => [
+    'classname'   => 'block_homework\external\get_infohomework_modal',
+    'methodname'  => 'execute',
+    'classpath'   => 'blocks/homework/classes/external/get_infohomework_modal.php',
+    'description' => 'Get the homework info content',
+    'type'        => 'read',
+    'ajax'        => true,
+    ],
+    'block_homework_save_homeworktime' => [
+        'classname'   => 'block_homework\external\save_homeworktime',
+        'methodname'  => 'execute',
+        'classpath'   => 'blocks/homework/classes/external/save_homeworktime.php',
+        'description' => 'Save homework time',
+        'type'        => 'write',
+        'ajax'        => true,
+    ],
     'block_homework_get_homework' => [
         'classname'   => 'block_homework\external\get_homework',
         'methodname'  => 'execute',
@@ -38,6 +56,8 @@ $functions = [
 $services = [
     'block_homework_services' => [
         'functions' => [
+            'block_homework_get_infohomework_modal',
+            'block_homework_save_homeworktime',
             'block_homework_get_homework',
         ],
         'restrictedusers' => 0,

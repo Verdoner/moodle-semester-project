@@ -29,7 +29,7 @@ global $ADMIN;
 
 // Add settings page.
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_settingpage('mod_homework', get_string('pluginname', 'mod_homework')));
+    // $settings->add(new admin_settingpage('mod_homework', get_string('pluginname', 'mod_homework')));
 
     $settings->add(new admin_setting_configtext(
         'homework/some_setting',
@@ -38,5 +38,5 @@ if ($ADMIN->fulltree) {
         'default_value'
     ));
 
-    $ADMIN->add('modsettings', $settings);
+    // $ADMIN->add('modsettings', $settings);
 }
