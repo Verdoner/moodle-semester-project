@@ -64,7 +64,7 @@ class save_homework_literature extends \external_api {
      * @throws \dml_exception
      */
     public static function execute($inputfield, $startpage, $endpage, $homework, $fileid = null) {
-        global $DB, $USER;
+        global $DB, $USER, $PAGE;
 
         $record = new \stdClass();
         $filesrecord = new \stdClass();
