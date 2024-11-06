@@ -48,7 +48,7 @@ class save_homework_video extends \external_api {
             'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
             'starttime' => new external_value(PARAM_INT, 'startTime field value'),
             'endtime' => new external_value(PARAM_INT, 'endTime field value'),
-            'instance' => new external_value(PARAM_INT, 'Instance field value'),
+            'homework' => new external_value(PARAM_INT, 'homework field value'),
             'fileid' => new external_value(PARAM_INT, 'Uploaded file ID', VALUE_OPTIONAL),
         ]);
     }
@@ -58,12 +58,12 @@ class save_homework_video extends \external_api {
      * @param $inputfield
      * @param $starttime
      * @param $endtime
-     * @param $instance
+     * @param $homework
      * @param $fileid
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($inputfield, $starttime, $endtime, $instance, $fileid = null) {
+    public static function execute($inputfield, $starttime, $endtime, $homework, $fileid = null) {
         global $DB, $USER;
 
         $record = new \stdClass();
@@ -73,12 +73,12 @@ class save_homework_video extends \external_api {
         $record->description = $inputfield;
         $record->starttime = $starttime;
         $record->endtime = $endtime;
-        $record->homework_id = $instance;
+        $record->homework = $homework;
         if ($fileid) {
             $record->fileid = $fileid;
 
             $filesrecord->files_id = $fileid;
-            $filesrecord->homework_id = $instance;
+            $filesrecord->homework_id = $homework;
 
             try {
                 $DB->insert_record('files_homework', $filesrecord);
