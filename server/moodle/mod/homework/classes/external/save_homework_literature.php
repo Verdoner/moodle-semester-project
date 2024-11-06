@@ -37,13 +37,12 @@ use external_single_structure;
 /**
  *
  */
-class save_homework_literature extends \external_api
-{
+class save_homework_literature extends \external_api {
     /**
+     *
      * @return external_function_parameters Define the parameters expected by this function.
      */
-    public static function execute_parameters()
-    {
+    public static function execute_parameters() {
         return new external_function_parameters([
             'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
             'startpage' => new external_value(PARAM_INT, 'startPage field value'),
@@ -61,8 +60,7 @@ class save_homework_literature extends \external_api
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($inputfield, $startpage, $endpage, $homework)
-    {
+    public static function execute($inputfield, $startpage, $endpage, $homework) {
         global $DB, $USER, $PAGE;
 
         // Handle the input field value here.
@@ -74,6 +72,7 @@ class save_homework_literature extends \external_api
         $record->endpage = $endpage;
         $record->timecreated = time();
         $record->timemodified = time();
+        $record->homework_id = $homework;
         $record->homework = $homework;
 
         $DB->insert_record('homework_literature', $record);
@@ -83,10 +82,10 @@ class save_homework_literature extends \external_api
     }
 
     /**
+     *
      * @return external_single_structure Define the return values.
      */
-    public static function execute_returns()
-    {
+    public static function execute_returns() {
         return new external_single_structure([
             'status' => new external_value(PARAM_TEXT, 'Status of the request'),
             'message' => new external_value(PARAM_TEXT, 'Message with details about the request status'),

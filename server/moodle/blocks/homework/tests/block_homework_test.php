@@ -49,8 +49,8 @@ final class block_homework_test extends \basic_testcase {
             $testhomework1->introformat = 1;
             $testhomework1->description = '';
             $testhomework1->eventid = 0;
-			$testhomework1->duedate = time() + 86400000 * 2; // 2 days from now
-	        $testhomework1->time = 10000;
+            $testhomework1->duedate = time() + 86400000 * 2; // 2 days from now
+            $testhomework1->time = 10000;
 
         $testhomework2 = new stdClass();
             $testhomework2->id = 2;
@@ -62,8 +62,8 @@ final class block_homework_test extends \basic_testcase {
             $testhomework2->introformat = 1;
             $testhomework2->description = '';
             $testhomework2->eventid = 0;
-			$testhomework2->duedate = time() + 86400000; // 1 day from now
-	        $testhomework2->time = 20000;
+            $testhomework2->duedate = time() + 86400000; // 1 day from now
+            $testhomework2->time = 20000;
 
 
         // Assert that a course belonging to the correct course is returned
@@ -75,18 +75,18 @@ final class block_homework_test extends \basic_testcase {
         array_push($homeworks, $testhomework2);
         $tmparray = \block_homework::filter_homework_content('http://localhost/course/view.php?id=3', $homeworks);
         $this->assertNotContains($testhomework2, $tmparray);
-       
 
-		$this->assertEquals($homeworks[0], $testhomework1);
-		$this->assertEquals($homeworks[1], $testhomework2);
-	    $homeworks = get_homework::sortDueDate($homeworks);
 
-		$this->assertEquals($homeworks[1], $testhomework1);
-	    $this->assertEquals($homeworks[0], $testhomework2);
+        $this->assertEquals($homeworks[0], $testhomework1);
+        $this->assertEquals($homeworks[1], $testhomework2);
+        $homeworks = get_homework::sortDueDate($homeworks);
 
-	    $homeworks = get_homework::sortTime($homeworks);
-	    $this->assertEquals($homeworks[0], $testhomework1);
-	    $this->assertEquals($homeworks[1], $testhomework2);
+        $this->assertEquals($homeworks[1], $testhomework1);
+        $this->assertEquals($homeworks[0], $testhomework2);
+
+        $homeworks = get_homework::sortTime($homeworks);
+        $this->assertEquals($homeworks[0], $testhomework1);
+        $this->assertEquals($homeworks[1], $testhomework2);
       */
     }
 }

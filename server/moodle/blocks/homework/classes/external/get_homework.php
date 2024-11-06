@@ -51,61 +51,71 @@ class get_homework extends \external_api {
         ]);
     }
 
-	/**
-	 * The logic making the custom html for modal client-side
-	 * @param $sort - The current modules id
-	 * @return array - The html to be shown client-side
-	 * @throws JsonException|dml_exception
-	 */
-    public static function execute($sort){
+    /**
+     * The logic making the custom html for modal client-side
+     * @param $sort - The current modules id
+     * @return array - The html to be shown client-side
+     * @throws JsonException|dml_exception
+     */
+    public static function execute($sort) {
         global $DB, $USER;
-		$userCourses = enrol_get_users_courses($USER->id, true);
-		$homeworkArray = [];
-		foreach($userCourses as $course){
-			$homeworkRecords = $DB->get_records('homework', ['course' => $course->id]);
-			foreach($homeworkRecords as $homework){
-				$homeworkArray[] = [
-					'id' => $homework->id,
-					'name' => $homework->name,
-					'intro' => $homework->intro,
-					'duedate' => $homework->duedate,
-					'course' => $course->fullname
-				];
-			}
-		}
-		if($sort === 'due'){
-			$homeworkArray = self::sortDueDate($homeworkArray);
-		}
-		/*else if($sort === 'time'){
-			$homeworkArray = self::sortTime($homeworkArray);
-		}
-		Implement when time task is done
-		*/
+        $usercourses = enrol_get_users_courses($USER->id, true);
+        $homeworkarray = [];
+        foreach ($usercourses as $course) {
+            $homeworkrecords = $DB->get_records('homework', ['course' => $course->id]);
+            foreach ($homeworkrecords as $homework) {
+                $homeworkarray[] = [
+                    'id' => $homework->id,
+                    'name' => $homework->name,
+                    'intro' => $homework->intro,
+                    'duedate' => $homework->duedate,
+                    'course' => $course->fullname,
+                ];
+            }
+        }
+        if ($sort === 'due') {
+            $homeworkarray = self::sortDueDate($homeworkarray);
+        }
+        /*else if($sort === 'time'){
+            $homeworkArray = self::sortTime($homeworkArray);
+        }
+        Implement when time task is done
+        */
 
-	    return ["homework" => json_encode($homeworkArray, JSON_THROW_ON_ERROR), JSON_THROW_ON_ERROR];
+        return ["homework" => json_encode($homeworkarray, JSON_THROW_ON_ERROR), JSON_THROW_ON_ERROR];
     }
 
-	public static function sortDueDate(array $homeworkArray): array{
-		usort($homeworkArray, function($a, $b){
-			return $a['duedate'] - $b['duedate'];
-		});
-		return $homeworkArray;
-	}
+    /**
+     *
+     * @param array $homeworkarray
+     * @return array
+     */
+    public static function sortduedate(array $homeworkarray): array {
+        usort($homeworkarray, function ($a, $b) {
+            return $a['duedate'] - $b['duedate'];
+        });
+        return $homeworkarray;
+    }
 
-	public static function sortTime(array $homeworkArray): array{
-		usort($homeworkArray, function($a, $b){
-			return $a['time'] - $b['time'];
-		});
-		return $homeworkArray;
-	}
+    /**
+     *
+     * @param array $homeworkarray
+     * @return array
+     */
+    public static function sorttime(array $homeworkarray): array {
+        usort($homeworkarray, function ($a, $b) {
+            return $a['time'] - $b['time'];
+        });
+        return $homeworkarray;
+    }
 
-	/**
-	 *
-	 * @return string - The name of the function
-	 */
-	public static function get_homework_returns() {
-		return 'homework';
-	}
+    /**
+     *
+     * @return string - The name of the function
+     */
+    public static function get_homework_returns() {
+        return 'homework';
+    }
 
     /**
      *

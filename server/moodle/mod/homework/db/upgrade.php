@@ -23,12 +23,12 @@
  * @copyright   2024 PV
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-function xmldb_homework_upgrade($oldversion): bool
-{
+function xmldb_homework_upgrade($oldversion): bool {
+
     global $DB;
 
     $dbman = $DB->get_manager();
-
+/*
     // Upgrade step for creating the 'homework' table.
     if ($oldversion < 3024090700) { // Match this version with the latest in your XMLDB definition.
         // Define table 'homework' to be created.
@@ -116,6 +116,7 @@ function xmldb_homework_upgrade($oldversion): bool
         if (!$dbman->table_exists($table)) {
             $dbman->create_table($table);
         }
+    }
         // Define table files_homework to be created.
         $table = new xmldb_table('files_homework');
 
@@ -128,9 +129,9 @@ function xmldb_homework_upgrade($oldversion): bool
         $table->add_key('f_key_homework_id', XMLDB_KEY_FOREIGN, ['homework_id'], 'homework', ['id']);
 
         // Conditionally launch create table for files_homework.
-        if (!$dbman->table_exists($table)) {
-            $dbman->create_table($table);
-        }
+    if (!$dbman->table_exists($table)) {
+        $dbman->create_table($table);
+    }
 
         // Upgrade step for creating the 'homework_literature' table.
         // Define table homework_literature to be created.
@@ -163,7 +164,6 @@ function xmldb_homework_upgrade($oldversion): bool
         if ($dbman->field_exists($table, $field)) {
             $dbman->drop_key($table, $key);
             $dbman->drop_field($table, $field);
-
         }
         $dbman->add_field($table, $field);
         $dbman->add_key($table, $key);
@@ -318,6 +318,7 @@ function xmldb_homework_upgrade($oldversion): bool
     }
 
 
+*/
 
     return true;
 }
