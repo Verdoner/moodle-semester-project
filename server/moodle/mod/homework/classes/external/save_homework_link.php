@@ -77,6 +77,7 @@ class save_homework_link extends \external_api {
     }
 
     /**
+     * Returns single structure of status and message.
      *
      * @return external_single_structure Define the return values.
      */

@@ -108,16 +108,16 @@ function homework_pluginfile(
     bool $forcedownload,
     array $options = []
 ): bool {
-    //Make sure the user is logged in and has access to the module
+    // Make sure the user is logged in and has access to the module.
     require_login($course, true);
 
     // Extract the filename / filepath from the $args array.
     $filename = array_pop($args); // The last item in the $args array.
     if (empty($args)) {
-        // $args is empty => the path is '/'.
+        // ... $args is empty => the path is '/'.
         $filepath = '/';
     } else {
-        // $args contains the remaining elements of the filepath.
+        // ... $args contains the remaining elements of the filepath.
         $filepath = '/' . implode('/', $args) . '/';
     }
 
@@ -128,7 +128,9 @@ function homework_pluginfile(
     $file = $fs->get_file($context->id, 'homework', $filearea, $itemid, $filepath, $filename);
     if (!$file) {
         // The file does not exist.
-        error_log("File not found: Context ID - $context->id, File area - $filearea, Item ID - $itemid, Path - $filepath, Filename - $filename");
+        //error_log() is forbidden, changed to debuggin
+        debugging("File not found: Context ID - $context->id, File area - $filearea, Item ID - $itemid,
+            Path - $filepath, Filename - $filename");
         return false;
     }
 
