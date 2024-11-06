@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,6 +17,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+
 /**
  * Block definition class for the block_homework plugin.
  *
@@ -24,6 +26,8 @@ defined('MOODLE_INTERNAL') || die();
  * @author    group 11
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die();
+
 $capabilities = [
     'block/homework:myaddinstance' => [
         'captype' => 'write',

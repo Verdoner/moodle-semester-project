@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['addhomework'] = 'Add homework';
+$string['addhomework'] = 'Add homework material';
 $string['duedate'] = 'Due Date';
 $string['duedate_in_past'] = 'The date you are trying to set is in the past! Choose a new one.';
 $string['dueto'] = 'Due at';

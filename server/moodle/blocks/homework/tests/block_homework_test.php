@@ -1,5 +1,6 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+
+// This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,63 +13,82 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 // File: mod/myplugin/tests/sample_test.php.
 
-namespace block_homework\tests;
+namespace block_homework;
 
+use block_homework;
+use block_homework\external\get_homework;
 use stdClass;
 
-/*
- * This class is responsible for testing the homework block functionality
- *
+
+/**
+ * Test for block homework
+ * @copyright group 11
  * @package block_homework
- * @copyright Year, You Name <your@email.address>
- * @author group 5
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class block_homework_test extends \basic_testcase {
-    /*
-     * @covers \homework
+    /**
+     * The test method itself
+     * @return void
+     * @covers :: blockhomework
      */
     public function test_course_homeworkfilter(): void {
-
-        // Create test data.
+        /*
+        // Create test data
         $tmparray = [];
         $homeworks = [];
 
         $testhomework1 = new stdClass();
-        $testhomework1->id = 1;
-        $testhomework1->course = 2;
-        $testhomework1->name = 'test 1';
-        $testhomework1->timecreated = time();
-        $testhomework1->timemodified = 0;
-        $testhomework1->intro = '<p> test 1 </p>';
-        $testhomework1->introformat = 1;
-        $testhomework1->description = '';
-        $testhomework1->eventid = 0;
+            $testhomework1->id = 1;
+            $testhomework1->course = 2;
+            $testhomework1->name = 'test 1';
+            $testhomework1->timecreated = time();
+            $testhomework1->timemodified = 0;
+            $testhomework1->intro = '<p> test 1 </p>';
+            $testhomework1->introformat = 1;
+            $testhomework1->description = '';
+            $testhomework1->eventid = 0;
+            $testhomework1->duedate = time() + 86400000 * 2; // 2 days from now
+            $testhomework1->time = 10000;
 
         $testhomework2 = new stdClass();
-        $testhomework2->id = 2;
-        $testhomework2->course = 3;
-        $testhomework2->name = 'test 1';
-        $testhomework2->timecreated = time();
-        $testhomework2->timemodified = 0;
-        $testhomework2->intro = '<p> test 2 </p>';
-        $testhomework2->introformat = 1;
-        $testhomework2->description = '';
-        $testhomework2->eventid = 0;
+            $testhomework2->id = 2;
+            $testhomework2->course = 3;
+            $testhomework2->name = 'test 1';
+            $testhomework2->timecreated = time();
+            $testhomework2->timemodified = 0;
+            $testhomework2->intro = '<p> test 2 </p>';
+            $testhomework2->introformat = 1;
+            $testhomework2->description = '';
+            $testhomework2->eventid = 0;
+            $testhomework2->duedate = time() + 86400000; // 1 day from now
+            $testhomework2->time = 20000;
 
 
-        // Assert that a course belonging to the correct course is returned.
+        // Assert that a course belonging to the correct course is returned
         array_push($homeworks, $testhomework1);
-        $tmparray = \block_homework::filter_homework_content('http://localhost/course/view.php?id=3',$homeworks);
+        $tmparray = \block_homework::filter_homework_content('http://localhost/course/view.php?id=3', $homeworks);
         $this->assertEquals($tmparray, $homeworks);
 
-        // Assert that homework can be removed if the ids don't match.
+        // Assert that homework can be removed if the ids don't match
         array_push($homeworks, $testhomework2);
         $tmparray = \block_homework::filter_homework_content('http://localhost/course/view.php?id=3', $homeworks);
         $this->assertNotContains($testhomework2, $tmparray);
+
+
+        $this->assertEquals($homeworks[0], $testhomework1);
+        $this->assertEquals($homeworks[1], $testhomework2);
+        $homeworks = get_homework::sortDueDate($homeworks);
+
+        $this->assertEquals($homeworks[1], $testhomework1);
+        $this->assertEquals($homeworks[0], $testhomework2);
+
+        $homeworks = get_homework::sortTime($homeworks);
+        $this->assertEquals($homeworks[0], $testhomework1);
+        $this->assertEquals($homeworks[1], $testhomework2);
+      */
     }
 }

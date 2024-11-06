@@ -20,11 +20,11 @@
  * @package   mod_homework
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *
  */
 
 require_once('../../config.php');
 global $OUTPUT, $PAGE, $DB, $CFG;
+
 use mod_homework\view_page;
 
 $id = required_param('id', PARAM_INT);// Course module ID.
@@ -84,14 +84,59 @@ $viewobj->editurl = new moodle_url('/mod/homework/edit.php', ['id' => $cm->id]);
 
 // Add the actual page content here.
 echo html_writer::tag('div', 'This is the homework view page', ['class' => 'content']);
-$records = $DB->get_records('homework');
+$record = $DB->get_record('homework', ['id' => $cm->instance], '*', MUST_EXIST);
 
-// Iterate and display the records.
-foreach ($records as $record) {
-    echo 'Homework ID: ' . $record->id . '<br>';
-    echo 'Homework Name: ' . $record->name . '<br>';
-    // Add any other fields you'd like to display.
-}
+echo $record->name . '<br>';
+echo $record->duedate . '<br>';
+echo $record->description . '<br>';
+
+$homeworkliterature = $DB->get_records('homework_literature', ['homework' => $cm->instance]);
+$homeworklinks = $DB->get_records('homework_links', ['homework' => $cm->instance]);
+?>
+<?php
+/**
+ * Loop through each item in the homework literature and display it.
+ *
+ * @var object $literature Literature item with description, startpage, and endpage properties.
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+foreach ($homeworkliterature as $literature) : ?>
+    <div class="literature">
+        <p><?= htmlspecialchars($literature->description) ?></p>
+        <p><?= htmlspecialchars($literature->startpage) . " - " . htmlspecialchars($literature->endpage) ?></p>
+    </div>
+<?php endforeach; ?>
+<?php
+/**
+ * Loop through each item in the homework links and display it.
+ *
+ * @var object $link Link item with description and link properties.
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+foreach ($homeworklinks as $link) : ?>
+    <div class="literature">
+        <p><?= htmlspecialchars($link->description) ?></p>
+        <a href="<?= htmlspecialchars($link->link) ?>"><?= htmlspecialchars($link->link) ?></a>
+    </div>
+    <?php
+/**
+ *
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+endforeach; ?>
+<?php
+/**
+ *
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 if ($viewobj->canedit && !$viewobj->hashomework) {
     echo html_writer::link($viewobj->editurl, get_string('addhomework', 'homework'), ['class' => 'btn btn-secondary']);
 }
