@@ -54,7 +54,7 @@ Once Ubuntu is installed from the Microsoft Store, follow these steps to complet
 
 Now you’re ready to proceed with configuring your Moodle Docker environment in this directory.
 
-## Clone the Repository
+## Clone the Repository in Ubuntu
 
 Choose one of the following commands based on your needs:
 
@@ -79,7 +79,7 @@ Follow these steps:
       - Copy the generated token immediately, as it will not be displayed again.
 > **Note: When prompted for your password in the terminal, paste your personal access token instead.**
 
-## Set Up Sparse Checkout
+## Set Up Sparse Checkout in Ubuntu
 1. Initialize the sparse checkout configuration by running:
    ```bash
    git init && git config core.sparseCheckout true && git remote add -f origin https://github.com/AAU-P5-Moodle/moodle-2.git && echo server/moodle > .git/info/sparse-checkout
@@ -89,13 +89,13 @@ Follow these steps:
    git checkout [branchname]  # Replace [branchname] with your branch name, e.g., main
    ```
 
-## Copy Docker Template Files
+## Copy Docker Template Files in Ubuntu
 Copy the template files for Docker into the Moodle folder:
 ```bash
 cp server/composer.docker-template.json server/moodle/composer.json && cp server/config.docker-template.php server/moodle/config.php && cp server/Gruntfile.docker-template.js server/moodle/Gruntfile.js && cp server/package.docker-template.json server/moodle/package.json
 ```
 
-## Start Moodle
+## Start Moodle in Ubuntu
 1. Ensure you're in the cloned directory, e.g., `/home/USERNAME/moodle-2`.
 2. Start Moodle by running:
    ```bash
@@ -103,14 +103,14 @@ cp server/composer.docker-template.json server/moodle/composer.json && cp server
    ```
    > Note: The initial startup may take some time, as it will install various Composer and Node modules.
 
-## Access Docker Terminal
+## Access Docker Terminal in Ubuntu
 1. To open a terminal inside Docker, confirm you're in the cloned directory, e.g., `/home/USERNAME/moodle-2`.
 2. Run the following command:
    ```bash
    sh bash_moodle_unix.sh
    ```
 
-## Initialize Testing and Tools
+## Initialize Testing and Tools in Ubuntu
 Once inside the Docker terminal, initialize the following tools:
 ### PHPUnit
 Initialize PHPUnit:
@@ -141,7 +141,7 @@ Compile JavaScript with Grunt in a desired directory:
 grunt amd --force --root=/mod/homework
 ```
 
-## Exit Docker Terminal
+## Exit Docker Terminal in Ubuntu
 You can exit the Docker terminal with: `exit`
 
 ## Notes
