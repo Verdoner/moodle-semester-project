@@ -19,17 +19,20 @@
 
 <div class="container">
 
-    <div class="btn-container">
-        <button class="nav-btn" id="todaybtn">today</button>
-        <button class="nav-btn" id="prevbtn"><-</button>
-        <button class="nav-btn" id="nextbtn">-></button>
+    <div class="btn-container float-end">
+        <button class="nav-btn" id="todaybtn">Today</button>
+        <button class="nav-btn" id="prevbtn"><</button>
+        <button class="nav-btn" id="nextbtn">></button>
     </div>
 
     <div class="outer-box" id="outer-box">
         {{#data}}
             <div class="infobox">
-                <h2>name: {{name}}</h2>
-                <p>Intro: {{intro}}</p>
+                <h2>{{courseTitle}}</h2>
+                <h2>{{name}}</h2>
+                <h3>{{duedate}}</h3>
+                <p>{{intro}}</p>
+
 
                 {{#files}}
                     <img src="{{iconurl}}" alt="File icon">
