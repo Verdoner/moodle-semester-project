@@ -15,11 +15,12 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * homework/classes/external/save_homework_link.php
+ * homework/classes/external/save_homework_video.php
  *
  * @package   mod_homework
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
  */
 
 namespace mod_homework\external;
@@ -37,47 +38,62 @@ use external_single_structure;
 /**
  *
  */
-class save_homework_link extends \external_api {
+class save_homework_video extends \external_api {
     /**
-     * Define the parameters expected by this function.
      *
-     * @return external_function_parameters
+     * @return external_function_parameters Define the parameters expected by this function.
      */
     public static function execute_parameters() {
         return new external_function_parameters([
             'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
-            'link' => new external_value(PARAM_TEXT, 'link field value'),
-            'homework' => new external_value(PARAM_INT, 'homework field value'),
+            'starttime' => new external_value(PARAM_INT, 'startTime field value'),
+            'endtime' => new external_value(PARAM_INT, 'endTime field value'),
+            'instance' => new external_value(PARAM_INT, 'Instance field value'),
+            'fileid' => new external_value(PARAM_INT, 'Uploaded file ID', VALUE_OPTIONAL),
         ]);
     }
 
     /**
      * The main function to handle the request.
-     *
      * @param $inputfield
-     * @param $link
-     * @param $homework
+     * @param $starttime
+     * @param $endtime
+     * @param $instance
+     * @param $fileid
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($inputfield, $link, $homework) {
+    public static function execute($inputfield, $starttime, $endtime, $instance, $fileid = null) {
         global $DB, $USER;
 
-        // Handle the input field value here.
-        // For example, save to a database.
         $record = new \stdClass();
+        $filesrecord = new \stdClass();
+
+        $record->userid = $USER->id;
         $record->description = $inputfield;
-        $record->link = $link;
-        $record->usermodified = $USER->id;
+        $record->starttime = $starttime;
+        $record->endtime = $endtime;
+        $record->homework_id = $instance;
+        if ($fileid) {
+            $record->fileid = $fileid;
+
+            $filesrecord->files_id = $fileid;
+            $filesrecord->homework_id = $instance;
+
+            try {
+                $DB->insert_record('files_homework', $filesrecord);
+            } catch (\dml_exception $e) {
+                debugging("Error inserting into files_homework: " . $e->getMessage(), DEBUG_DEVELOPER);
+                return ['status' => 'error', 'message' => 'Failed to save file record'];
+            }
+        }
         $record->timecreated = time();
         $record->timemodified = time();
-        $record->homework = $homework;
 
-        // Save to database.
         try {
-            $DB->insert_record('homework_links', $record);
+            $DB->insert_record('homework_video', $record);
         } catch (\dml_exception $e) {
-            debugging("Error inserting into homework_links: " . $e->getMessage(), DEBUG_DEVELOPER);
+            debugging("Error inserting into homework_video: " . $e->getMessage(), DEBUG_DEVELOPER);
             return ['status' => 'error', 'message' => 'Failed to save homework record'];
         }
 
