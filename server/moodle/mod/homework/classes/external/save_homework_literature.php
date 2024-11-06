@@ -20,7 +20,6 @@
  * @package   mod_homework
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *
  */
 
 namespace mod_homework\external;
@@ -30,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir . '/externallib.php');
 
-use external_api;
+use core_external\external_api;
 use external_function_parameters;
 use external_value;
 use external_single_structure;
@@ -48,34 +47,58 @@ class save_homework_literature extends \external_api {
             'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
             'startpage' => new external_value(PARAM_INT, 'startPage field value'),
             'endpage' => new external_value(PARAM_INT, 'endPage field value'),
+            'homework' => new external_value(PARAM_INT, 'homework field value'),
+            'fileid' => new external_value(PARAM_INT, 'Uploaded file ID', VALUE_OPTIONAL),
         ]);
     }
 
     /**
      * The main function to handle the request.
+     *
      * @param $inputfield
      * @param $startpage
      * @param $endpage
+     * @param $homework
+     * @param $fileid
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($inputfield, $startpage, $endpage) {
+    public static function execute($inputfield, $startpage, $endpage, $homework, $fileid = null) {
         global $DB, $USER;
 
-        // Handle the input field value here.
-        // For example, save to a database.
         $record = new \stdClass();
+        $filesrecord = new \stdClass();
+
         $record->userid = $USER->id;
         $record->description = $inputfield;
         $record->startpage = $startpage;
         $record->endpage = $endpage;
+        if ($fileid) {
+            $record->fileid = $fileid;
+
+            $filesrecord->files_id = $fileid;
+            $filesrecord->homework_id = $homework;
+
+            try {
+                $DB->insert_record('files_homework', $filesrecord);
+            } catch (\dml_exception $e) {
+                debugging("Error inserting into files_homework: " . $e->getMessage(), DEBUG_DEVELOPER);
+                return ['status' => 'error', 'message' => 'Failed to save file record'];
+            }
+        }
         $record->timecreated = time();
         $record->timemodified = time();
+        $record->homework = $homework;
 
-        $DB->insert_record('homework_literature', $record);
+        try {
+            $DB->insert_record('homework_literature', $record);
+        } catch (\dml_exception $e) {
+            debugging("Error inserting into homework_literature: " . $e->getMessage(), DEBUG_DEVELOPER);
+            return ['status' => 'error', 'message' => 'Failed to save homework record'];
+        }
 
         // Return a success response.
-        return ['status' => 'success', 'message' => 'Data saved successfully'];
+        return ['status' => 'success', 'message' => 'Data saved successfully', 'page' => json_encode($PAGE->cm)];
     }
 
     /**
@@ -86,6 +109,7 @@ class save_homework_literature extends \external_api {
         return new external_single_structure([
             'status' => new external_value(PARAM_TEXT, 'Status of the request'),
             'message' => new external_value(PARAM_TEXT, 'Message with details about the request status'),
+            'page' => new external_value(PARAM_TEXT, 'Page object'),
         ]);
     }
 }

@@ -23,6 +23,12 @@
         <button class="nav-btn" id="todaybtn">today</button>
         <button class="nav-btn" id="prevbtn"><-</button>
         <button class="nav-btn" id="nextbtn">-></button>
+        <label for="sort">Sort by:</label>
+        <select name="sort" id="sort">
+            <option value="all">All</option>
+            <option value="due">Due Date</option>
+            <option value="time">Time</option>
+        </select>
     </div>
 
     <div class="outer-box" id="outer-box">
@@ -30,7 +36,7 @@
             <div class="infobox">
                 <h2>name: {{name}}</h2>
                 <p>Intro: {{intro}}</p>
-
+                <button class="timebutton" data-homework-id={{id}} id="{{id}}"">Time</button>
                 {{#files}}
                     <img src="{{iconurl}}" alt="File icon">
                     <a href="{{fileurl}}" download="{{filename}}">{{filename}}</a>
