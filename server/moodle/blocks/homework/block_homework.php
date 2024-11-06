@@ -136,14 +136,17 @@ class block_homework extends block_base {
         // Render the content using a template and pass the homework data to it.
         $this->content->text = $OUTPUT->render_from_template('block_homework/data', ['data' => $data]);
 
+
         // Include JavaScript functionality for scrolling behavior in the block.
         $this->page->requires->js_call_amd('block_homework/scroll', 'init');
         $this->page->requires->js_call_amd('block_homework/sort', 'init');
+        $this->page->requires->js_call_amd('block_homework/homework_injector', 'init',[$homeworks]);
         $this->page->requires->js_call_amd(
             'block_homework/clickInfo',
             'init',
             ["homework", $data, $USER->id, $homeworkcompletionrecords]
         );
+
 
         return $this->content;
     }
