@@ -53,7 +53,7 @@ final class save_homework_test extends advanced_testcase {
         $inputfield = 'Test Literature';
         $startpage = 1;
         $endpage = 10;
-        $instance = 1;
+        $homework = 1;
 
         $result = \mod_homework\external\save_homework_literature::execute($inputfield, $startpage, $endpage, $homework, null);
 
