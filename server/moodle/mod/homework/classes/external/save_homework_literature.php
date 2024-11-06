@@ -20,7 +20,6 @@
  * @package   mod_homework
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *
  */
 
 namespace mod_homework\external;
@@ -38,30 +37,34 @@ use external_single_structure;
 /**
  *
  */
-class save_homework_literature extends \external_api {
+class save_homework_literature extends \external_api
+{
     /**
-     *
      * @return external_function_parameters Define the parameters expected by this function.
      */
-    public static function execute_parameters() {
+    public static function execute_parameters()
+    {
         return new external_function_parameters([
             'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
             'startpage' => new external_value(PARAM_INT, 'startPage field value'),
             'endpage' => new external_value(PARAM_INT, 'endPage field value'),
-            'instance' => new external_value(PARAM_TEXT, 'instance field value'),
+            'homework' => new external_value(PARAM_INT, 'homework field value'),
         ]);
     }
 
     /**
      * The main function to handle the request.
+     *
      * @param $inputfield
      * @param $startpage
      * @param $endpage
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($inputfield, $startpage, $endpage, $instance) {
-        global $DB, $USER;
+    public static function execute($inputfield, $startpage, $endpage, $homework)
+    {
+        global $DB, $USER, $PAGE;
+
         // Handle the input field value here.
         // For example, save to a database.
         $record = new \stdClass();
@@ -71,22 +74,23 @@ class save_homework_literature extends \external_api {
         $record->endpage = $endpage;
         $record->timecreated = time();
         $record->timemodified = time();
-        $record->homework_id = $instance;
+        $record->homework = $homework;
 
         $DB->insert_record('homework_literature', $record);
 
         // Return a success response.
-        return ['status' => 'success', 'message' => 'Data saved successfully'];
+        return ['status' => 'success', 'message' => 'Data saved successfully', 'page' => json_encode($PAGE->cm)];
     }
 
     /**
-     *
      * @return external_single_structure Define the return values.
      */
-    public static function execute_returns() {
+    public static function execute_returns()
+    {
         return new external_single_structure([
             'status' => new external_value(PARAM_TEXT, 'Status of the request'),
             'message' => new external_value(PARAM_TEXT, 'Message with details about the request status'),
+            'page' => new external_value(PARAM_TEXT, 'Page object'),
         ]);
     }
 }

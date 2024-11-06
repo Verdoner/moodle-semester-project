@@ -20,7 +20,6 @@
  * @package   mod_homework
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *
  */
 
 namespace mod_homework;
@@ -31,31 +30,35 @@ use dml_exception;
 /**
  *
  */
-final class save_homework_test extends advanced_testcase {
+final class save_homework_test extends advanced_testcase
+{
     /**
      * Setup routine before running each test.
      */
-    protected function setUp(): void {
+    protected function setUp(): void
+    {
         parent::setUp();
         $this->resetAfterTest(true); // Reset the Moodle environment after each test.
     }
 
     /**
      * Test saving literature homework with page range.
+     *
      * @runInSeparateProcess
      * @throws dml_exception
      * @covers :: \mod_homework\external\save_homework_literature
      */
-    public function test_save_homework_literature(): void {
+    public function test_save_homework_literature(): void
+    {
         global $DB;
 
         // Call the external class method.
         $inputfield = 'Test Literature';
         $startpage = 1;
         $endpage = 10;
-        $instance = 1;
+        $homework = 1;
 
-        $result = \mod_homework\external\save_homework_literature::execute($inputfield, $startpage, $endpage, $instance);
+        $result = \mod_homework\external\save_homework_literature::execute($inputfield, $startpage, $endpage, $homework);
 
         // Assert that the status is 'success'.
         $this->assertEquals('success', $result['status']);
@@ -71,23 +74,27 @@ final class save_homework_test extends advanced_testcase {
         );
         $this->assertEquals($startpage, $record->startpage);
         $this->assertEquals($endpage, $record->endpage);
+        $this->assertEquals($homework, $record->homework);
     }
 
     /**
      * Test saving a homework with a link.
+     *
      * @runInSeparateProcess
      * @throws dml_exception
      * @covers :: \mod_homework\external\save_homework_link
      */
-    public function test_save_homework_link(): void {
+    public function test_save_homework_link(): void
+    {
         global $DB;
 
         // Call the external class method.
         $inputfield = 'Test Link';
         $link = 'https://www.test.com';
-        $instance = 1;
+        $homework = 1;
 
-        $result = \mod_homework\external\save_homework_link::execute($inputfield, $link, $instance);
+        $result = \mod_homework\external\save_homework_link::execute($inputfield, $link, $homework);
+
 
         // Assert that the status is 'success'.
         $this->assertEquals('success', $result['status']);
@@ -102,5 +109,6 @@ final class save_homework_test extends advanced_testcase {
             MUST_EXIST
         );
         $this->assertEquals($link, $record->link);
+        $this->assertEquals($homework, $record->homework);
     }
 }

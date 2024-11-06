@@ -143,6 +143,7 @@ class block_homework extends block_base {
             'init',
             ["homework", $data, $USER->id, $homeworkcompletionrecords]
         );
+
         return $this->content;
     }
 

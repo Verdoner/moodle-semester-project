@@ -1,6 +1,7 @@
 # homework #
 
 TODO Describe the plugin shortly here.
+This is a plugin
 
 TODO Provide more detailed description here.
 

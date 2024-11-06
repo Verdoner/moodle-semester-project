@@ -23,7 +23,8 @@
  * @copyright   2024 PV
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-function xmldb_homework_upgrade($oldversion): bool {
+function xmldb_homework_upgrade($oldversion): bool
+{
     global $DB;
 
     $dbman = $DB->get_manager();
@@ -133,7 +134,12 @@ function xmldb_homework_upgrade($oldversion): bool {
 
         // Upgrade step for creating the 'homework_literature' table.
         // Define table homework_literature to be created.
+    if ($oldversion < 2024102802) {
+        // Literature
+        // Define field homework to be added to homework_literature.
         $table = new xmldb_table('homework_literature');
+        $field = new xmldb_field('homework', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'timemodified');
+        $key = new xmldb_key('homework', XMLDB_KEY_FOREIGN, ['homework'], 'homework', ['id']);
 
         // Adding fields to table homework_literature.
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
@@ -153,85 +159,28 @@ function xmldb_homework_upgrade($oldversion): bool {
         if (!$dbman->table_exists($table)) {
             $dbman->create_table($table);
         }
+        // Conditionally launch add field homework.
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_key($table, $key);
+            $dbman->drop_field($table, $field);
 
-        // Define table homework_links to be created.
-        $table = new xmldb_table('homework_links');
-
-        // Adding fields to table homework_links.
-        $table->add_field(
-            'id',
-            XMLDB_TYPE_INTEGER,
-            '10',
-            null,
-            XMLDB_NOTNULL,
-            XMLDB_SEQUENCE,
-            null
-        );
-        $table->add_field(
-            'usermodified',
-            XMLDB_TYPE_INTEGER,
-            '10',
-            null,
-            XMLDB_NOTNULL,
-            null,
-            '0'
-        );
-        $table->add_field(
-            'timecreated',
-            XMLDB_TYPE_INTEGER,
-            '10',
-            null,
-            XMLDB_NOTNULL,
-            null,
-            '0'
-        );
-        $table->add_field(
-            'timemodified',
-            XMLDB_TYPE_INTEGER,
-            '10',
-            null,
-            XMLDB_NOTNULL,
-            null,
-            '0'
-        );
-        $table->add_field(
-            'description',
-            XMLDB_TYPE_TEXT,
-            null,
-            null,
-            null,
-            null,
-            null
-        );
-        $table->add_field(
-            'link',
-            XMLDB_TYPE_TEXT,
-            null,
-            null,
-            XMLDB_NOTNULL,
-            null,
-            null
-        );
-
-        // Adding keys to table homework_links.
-        $table->add_key(
-            'primary',
-            XMLDB_KEY_PRIMARY,
-            ['id']
-        );
-        $table->add_key(
-            'usermodified',
-            XMLDB_KEY_FOREIGN,
-            ['usermodified'],
-            'user',
-            ['id']
-        );
-
-        // Conditionally launch create table for homework_links.
-        if (!$dbman->table_exists($table)) {
-            $dbman->create_table($table);
         }
+        $dbman->add_field($table, $field);
+        $dbman->add_key($table, $key);
 
+        // Links
+        // Define field id to be added to homework_links.
+        $table = new xmldb_table('homework_links');
+        $field = new xmldb_field('homework', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'timemodified');
+        $key = new xmldb_key('homework', XMLDB_KEY_FOREIGN, ['homework'], 'homework', ['id']);
+
+        // Conditionally launch add field id.
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_key($table, $key);
+            $dbman->drop_field($table, $field);
+        }
+        $dbman->add_field($table, $field);
+        $dbman->add_key($table, $key);
 
         // Homework savepoint reached.
         upgrade_mod_savepoint(true, 3024090700, 'homework');
@@ -367,9 +316,6 @@ function xmldb_homework_upgrade($oldversion): bool {
         // Homework savepoint reached.
         upgrade_mod_savepoint(true, 3024091409, 'homework');
     }
-
-
-
 
 
 

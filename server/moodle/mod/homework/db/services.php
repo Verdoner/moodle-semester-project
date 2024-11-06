@@ -42,7 +42,7 @@ $functions = [
         'ajax'        => true,
     ],
     'mod_homework_get_homework_chooser' => [
-        'classname'   => 'mod_homework\external\get_homework_chooser',
+        'classname'   => 'mod_homework\external\get_homework_',
         'methodname'  => 'execute',
         'classpath'   => 'mod/homework/classes/external/get_homework_chooser.php',
         'description' => 'Get the homework chooser content',

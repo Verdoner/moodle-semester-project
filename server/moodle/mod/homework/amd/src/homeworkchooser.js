@@ -8,12 +8,12 @@ import Dropzone from 'core/dropzone';
 
 /**
  * Initializes the Homework Chooser Modal.
- *
- * @param {int} cmid - Course Module ID
- * @param {string} title - Title for the modal
- * @param {int} cminstance
+ * @param {int} cmid
+ * @param {string} title
+ * @param {int} currentHomework
+ * @returns {Promise<void>}
  */
-export const init = async (cmid, title, cminstance) => {
+export const init = async(cmid, title, currentHomework) => {
     $('#open-homework-chooser').on('click', () => {
         Ajax.call([{
             methodname: 'mod_homework_get_homework_chooser',
@@ -24,11 +24,9 @@ export const init = async (cmid, title, cminstance) => {
                     body: `${response.html}`,
                     // footer: 'An example footer content',
                     large: true,
-                    removeOnClose: true,
+                    removeOnClose: true
                 });
 
-                // Show the modal
-                modal.show();
 
                 // Initialize elements once the modal content is rendered
                 modal.getRoot().on(ModalEvents.shown, () => {
@@ -85,15 +83,15 @@ export const init = async (cmid, title, cminstance) => {
                     }
                 });
 
-                // Attach an event listener to handle the modal hidden event
-                modal.getRoot().on(ModalEvents.hidden, () => {
-                    console.log('Modal closed!');
-                });
+
+                // Show the modal.
+                await modal.show();
 
                 // Attach event listeners for buttons
                 modal.getRoot().on('click', '[data-action="submit"]', (e) => {
                     e.preventDefault();
-                    handleFormSubmit(cminstance,modal);
+
+                    handleFormSubmit(modal, currentHomework);
                 });
 
                 modal.getRoot().on('click', '[data-action="cancel"]', (e) => {
@@ -112,9 +110,10 @@ export const init = async (cmid, title, cminstance) => {
  * Handles form submission inside the modal.
  * @param {int} cminstance
  * @param {Modal} modal - The instance of the modal containing the form.
+ * @param currentHomework - The id of the homework which is being edited.
  */
-const handleFormSubmit = (cminstance,modal) => {
-    let inputField = modal.getRoot().find('#inputField').val();
+const handleFormSubmit = (modal, currentHomework) => {
+    let inputField = modal.getRoot().find('#inputField')[0];
 
     if (modal.getRoot().find('#option1').is(':checked')) {
 
@@ -125,10 +124,10 @@ const handleFormSubmit = (cminstance,modal) => {
         Ajax.call([{
             methodname: 'mod_homework_save_homework_literature',  // Your PHP function that will handle the data
             args: {
-                inputfield: inputField,
+                inputfield: inputField.value,
                 startpage: startPage,
                 endpage: endPage,
-                instance: cminstance,
+                homework: currentHomework,
             },
             done: function(response) {
                 console.log("Data saved successfully:", response);
@@ -148,9 +147,9 @@ const handleFormSubmit = (cminstance,modal) => {
         Ajax.call([{
             methodname: 'mod_homework_save_homework_link',  // Your PHP function that will handle the data
             args: {
-                inputfield: inputField,
+                inputfield: inputField.value,
                 link: link,
-                instance: cminstance,
+                homework: currentHomework,
             },
             done: function(response) {
                 console.log("Data saved successfully:", response);
