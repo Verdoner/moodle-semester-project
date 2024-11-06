@@ -43,6 +43,14 @@ $functions = [
         'type'        => 'write',
         'ajax'        => true,
     ],
+    'block_homework_get_homework' => [
+        'classname'   => 'block_homework\external\get_homework',
+        'methodname'  => 'execute',
+        'classpath'   => 'blocks/homework/classes/external/get_homework.php',
+        'description' => 'Get the sorted homework',
+        'type'        => 'read',
+        'ajax'        => true,
+    ],
 ];
 
 $services = [
@@ -50,6 +58,7 @@ $services = [
         'functions' => [
             'block_homework_get_infohomework_modal',
             'block_homework_save_homeworktime',
+            'block_homework_get_homework',
         ],
         'restrictedusers' => 0,
         'enabled' => 1,
