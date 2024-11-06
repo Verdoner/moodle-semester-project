@@ -107,7 +107,7 @@ final class save_homework_test extends advanced_testcase {
         $this->assertEquals($homework, $record->homework);
     }
 
-     /**
+    /**
      * Test saving a homework with a video.
      *
      * @runInSeparateProcess
