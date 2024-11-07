@@ -115,6 +115,11 @@ cp server/composer.docker-template.json server/moodle/composer.json && cp server
    This will grant the necessary permissions to execute the script.
    > Note: The initial startup may take some time, as it will install various Composer and Node modules.
 
+## Accessing Moodle and phpMyAdmin
+Once Moodle is started, you can access the following services from your web browser:
+- Moodle: Navigate to http://localhost:8000 to view the Moodle.
+- phpMyAdmin: Navigate to http://localhost:8080 to access the phpMyAdmin interface for managing the database.
+
 ## Access Docker Terminal in Ubuntu
 1. To open a terminal inside Docker, confirm you're in the cloned directory, e.g., `/home/USERNAME/moodle-2`.
 2. Run the following command:
