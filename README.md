@@ -115,8 +115,14 @@ cp server/composer.docker-template.json server/moodle/composer.json && cp server
    This will grant the necessary permissions to execute the script.
    > Note: The initial startup may take some time, as it will install various Composer and Node modules.
 
+   ### Checking if Moodle is Ready
+
+   Once you start Moodle with the script, you can monitor the container logs to know when it’s fully ready.
+   - Open your Docker dashboard and locate the container labeled `server-webserver-1`.
+   - When you see the message "**Running 'watch' task**" in the logs of this container, Moodle is ready for use.
+
 ## Accessing Moodle and phpMyAdmin
-Once Moodle is started, you can access the following services from your web browser:
+Once Moodle is ready, you can access the following services from your web browser:
 - **Moodle**: Navigate to http://localhost:8000 to view Moodle.
 - **phpMyAdmin**: Navigate to http://localhost:8080 to access the phpMyAdmin interface for managing the database.
 
