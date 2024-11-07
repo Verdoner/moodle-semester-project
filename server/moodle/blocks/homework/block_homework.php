@@ -76,9 +76,9 @@ class block_homework extends block_base {
 
 
             // Retrieving the records of all material of the current homework module.
-            $literaturerecords = $DB->get_records('homework_literature', ['homework_id' => $homework->id]);
-            $linkrecords = $DB->get_records('homework_links', ['homework_id' => $homework->id]);
-            $videorecords = $DB->get_records('homework_video', ['homework_id' => $homework->id]);
+            $literaturerecords = $DB->get_records('homework_literature', ['homework' => $homework->id]);
+            $linkrecords = $DB->get_records('homework_links', ['homework' => $homework->id]);
+            $videorecords = $DB->get_records('homework_video', ['homework' => $homework->id]);
 
 
 
