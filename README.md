@@ -20,12 +20,12 @@ Before setting up the Moodle Docker environment, ensure the following prerequisi
 ### Without the Default Moodle Folder:
 This command clones only the repository without the default Moodle folder submodule:
 ```bash
-( rm -rf ./* || true ) && ( rm -rf .* || true ) && git clone -b Docker-Setup https://github.com/AAU-P5-Moodle/moodle-2.git . && ( rm -rf .git || true )
+( rm -rf ./* || true ) && ( rm -rf .* || true ) && git clone -b Docker-Setup-Unix https://github.com/AAU-P5-Moodle/moodle-2.git . && ( rm -rf .git || true )
 ```
 ### With the Default Moodle Folder:
 This command clones the repository along with the default Moodle folder submodule:
 ```bash
-( rm -rf ./* || true ) && ( rm -rf .* || true ) && git clone -b Docker-Setup --recursive https://github.com/AAU-P5-Moodle/moodle-2.git . && ( rm -rf .git || true )
+( rm -rf ./* || true ) && ( rm -rf .* || true ) && git clone -b Docker-Setup-Unix --recursive https://github.com/AAU-P5-Moodle/moodle-2.git . && ( rm -rf .git || true )
 ```
 
 ## Set Up Sparse Checkout
