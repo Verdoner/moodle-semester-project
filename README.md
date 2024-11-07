@@ -17,10 +17,16 @@ Before setting up the Moodle Docker environment, ensure the following prerequisi
    wsl --set-default-version 2
    ```
 
-3. **Ubuntu for Windows**: [Install Ubuntu](https://apps.microsoft.com/detail/9pdxgncfsczv)  
-   After installing WSL 2, install Linux distribution Ubuntu from the Microsoft Store.
+3. **Ubuntu for Windows**: [Install Ubuntu]  
+   After installing WSL 2, install Linux distribution Ubuntu from the Microsoft Store.  
+   1. Open up your web browser and paste the following link into your web browser's address bar:
+      ```
+      ms-windows-store://pdp/?ProductId=9n4wgh0z6vhq
+      ```
+   2. Click on "Open Microsoft Store".
+   3. Click Install on the Ubuntu product page.
 
-4. **Configure Docker with WSL 2:**
+5. **Configure Docker with WSL 2:**
    - After installing Docker Desktop, open it and go to **Settings > General**. Enable "Use the WSL 2 based engine."
    - Go to **Settings > Resources > WSL Integration** and ensure the WSL 2 integration is enabled for your installed Linux distributions (e.g., Ubuntu).
    - This setup allows Docker Desktop to leverage WSL 2 for efficient container management on Windows.
