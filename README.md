@@ -1,4 +1,4 @@
-# Moodle Docker Setup
+# Moodle Docker Setup for Unix-based systems (Linux & MacOS)
 
 ## Prerequisites
 
@@ -9,96 +9,111 @@ Before setting up the Moodle Docker environment, ensure the following prerequisi
 
 2. **Git**: [Install Git](https://git-scm.com/downloads)  
    Git is required to clone the repository and manage version control.
-
 > **Note**: Ensure all environment variables for Docker and Git are properly configured in your system.
 
 ## Clone the Repository
 
-1. Create an empty folder where you want to clone the repository.
+1. Open your terminal and navigate to the folder where you would like to clone this repository.
 
 2. Choose one of the following commands based on your needs:
 
 ### Without the Default Moodle Folder:
-This command clones only the repository without the default Moodle folder submodule.
-
-On Unix (Linux & MacOS), run:
+This command clones only the repository without the default Moodle folder submodule:
 ```bash
 ( rm -rf ./* || true ) && ( rm -rf .* || true ) && git clone -b Docker-Setup https://github.com/AAU-P5-Moodle/moodle-2.git . && ( rm -rf .git || true )
 ```
-On Windows, run:
-```bash
-del /f /q *.* && for /d %i in (*) do rmdir /s /q "%i" && git clone -b Docker-Setup https://github.com/AAU-P5-Moodle/moodle-2.git . && rmdir /s /q .git
-```
 ### With the Default Moodle Folder:
-This command clones the repository along with the default Moodle folder submodule.
-
-On Unix (Linux & MacOS), run:
+This command clones the repository along with the default Moodle folder submodule:
 ```bash
 ( rm -rf ./* || true ) && ( rm -rf .* || true ) && git clone -b Docker-Setup --recursive https://github.com/AAU-P5-Moodle/moodle-2.git . && ( rm -rf .git || true )
 ```
-On Windows, run:
-```bash
-del /f /q *.* && for /d %i in (*) do rmdir /s /q "%i" &&  git clone -b Docker-Setup --recursive https://github.com/AAU-P5-Moodle/moodle-2.git . && rmdir /s /q .git
-```
 
 ## Set Up Sparse Checkout
-Now run:
-```bash
-git init && git config core.sparseCheckout true && git remote add -f origin https://github.com/AAU-P5-Moodle/moodle-2.git && echo server/moodle > .git/info/sparse-checkout
-```
-```bash
-git checkout [branchname] # e.g., main
-```
+1. Initialize the sparse checkout configuration by running:
+   ```bash
+   git init && git config core.sparseCheckout true && git remote add -f origin https://github.com/AAU-P5-Moodle/moodle-2.git && echo server/moodle > .git/info/sparse-checkout
+   ```
+2. Now, check out the branch you were working on:
+   ```bash
+   git checkout [branchname]  # Replace [branchname] with your branch name, e.g., main
+   ```
 
 ## Copy Docker Template Files
 Copy the template files for Docker into the Moodle folder:
-
-On Unix (Linux & MacOS), run:
 ```bash
-cp server/composer.docker-template.json server/moodle/composer.json && cp server/config.docker-template.php server/moodle/config.php && cp server/package.docker-template.json server/moodle/package.json
-```
-On Windows, run:
-```bash
-copy server\composer.docker-template.json server\moodle\composer.json && copy server\config.docker-template.php server\moodle\config.php && copy server\package.docker-template.json server\moodle\package.json
+cp server/composer.docker-template.json server/moodle/composer.json && cp server/config.docker-template.php server/moodle/config.php && cp server/Gruntfile.docker-template.js server/moodle/Gruntfile.js && cp server/package.docker-template.json server/moodle/package.json
 ```
 
 ## Start Moodle
-On Unix (Linux & MacOS), run: `sh start_moodle_unix.sh`
+1. Ensure that Docker Engine is running.
+2. Ensure you're in the cloned directory.
+3. Start Moodle by running:
+   ```bash
+   sh start_moodle_unix.sh
+   ```
+   If you encounter a **Permission Denied** error, you may need to run the command with `sudo`:
+   ```bash
+   sudo sh start_moodle_unix.sh
+   ```
+   This will grant the necessary permissions to execute the script.
+   > Note: The initial startup may take some time, as it will install various Composer and Node modules.
 
-On Windows, run: `start_moodle_windows.bat`
+   ### Checking if Moodle is Ready
 
-> Note: The first start may take a long time, as it needs to install many composer and node modules.
+   Once you start Moodle with the script, you can monitor the container logs to know when it’s fully ready.
+   - Open your Docker dashboard and locate the container labeled `server-webserver-1`.
+   - When you see the message "**Running 'watch' task**" in the logs of this container, Moodle is ready for use.
+
+## Accessing Moodle and phpMyAdmin
+Once Moodle is ready, you can access the following services from your web browser:
+- **Moodle**: Navigate to http://localhost:8000 to view Moodle.
+- **phpMyAdmin**: Navigate to http://localhost:8080 to access the phpMyAdmin interface for managing the database.
 
 ## Access Docker Terminal
-You can open a terminal inside Docker with:
-
-On Unix (Linux & MacOS), run: `sh bash_moodle_unix.sh`
-
-On Windows, run: `bash_moodle_windows.bat`
-
-## Exit Docker Terminal
-You can exit the Docker terminal with: `exit`
+1. To open a terminal inside Docker, confirm you're in the cloned directory.
+2. Run the following command:
+   ```bash
+   sh bash_moodle_unix.sh
+   ```
+   If you encounter a **Permission Denied** error, you may need to run the command with `sudo`:
+   ```bash
+   sudo sh bash_moodle_unix.sh
+   ```
+   This will grant the necessary permissions to execute the script.
 
 ## Initialize Testing and Tools
 Once inside the Docker terminal, initialize the following tools:
 ### PHPUnit
+Initialize PHPUnit:
 ```bash
 php admin/tool/phpunit/cli/init.php
+```
+Run PHPUnit with the specified test suite:
+```bash
 vendor/bin/phpunit --testsuite=mod_homework_testsuite
 ```
 ### Behat
+Set up Behat:
 ```bash
 php admin/tool/behat/cli/init.php
+```
+Execute Behat tests with the desired tags:
+```bash
 php admin/tool/behat/cli/run.php --tags=@mod_homework
 ```
 ### Codesniffer
+Run PHP CodeSniffer in a desired directory using the Moodle-extra standard:
 ```bash
 vendor/bin/phpcs --standard=moodle-extra mod/homework
 ```
 ### Grunt
+Compile JavaScript with Grunt in a desired directory:
 ```bash
-grunt amd --root="./mod/homework" --force
+grunt amd --force --root=/mod/homework
 ```
+
+## Exit Docker Terminal
+You can exit the Docker terminal with: `exit`
 
 ## Notes
 - The setup may take some time due to dependency installation.
