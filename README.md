@@ -96,8 +96,9 @@ cp server/composer.docker-template.json server/moodle/composer.json && cp server
 ```
 
 ## Start Moodle in Ubuntu
-1. Ensure you're in the cloned directory, e.g., `/home/USERNAME/moodle-2`.
-2. Start Moodle by running:
+1. Ensure that Docker Engine is running.
+2. Ensure you're in the cloned directory, e.g., `/home/USERNAME/moodle-2`.
+3. Start Moodle by running:
    ```bash
    sh start_moodle_unix.sh
    ```
