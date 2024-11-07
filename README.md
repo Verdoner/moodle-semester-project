@@ -102,6 +102,11 @@ cp server/composer.docker-template.json server/moodle/composer.json && cp server
    ```bash
    sh start_moodle_unix.sh
    ```
+   If you encounter a **Permission Denied** error, you may need to run the command with `sudo`:
+   ```bash
+   sudo sh start_moodle_unix.sh
+   ```
+   This will grant the necessary permissions to execute the script.
    > Note: The initial startup may take some time, as it will install various Composer and Node modules.
 
 ## Access Docker Terminal in Ubuntu
