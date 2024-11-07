@@ -121,6 +121,11 @@ cp server/composer.docker-template.json server/moodle/composer.json && cp server
    ```bash
    sh bash_moodle_unix.sh
    ```
+   If you encounter a **Permission Denied** error, you may need to run the command with `sudo`:
+   ```bash
+   sudo sh bash_moodle_unix.sh
+   ```
+   This will grant the necessary permissions to execute the script.
 
 ## Initialize Testing and Tools in Ubuntu
 Once inside the Docker terminal, initialize the following tools:
