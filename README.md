@@ -17,7 +17,7 @@ Before setting up the Moodle Docker environment, ensure the following prerequisi
    wsl --set-default-version 2
    ```
 
-3. **Ubuntu for Windows**: [Install Ubuntu](https://www.microsoft.com/store/productId/9PDXGNCFSCZV)  
+3. **Ubuntu for Windows**: [Install Ubuntu](https://apps.microsoft.com/detail/9pdxgncfsczv)  
    After installing WSL 2, install Linux distribution Ubuntu from the Microsoft Store.
 
 4. **Configure Docker with WSL 2:**
