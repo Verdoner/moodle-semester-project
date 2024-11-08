@@ -21,7 +21,7 @@ Before setting up the Moodle Docker environment, ensure the following prerequisi
    After installing WSL 2, install Linux distribution Ubuntu from the Microsoft Store.  
    1. Open up your web browser and paste the following link into your web browser's address bar:
       ```
-      ms-windows-store://pdp/?ProductId=9n4wgh0z6vhq
+      ms-windows-store://pdp/?ProductId=9PDXGNCFSCZV
       ```
    2. Click on "Open Microsoft Store".
    3. Click Install on the Ubuntu product page.
