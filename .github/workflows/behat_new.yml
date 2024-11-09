@@ -1,0 +1,124 @@
+name: Behat for Moodle Homework Plugin
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  homework-plugin-behat:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        id: setup-php
+        uses: shivammathur/setup-php@v2
+        with:
+          extensions: mbstring, intl, iconv, gd, sodium, zip, fileinfo, phar, mysqli
+          tools: composer
+
+      - name: Set up php.ini
+        run: |
+          $PHP_INI_PATH = (php -i | Select-String 'Loaded Configuration File' | ForEach-Object { $_.ToString().Split(' ')[-1].Trim() })
+
+          Add-Content -Path $PHP_INI_PATH -Value "max_input_vars=5000"
+
+      - name: Install/Update Composer
+        run: composer self-update --2
+
+      - name: Set up MariaDB
+        uses: ankane/setup-mariadb@v1
+        with:
+          database: moodle
+
+      - name: Install Moodle Composer dependencies
+        run: |
+          cd ${{ github.workspace }}/server/moodle
+          composer install
+
+      - name: Import MoodleSQL file
+        run: |
+          cmd.exe /c "mysql moodle < ${{ github.workspace }}\MoodleSQL.sql"
+      
+      - name: Run Moodle installation CLI
+        run: |
+          php ${{ github.workspace }}/server/moodle/admin/cli/install.php `
+              --lang=en `
+              --wwwroot="http://localhost:8000/" `
+              --dbhost="127.0.0.1" `
+              --dbname="moodle" `
+              --dbuser="runneradmin" `
+              --dbpass="" `
+              --dataroot="${{ github.workspace }}\server\moodledata" `
+              --skip-database `
+              --non-interactive `
+              --agree-license `
+              --allow-unstable `
+              --fullname="Tests for Moodle Homework Plugin" `
+              --shortname="mhp" `
+              --adminpass="Admin.123"
+
+      - name: Install Mozilla Firefox
+        uses: browser-actions/setup-firefox@v1
+
+      - name: Set up Geckodriver
+        uses: browser-actions/setup-geckodriver@latest
+
+      - name: Install Google Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          install-chromedriver: true
+          
+      - name: Set up Selenium
+        run: |
+          wget https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.25.0/selenium-server-4.25.0.jar
+          
+          java -jar selenium-server-4.25.0.jar standalone &
+          
+      - name: Download and require moodle-browser-config 
+        run: |
+          git clone https://github.com/andrewnicols/moodle-browser-config ${{ github.workspace }}/server/moodle/moodle-browser-config
+          
+          sed -i "/^require_once(__DIR__ . '\/lib\/setup.php');/i require_once('${{ github.workspace }}/server/moodle/moodle-browser-config/init.php');" ${{ github.workspace }}/server/moodle/config.php
+
+      - name: Configure Behat
+        run: |
+          sed -i "/^require_once(__DIR__ . '\/lib\/setup.php');/i \$CFG->behat_dataroot = \$CFG->dataroot . '/bht_moodledata';" ${{ github.workspace }}/server/moodle/config.php
+          sed -i "/^require_once(__DIR__ . '\/lib\/setup.php');/i \$CFG->behat_wwwroot = 'http:\/\/localhost:8000';" ${{ github.workspace }}/server/moodle/config.php
+          sed -i "/^require_once(__DIR__ . '\/lib\/setup.php');/i \$CFG->behat_dataroot_parent = \$CFG->dataroot . '\/behat';" ${{ github.workspace }}/server/moodle/config.php
+          sed -i "/^require_once(__DIR__ . '\/lib\/setup.php');/i \$CFG->behat_prefix = 'bht_';" ${{ github.workspace }}/server/moodle/config.php
+        
+      - name: Initialize Behat
+        run: php ${{ github.workspace }}/server/moodle/admin/tool/behat/cli/init.php
+          
+      - name: Run Behat tests on mod_homework with Mozilla Firefox
+        if: always()
+        run: |
+          cd ${{ github.workspace }}/server/moodle
+          
+          vendor/bin/behat --config ${{ github.workspace }}/server/moodledata/bht_moodledata/behatrun/behat/behat.yml --profile=headlessfirefox --tags=@mod_homework
+
+      - name: Run Behat tests on mod_homework with Google Chrome
+        if: always()
+        run: |
+          cd ${{ github.workspace }}/server/moodle
+          
+          vendor/bin/behat --config ${{ github.workspace }}/server/moodledata/bht_moodledata/behatrun/behat/behat.yml --profile=headlesschrome --tags=@mod_homework
+
+      - name: Run Behat tests on block_homework with Mozilla Firefox
+        if: always()
+        run: |
+          cd ${{ github.workspace }}/server/moodle
+          
+          vendor/bin/behat --config ${{ github.workspace }}/server/moodledata/bht_moodledata/behatrun/behat/behat.yml --profile=headlessfirefox --tags=@block_homework
+
+      - name: Run Behat tests on block_homework with Google Chrome
+        if: always()
+        run: |
+          cd ${{ github.workspace }}/server/moodle
+          
+          vendor/bin/behat --config ${{ github.workspace }}/server/moodledata/bht_moodledata/behatrun/behat/behat.yml --profile=headlesschrome --tags=@block_homework
