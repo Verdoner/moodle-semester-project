@@ -90,7 +90,7 @@ jobs:
       - name: Configure Behat
         run: |
           sed -i "/^require_once(__DIR__ . '\/lib\/setup.php');/i \$CFG->behat_dataroot = \$CFG->dataroot . '/bht_moodledata';" ${{ github.workspace }}/server/moodle/config.php
-          sed -i "/^require_once(__DIR__ . '\/lib\/setup.php');/i \$CFG->behat_wwwroot = 'http:\/\/localhost:8000';" ${{ github.workspace }}/server/moodle/config.php
+          sed -i "/^require_once(__DIR__ . '\/lib\/setup.php');/i \$CFG->behat_wwwroot = 'http:\/\/127.0.0.1';" ${{ github.workspace }}/server/moodle/config.php
           sed -i "/^require_once(__DIR__ . '\/lib\/setup.php');/i \$CFG->behat_dataroot_parent = \$CFG->dataroot . '\/behat';" ${{ github.workspace }}/server/moodle/config.php
           sed -i "/^require_once(__DIR__ . '\/lib\/setup.php');/i \$CFG->behat_prefix = 'bht_';" ${{ github.workspace }}/server/moodle/config.php
         
