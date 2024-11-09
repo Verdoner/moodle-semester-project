@@ -55,15 +55,6 @@ jobs:
         run: |
           cd server/moodle
           composer install
-
-      - name: Set up language and locale
-        run: |
-          # Create a directory to hold locale files if needed (this line is optional)
-          New-Item -ItemType Directory -Force -Path "C:\locales\en_US.UTF-8" | Out-Null
-          
-          Set-Culture en-US
-          Set-WinSystemLocale en-US
-          Set-WinUserLanguageList en-US -Force
       
       - name: Run Moodle installation CLI
         run: |
