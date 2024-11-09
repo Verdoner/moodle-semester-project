@@ -19,12 +19,14 @@ jobs:
         composer global config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
         composer global require moodlehq/moodle-cs
 
-        export PATH="$HOME/.composer/vendor/bin:$PATH"
+        echo "PATH=$HOME/.composer/vendor/bin:$PATH" >> $GITHUB_ENV
 
     - name: Run Code Sniffer on mod_homework
       if: always()
-      run: phpcs --standard=moodle-extra --runtime-set ignore_warnings_on_exit 1 server/moodle/mod/homework/
+      run: |
+        phpcs --standard=moodle-extra --runtime-set ignore_warnings_on_exit 1 server/moodle/mod/homework/
 
     - name: Run Code Sniffer on block_homework
       if: always()
-      run: phpcs --standard=moodle-extra --runtime-set ignore_warnings_on_exit 1 server/moodle/blocks/homework/
+      run: |
+        phpcs --standard=moodle-extra --runtime-set ignore_warnings_on_exit 1 server/moodle/blocks/homework/
