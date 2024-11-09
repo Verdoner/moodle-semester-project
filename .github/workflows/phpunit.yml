@@ -53,7 +53,7 @@ jobs:
               --dbname="moodle" `
               --dbuser="runneradmin" `
               --dbpass="" `
-              --dataroot="C:\moodledata" `
+              --dataroot="${{ github.workspace }}\server\moodledata" `
               --skip-database `
               --non-interactive `
               --agree-license `
@@ -65,7 +65,7 @@ jobs:
       - name: Configure PHPUnit
         run: |
           Add-Content -Path server/moodle/config.php -Value "`$CFG->phpunit_prefix = 'phpu_';"
-          Add-Content -Path server/moodle/config.php -Value "`$CFG->phpunit_dataroot = 'C:\moodledata\phpunit';"
+          Add-Content -Path server/moodle/config.php -Value "`$CFG->phpunit_dataroot = '${{ github.workspace }}\server\moodledata\phpunit';"
 
       - name: Initialize PHPUnit
         run: php server/moodle/admin/tool/phpunit/cli/init.php
@@ -142,8 +142,8 @@ jobs:
         run: |
           mkdir -p "${{ github.workspace }}/server/moodledata/phpunit"
           
-          echo "\$CFG->phpunit_prefix = 'phpu_';" >>"${{ github.workspace }}/server/moodle/config.php"
-          echo "\$CFG->phpunit_dataroot = '$("${{ github.workspace }}/server/moodledata/phpunit")';">>"${{ github.workspace }}/server/moodle/config.php"
+          echo "\$CFG->phpunit_prefix = 'phpu_';" >> "${{ github.workspace }}/server/moodle/config.php"
+          echo "\$CFG->phpunit_dataroot = '${{ github.workspace }}/server/moodledata/phpunit';" >> "${{ github.workspace }}/server/moodle/config.php"
 
       - name: Initialize PHPUnit
         run: php server/moodle/admin/tool/phpunit/cli/init.php
