@@ -35,7 +35,7 @@ jobs:
           Add-Content -Path $php_ini_path -Value "post_max_size=50M"
           Add-Content -Path $php_ini_path -Value "upload_max_filesize=50M"
 
-      - name: Install Composer
+      - name: Install/Update Composer
         run: composer self-update --2
 
       - name: Set up MariaDB
@@ -79,12 +79,16 @@ jobs:
         run: php server/moodle/admin/tool/phpunit/cli/init.php
 
       - name: Run tests on mod_homework
+        if: always()
         run: |
-          server/moodle/vendor/bin/phpunit --testsuite mod_homework_testsuite
+          cd server/moodle
+          vendor/bin/phpunit --testsuite mod_homework_testsuite
 
       - name: Run tests on block_homework
+        if: always()
         run: |
-          server/moodle/vendor/bin/phpunit --testsuite block_homework_testsuite
+          cd server/moodle
+          vendor/bin/phpunit --testsuite block_homework_testsuite
           
   homework-plugin-test-ubuntu:
     runs-on: ubuntu-latest
