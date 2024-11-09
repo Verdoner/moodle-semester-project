@@ -57,7 +57,8 @@ jobs:
           php server/moodle/admin/cli/install.php `
               --lang=en `
               --wwwroot="http://localhost:8000/" `
-              --dbtype="mariadb" `
+              --dbtype="mysqli" `
+              --dbhost="127.0.0.1" `
               --dbname="moodle" `
               --dbuser="runneradmin" `
               --dbpass="" `
