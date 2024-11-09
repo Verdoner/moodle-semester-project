@@ -7,7 +7,7 @@ on:
     types: [opened, reopened, synchronize]
 
 jobs:
-  setup-homework-plugin-test-windows:
+  homework-plugin-test-windows:
     runs-on: windows-latest
 
     steps:
@@ -82,7 +82,7 @@ jobs:
           cd ${{ github.workspace }}/server/moodle
           vendor/bin/phpunit --testsuite block_homework_testsuite
           
-  setup-homework-plugin-test-ubuntu:
+  homework-plugin-test-ubuntu:
     runs-on: ubuntu-latest
 
     steps:
