@@ -41,33 +41,49 @@ jobs:
       - name: Install MariaDB
         run: choco install mariadb --version=10.5.8 -y
 
-      - name: Set up and start MariaDB on Windows
+      - name: Stop any existing MariaDB/MySQL server
         run: |
-          # Define environment variables for the setup
+          Stop-Process -Name mysqld -Force -ErrorAction SilentlyContinue
+          Stop-Process -Name mysql -Force -ErrorAction SilentlyContinue
+        shell: pwsh
+
+      - name: Ensure MariaDB data directory is initialized
+        run: |
           $mariadb_data_dir = "C:\mariadb_data"
-          $mariadb_socket = "C:\mariadb_socket\mysqld.sock"
-          $moodle_db_name = "moodle"
-          $moodle_sql_file = "${{ github.workspace }}\MoodleSQL.sql"
-          $root_username = "root"
-          $root_password = "root"
-      
-          # Ensure the data directory exists
-          if (!(Test-Path -Path $mariadb_data_dir)) {
-              New-Item -ItemType Directory -Force -Path $mariadb_data_dir | Out-Null
+          
+          # Delete and recreate data directory to ensure clean initialization
+          if (Test-Path -Path $mariadb_data_dir) {
+              Remove-Item -Recurse -Force -Path $mariadb_data_dir
           }
-      
-          # Start MariaDB in a separate process and wait for it to initialize
-          Start-Process -FilePath "C:\Program Files\MariaDB 10.5\bin\mysqld.exe" -ArgumentList "--datadir=$mariadb_data_dir --console" -NoNewWindow
+          New-Item -ItemType Directory -Force -Path $mariadb_data_dir | Out-Null
+          
+          # Start MariaDB with initialization
+          Start-Process -FilePath "C:\Program Files\MariaDB 10.5\bin\mysqld.exe" -ArgumentList "--initialize-insecure --datadir=$mariadb_data_dir" -NoNewWindow
           Start-Sleep -Seconds 15 # Allow time for MariaDB to initialize
-      
-          # Set up the database and root user
+        shell: pwsh
+
+      - name: Start MariaDB on a different port
+        run: |
+          Start-Process -FilePath "C:\Program Files\MariaDB 10.5\bin\mysqld.exe" -ArgumentList "--datadir=C:\mariadb_data --port=3307 --console" -NoNewWindow
+          Start-Sleep -Seconds 15 # Allow time for MariaDB to start
+        shell: pwsh
+
+      - name: Set up the database and root user
+        run: |
+          $root_password = "root"
+          $moodle_db_name = "moodle"
           $query1 = "ALTER USER 'root'@'localhost' IDENTIFIED BY '$root_password'; FLUSH PRIVILEGES;"
           $query2 = "CREATE DATABASE $moodle_db_name;"
-          
-          # Execute the SQL queries
-          & "C:\Program Files\MariaDB 10.5\bin\mysql.exe" -u $root_username -e $query1
-          & "C:\Program Files\MariaDB 10.5\bin\mysql.exe" -u $root_username -p$root_password -e $query2
       
+          & "C:\Program Files\MariaDB 10.5\bin\mysql.exe" -P 3307 -u root -e $query1
+          & "C:\Program Files\MariaDB 10.5\bin\mysql.exe" -P 3307 -u root -p$root_password -e $query2
+        shell: pwsh
+
+      - name: Import MoodleSQL file into MariaDB
+        run: |     
+          $root_username = "root"
+          $root_password = "root"
+          $moodle_db_name = "moodle"
           # Import the SQL file if it exists
           if (Test-Path -Path $moodle_sql_file) {
               Get-Content -Path $moodle_sql_file | & "C:\Program Files\MariaDB 10.5\bin\mysql.exe" -u $root_username -p$root_password $moodle_db_name
