@@ -37,7 +37,7 @@ jobs:
 
       - name: Install Moodle Composer dependencies
         run: |
-          cd server/moodle
+          cd ${{ github.workspace }}/server/moodle
           composer install
 
       - name: Import MoodleSQL file
@@ -46,7 +46,7 @@ jobs:
       
       - name: Run Moodle installation CLI
         run: |
-          php server/moodle/admin/cli/install.php `
+          php ${{ github.workspace }}/server/moodle/admin/cli/install.php `
               --lang=en `
               --wwwroot="http://localhost:8000/" `
               --dbhost="127.0.0.1" `
@@ -64,11 +64,11 @@ jobs:
       
       - name: Configure PHPUnit
         run: |
-          Add-Content -Path server/moodle/config.php -Value "`$CFG->phpunit_prefix = 'phpu_';"
-          Add-Content -Path server/moodle/config.php -Value "`$CFG->phpunit_dataroot = '${{ github.workspace }}\server\moodledata\phpunit';"
+          Add-Content -Path ${{ github.workspace }}/server/moodle/config.php -Value "`$CFG->phpunit_prefix = 'phpu_';"
+          Add-Content -Path ${{ github.workspace }}/server/moodle/config.php -Value "`$CFG->phpunit_dataroot = '${{ github.workspace }}\server\moodledata\phpunit';"
 
       - name: Initialize PHPUnit
-        run: php server/moodle/admin/tool/phpunit/cli/init.php
+        run: php ${{ github.workspace }}/server/moodle/admin/tool/phpunit/cli/init.php
 
       - name: Run tests on mod_homework
         if: always()
@@ -121,7 +121,7 @@ jobs:
 
       - name: Install Moodle Composer dependencies
         run: |
-          cd server/moodle
+          cd ${{ github.workspace }}/server/moodle
           composer install
 
       - name: Import MoodleSQL file
@@ -130,7 +130,7 @@ jobs:
 
       - name: Run Moodle installation CLI
         run: |
-          php server/moodle/admin/cli/install.php \
+          php ${{ github.workspace }}/server/moodle/admin/cli/install.php \
               --lang=en \
               --wwwroot="http://localhost:8000/" \
               --dbhost="127.0.0.1" \
@@ -153,7 +153,7 @@ jobs:
           echo "\$CFG->phpunit_dataroot = '${{ github.workspace }}/server/moodledata/phpunit';" >> "${{ github.workspace }}/server/moodle/config.php"
 
       - name: Initialize PHPUnit
-        run: php server/moodle/admin/tool/phpunit/cli/init.php
+        run: php ${{ github.workspace }}/server/moodle/admin/tool/phpunit/cli/init.php
 
       - name: Run tests on mod_homework
         if: always()
