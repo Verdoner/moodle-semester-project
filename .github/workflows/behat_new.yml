@@ -22,10 +22,12 @@ jobs:
           tools: composer
 
       - name: Set up php.ini
-        run: |
-          $PHP_INI_PATH = (php -i | Select-String 'Loaded Configuration File' | ForEach-Object { $_.ToString().Split(' ')[-1].Trim() })
-
-          Add-Content -Path $PHP_INI_PATH -Value "max_input_vars=5000"
+        run: >
+          PHP_INI_PATH=$(php --ini | grep "Loaded Configuration File" | awk '{print $4}')
+          
+          sudo sed -i \
+                   -e '$a max_input_vars=5000' \
+                   "$PHP_INI_PATH"
 
       - name: Install/Update Composer
         run: composer self-update --2
@@ -42,7 +44,7 @@ jobs:
 
       - name: Import MoodleSQL file
         run: |
-          cmd.exe /c "mysql moodle < ${{ github.workspace }}\MoodleSQL.sql"
+          mysql moodle < ${{ github.workspace }}/MoodleSQL.sql
       
       - name: Run Moodle installation CLI
         run: |
@@ -53,7 +55,7 @@ jobs:
               --dbname="moodle" `
               --dbuser="runneradmin" `
               --dbpass="" `
-              --dataroot="${{ github.workspace }}\server\moodledata" `
+              --dataroot="${{ github.workspace }}/server/moodledata" `
               --skip-database `
               --non-interactive `
               --agree-license `
