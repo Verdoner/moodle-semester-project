@@ -50,8 +50,7 @@ jobs:
 
       - name: Import SQL file
         run: |
-          mysql moodle < ${{ github.workspace }}/MoodleSQL.sql
-        shell: bash
+          cmd.exe /c "mysql moodle < ${{ github.workspace }}\MoodleSQL.sql"
       
       - name: Run Moodle installation CLI
         run: |
