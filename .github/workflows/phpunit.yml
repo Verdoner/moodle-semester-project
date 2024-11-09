@@ -70,7 +70,8 @@ jobs:
       
           # Import the SQL file if it exists
           if (Test-Path -Path $moodle_sql_file) {
-              & "C:\Program Files\MariaDB 10.5\bin\mysql.exe" -u $root_username -p$root_password $moodle_db_name < $moodle_sql_file
+              Get-Content -Path $moodle_sql_file | & "C:\Program Files\MariaDB 10.5\bin\mysql.exe" -u $root_username -p$root_password $moodle_db_name
+              Write-Host "SQL file imported successfully."
           } else {
               Write-Host "SQL file not found. Skipping import."
           }
