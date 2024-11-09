@@ -108,18 +108,18 @@ jobs:
         run: >
           PHP_INI_PATH=$(php --ini | grep "Loaded Configuration File" | awk '{print $4}')
           
-          sed -i \
-              -e 's/;extension=gd/extension=gd/' \
-              -e 's/;extension=intl/extension=intl/' \
-              -e 's/;extension=sodium/extension=sodium/' \
-              -e 's/;extension=zip/extension=zip/' \
-              -e 's/;extension=fileinfo/extension=fileinfo/' \
-              -e 's/;extension=phar/extension=phar/' \
-              -e '$a max_input_vars=5000' \
-              -e '$a memory_limit=256M' \
-              -e '$a post_max_size=50M' \
-              -e '$a upload_max_filesize=50M' \
-              "$PHP_INI_PATH"
+          sudo sed -i \
+                   -e 's/;extension=gd/extension=gd/' \
+                   -e 's/;extension=intl/extension=intl/' \
+                   -e 's/;extension=sodium/extension=sodium/' \
+                   -e 's/;extension=zip/extension=zip/' \
+                   -e 's/;extension=fileinfo/extension=fileinfo/' \
+                   -e 's/;extension=phar/extension=phar/' \
+                   -e '$a max_input_vars=5000' \
+                   -e '$a memory_limit=256M' \
+                   -e '$a post_max_size=50M' \
+                   -e '$a upload_max_filesize=50M' \
+                   "$PHP_INI_PATH"
 
       - name: Install/Update Composer
         run: composer self-update --2
