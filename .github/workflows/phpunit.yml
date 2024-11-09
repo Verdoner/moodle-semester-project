@@ -69,18 +69,6 @@ jobs:
 
       - name: Initialize PHPUnit
         run: php server/moodle/admin/tool/phpunit/cli/init.php
-
-      - name: Run tests on mod_homework
-        if: always()
-        run: |
-          cd server/moodle
-          vendor/bin/phpunit --testsuite mod_homework_testsuite
-
-      - name: Run tests on block_homework
-        if: always()
-        run: |
-          cd server/moodle
-          vendor/bin/phpunit --testsuite block_homework_testsuite
           
   setup-homework-plugin-test-ubuntu:
     runs-on: ubuntu-latest
@@ -155,20 +143,6 @@ jobs:
       - name: Initialize PHPUnit
         run: php server/moodle/admin/tool/phpunit/cli/init.php
 
-      - name: Run tests on mod_homework
-        if: always()
-        run: |
-          pwd
-          cd server/moodle
-          vendor/bin/phpunit --testsuite mod_homework_testsuite
-
-      - name: Run tests on block_homework
-        if: always()
-        run: |
-          pwd
-          cd server/moodle
-          vendor/bin/phpunit --testsuite block_homework_testsuite
-
   mod-homework-tests-windows:
     runs-on: windows-latest
     needs: setup-homework-plugin-test-windows
@@ -179,7 +153,7 @@ jobs:
       - name: Run tests on mod_homework
         if: always()
         run: |
-          cd server/moodle
+          cd ${{ github.workspace }}/server/moodle
           vendor/bin/phpunit --testsuite mod_homework_testsuite
 
   mod-homework-tests-ubuntu:
@@ -192,7 +166,7 @@ jobs:
       - name: Run tests on mod_homework
         if: always()
         run: |
-          cd server/moodle
+          cd ${{ github.workspace }}/server/moodle
           vendor/bin/phpunit --testsuite mod_homework_testsuite
 
   block-homework-tests-windows:
@@ -205,7 +179,7 @@ jobs:
       - name: Run tests on mod_homework
         if: always()
         run: |
-          cd server/moodle
+          cd ${{ github.workspace }}/server/moodle
           vendor/bin/phpunit --testsuite block_homework_testsuite
 
   block-homework-tests-ubuntu:
@@ -218,6 +192,6 @@ jobs:
       - name: Run tests on mod_homework
         if: always()
         run: |
-          cd server/moodle
+          cd ${{ github.workspace }}/server/moodle
           vendor/bin/phpunit --testsuite block_homework_testsuite
         
