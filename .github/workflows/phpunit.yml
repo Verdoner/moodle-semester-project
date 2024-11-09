@@ -109,16 +109,7 @@ jobs:
           PHP_INI_PATH=$(php --ini | grep "Loaded Configuration File" | awk '{print $4}')
           
           sudo sed -i \
-                   -e 's/;extension=gd/extension=gd/' \
-                   -e 's/;extension=intl/extension=intl/' \
-                   -e 's/;extension=sodium/extension=sodium/' \
-                   -e 's/;extension=zip/extension=zip/' \
-                   -e 's/;extension=fileinfo/extension=fileinfo/' \
-                   -e 's/;extension=phar/extension=phar/' \
                    -e '$a max_input_vars=5000' \
-                   -e '$a memory_limit=256M' \
-                   -e '$a post_max_size=50M' \
-                   -e '$a upload_max_filesize=50M' \
                    "$PHP_INI_PATH"
 
       - name: Install/Update Composer
@@ -146,7 +137,7 @@ jobs:
               --dbhost="127.0.0.1" \
               --dbuser="root" \
               --dbpass="" \
-              --dataroot="./server/moodledata" \
+              --dataroot="${{ github.workspace }}/server/moodledata" \
               --skip-database \
               --non-interactive \
               --agree-license \
@@ -157,8 +148,8 @@ jobs:
 
       - name: Configure PHPUnit
         run: |
-          echo "\$CFG->phpunit_prefix = 'phpu_';" >>"./server/moodle/config.php"
-          echo "\$CFG->phpunit_dataroot = '$("./server/moodledata/phpunit")';">>"./server/moodle/config.php"
+          echo "\$CFG->phpunit_prefix = 'phpu_';" >>"${{ github.workspace }}/server/moodle/config.php"
+          echo "\$CFG->phpunit_dataroot = '$("${{ github.workspace }}/server/moodledata/phpunit")';">>"${{ github.workspace }}/server/moodle/config.php"
 
       - name: Initialize PHPUnit
         run: php server/moodle/admin/tool/phpunit/cli/init.php
