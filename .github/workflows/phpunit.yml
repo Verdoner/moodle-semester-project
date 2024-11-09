@@ -42,13 +42,13 @@ jobs:
 
       - name: Set up and start MariaDB
         run: |
-          mysql_install_db --datadir="C:\Program Files\MariaDB 10.5\data"
+          # Start MariaDB in a separate process and wait for it to initialize
           Start-Process -FilePath "C:\Program Files\MariaDB 10.5\bin\mysqld.exe" -ArgumentList "--console" -NoNewWindow
           Start-Sleep -s 15 # Allow time for MariaDB to initialize
-
-          # Set up database and user
-          mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root'; FLUSH PRIVILEGES;"
-          mysql -u root -p"root" -e "CREATE DATABASE moodle;"
+      
+          # Set up database and user using the MariaDB client
+          "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root'; FLUSH PRIVILEGES;" | & "C:\Program Files\MariaDB 10.5\bin\mysql.exe" -u root
+          "CREATE DATABASE moodle;" | & "C:\Program Files\MariaDB 10.5\bin\mysql.exe" -u root -p"root"
 
       - name: Install Moodle dependencies
         run: |
