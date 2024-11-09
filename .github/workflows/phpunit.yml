@@ -140,6 +140,7 @@ jobs:
               --lang=en \
               --wwwroot="http://localhost:8000/" \
               --dbhost="127.0.0.1" \
+              --dbname="moodle" \
               --dbuser="root" \
               --dbpass="" \
               --dataroot="${{ github.workspace }}/server/moodledata" \
