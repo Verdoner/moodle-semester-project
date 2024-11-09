@@ -43,12 +43,12 @@ jobs:
         with:
           database: moodle
 
-      - name: Install Moodle dependencies
+      - name: Install Moodle Composer dependencies
         run: |
           cd server/moodle
           composer install
 
-      - name: Import SQL file
+      - name: Import MoodleSQL file
         run: |
           cmd.exe /c "mysql moodle < ${{ github.workspace }}\MoodleSQL.sql"
       
@@ -76,17 +76,15 @@ jobs:
           Add-Content -Path server/moodle/config.php -Value "`$CFG->phpunit_dataroot = 'C:\moodledata\phpunit';"
 
       - name: Initialize PHPUnit
-        run: php admin/tool/phpunit/cli/init.php
+        run: php server/moodle/admin/tool/phpunit/cli/init.php
 
       - name: Run tests on mod_homework
         run: |
-          cd server/moodle
-          vendor/bin/phpunit --testsuite mod_homework_testsuite
+          server/moodle/vendor/bin/phpunit --testsuite mod_homework_testsuite
 
       - name: Run tests on block_homework
         run: |
-          cd server/moodle
-          vendor/bin/phpunit --testsuite block_homework_testsuite
+          server/moodle/vendor/bin/phpunit --testsuite block_homework_testsuite
           
   homework-plugin-test-ubuntu:
     runs-on: ubuntu-latest
