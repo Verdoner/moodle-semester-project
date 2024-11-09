@@ -52,6 +52,7 @@ jobs:
       - name: Run Moodle installation CLI
         run: |
           php server/moodle/admin/cli/install.php --lang=en --wwwroot="http://localhost:8000/" `
+              --dbtype="mariadb" --dblibrary="native" `
               --dataroot="C:\moodledata" --dbpass="root" --skip-database --non-interactive `
               --agree-license --allow-unstable --fullname="Tests for Moodle Homework Plugin" `
               --shortname="mhp" --adminpass="Admin.123"
