@@ -38,7 +38,6 @@ jobs:
       - name: Install Composer
         run: composer self-update --2
 
-      # Set up MariaDB with the specified version and database
       - name: Set up MariaDB
         uses: ankane/setup-mariadb@v1
         with:
@@ -51,11 +50,18 @@ jobs:
       
       - name: Run Moodle installation CLI
         run: |
-          php server/moodle/admin/cli/install.php --lang=en --wwwroot="http://localhost:8000/" `
-              --dbtype="mariadb" `
-              --dataroot="C:\moodledata" --dbpass="root" --skip-database --non-interactive `
-              --agree-license --allow-unstable --fullname="Tests for Moodle Homework Plugin" `
-              --shortname="mhp" --adminpass="Admin.123"
+          php server/moodle/admin/cli/install.php `
+              --lang=en `
+              --wwwroot="http://localhost:8000/" `
+              --dbtype="mysqli" `
+              --dataroot="C:\moodledata" `
+              --skip-database `
+              --non-interactive `
+              --agree-license `
+              --allow-unstable `
+              --fullname="Tests for Moodle Homework Plugin" `
+              --shortname="mhp" `
+              --adminpass="Admin.123"
       
       - name: Configure PHPUnit
         run: |
