@@ -2,7 +2,7 @@ name: PHPUnit Tests for Moodle Homework Plugin
 
 on:
   push:
-    branches: [ "main", "44-codebase-add-windows-phpunit-testing-to-ci" ]
+    branches: [ "main" ]
   pull_request:
     types: [opened, reopened, synchronize]
 
