@@ -23,17 +23,9 @@ jobs:
 
       - name: Set up php.ini
         run: |
-          $php_ini_path = (php -i | Select-String 'Loaded Configuration File' | ForEach-Object { $_.ToString().Split(' ')[-1].Trim() })
-          (Get-Content $php_ini_path) -replace ';extension=gd', 'extension=gd' | Set-Content -Path $php_ini_path
-          (Get-Content $php_ini_path) -replace ';extension=intl', 'extension=intl' | Set-Content -Path $php_ini_path
-          (Get-Content $php_ini_path) -replace ';extension=sodium', 'extension=sodium' | Set-Content -Path $php_ini_path
-          (Get-Content $php_ini_path) -replace ';extension=zip', 'extension=zip' | Set-Content -Path $php_ini_path
-          (Get-Content $php_ini_path) -replace ';extension=fileinfo', 'extension=fileinfo' | Set-Content -Path $php_ini_path
-          (Get-Content $php_ini_path) -replace ';extension=phar', 'extension=phar' | Set-Content -Path $php_ini_path
-          Add-Content -Path $php_ini_path -Value "max_input_vars=5000"
-          Add-Content -Path $php_ini_path -Value "memory_limit=256M"
-          Add-Content -Path $php_ini_path -Value "post_max_size=50M"
-          Add-Content -Path $php_ini_path -Value "upload_max_filesize=50M"
+          $PHP_INI_PATH = (php -i | Select-String 'Loaded Configuration File' | ForEach-Object { $_.ToString().Split(' ')[-1].Trim() })
+
+          Add-Content -Path $PHP_INI_PATH -Value "max_input_vars=5000"
 
       - name: Install/Update Composer
         run: composer self-update --2
@@ -148,6 +140,8 @@ jobs:
 
       - name: Configure PHPUnit
         run: |
+          mkdir -p "${{ github.workspace }}/server/moodledata/phpunit"
+          
           echo "\$CFG->phpunit_prefix = 'phpu_';" >>"${{ github.workspace }}/server/moodle/config.php"
           echo "\$CFG->phpunit_dataroot = '$("${{ github.workspace }}/server/moodledata/phpunit")';">>"${{ github.workspace }}/server/moodle/config.php"
 
