@@ -57,7 +57,10 @@ jobs:
           php server/moodle/admin/cli/install.php `
               --lang=en `
               --wwwroot="http://localhost:8000/" `
-              --dbtype="" `
+              --dbtype="mariadb" `
+              --dbname="moodle" `
+              --dbuser="runneradmin" `
+              --dbpass="" `
               --dataroot="C:\moodledata" `
               --skip-database `
               --non-interactive `
