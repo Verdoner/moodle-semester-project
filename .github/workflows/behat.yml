@@ -3,8 +3,14 @@ name: Behat for Moodle Homework Plugin
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'server/moodle/blocks/homework/**'
+      - 'server/moodle/mod/homework/**'
   pull_request:
     types: [opened, reopened, synchronize]
+    paths:
+      - 'server/moodle/blocks/homework/**'
+      - 'server/moodle/mod/homework/**'
 
 jobs:
   homework-plugin-behat:
@@ -67,14 +73,9 @@ jobs:
       - name: Install Mozilla Firefox
         uses: browser-actions/setup-firefox@v1
 
-    # - name: Set up Geckodriver
-      # uses: browser-actions/setup-geckodriver@latest
-
       - name: Install Google Chrome
         uses: browser-actions/setup-chrome@v1
-      # with:
-        # install-chromedriver: true
-          
+
       - name: Set up Selenium
         run: |
           wget https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.25.0/selenium-server-4.25.0.jar
