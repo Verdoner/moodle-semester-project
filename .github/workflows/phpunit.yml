@@ -28,11 +28,12 @@ jobs:
           (Get-Content $php_ini_path) -replace ';extension=intl', 'extension=intl' | Set-Content -Path $php_ini_path
           (Get-Content $php_ini_path) -replace ';extension=sodium', 'extension=sodium' | Set-Content -Path $php_ini_path
           (Get-Content $php_ini_path) -replace ';extension=zip', 'extension=zip' | Set-Content -Path $php_ini_path
+          (Get-Content $php_ini_path) -replace ';extension=fileinfo', 'extension=fileinfo' | Set-Content -Path $php_ini_path
+          (Get-Content $php_ini_path) -replace ';extension=phar', 'extension=phar' | Set-Content -Path $php_ini_path
           Add-Content -Path $php_ini_path -Value "max_input_vars=5000"
           Add-Content -Path $php_ini_path -Value "memory_limit=256M"
           Add-Content -Path $php_ini_path -Value "post_max_size=50M"
           Add-Content -Path $php_ini_path -Value "upload_max_filesize=50M"
-          Add-Content -Path $php_ini_path -Value "extension=phar.so"
 
       - name: Install Composer
         run: composer self-update --2
