@@ -50,14 +50,10 @@ jobs:
       
       - name: Run Moodle installation CLI
         run: |
-          # Confirm that MariaDB is accessible and set up correctly
-          mysql -e "SHOW DATABASES;"
-      
-          # Run Moodle installation with dbtype set to "mysqli"
           php server/moodle/admin/cli/install.php `
               --lang=en `
               --wwwroot="http://localhost:8000/" `
-              --dbtype="mysqli" `
+              --dbtype="MariaDB" `
               --dbhost="127.0.0.1" `
               --dbname="moodle" `
               --dbuser="runneradmin" `
