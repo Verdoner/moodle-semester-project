@@ -7,7 +7,86 @@ on:
     types: [opened, reopened, synchronize]
 
 jobs:
-  homework-plugin-test:
+  homework-plugin-test-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Setup PHP
+        id: setup-php
+        uses: shivammathur/setup-php@v2
+        with:
+          extensions: phar, iconv, mbstring, gd, intl, sodium, zip
+          tools: composer
+
+      - name: Set up php.ini
+        run: |
+          $php_ini_path = (php -i | Select-String 'Loaded Configuration File' | ForEach-Object { $_.ToString().Split(' ')[-1].Trim() })
+          (Get-Content $php_ini_path) -replace ';extension=gd', 'extension=gd' | Set-Content -Path $php_ini_path
+          (Get-Content $php_ini_path) -replace ';extension=intl', 'extension=intl' | Set-Content -Path $php_ini_path
+          (Get-Content $php_ini_path) -replace ';extension=sodium', 'extension=sodium' | Set-Content -Path $php_ini_path
+          (Get-Content $php_ini_path) -replace ';extension=zip', 'extension=zip' | Set-Content -Path $php_ini_path
+          Add-Content -Path $php_ini_path -Value "max_input_vars=5000"
+          Add-Content -Path $php_ini_path -Value "memory_limit=256M"
+          Add-Content -Path $php_ini_path -Value "post_max_size=50M"
+          Add-Content -Path $php_ini_path -Value "upload_max_filesize=50M"
+          Add-Content -Path $php_ini_path -Value "extension=phar.so"
+
+      - name: Install Composer
+        run: composer self-update --2
+
+      - name: Install MariaDB
+        run: choco install mariadb --version=10.5.8 -y
+
+      - name: Set up and start MariaDB
+        run: |
+          mysql_install_db --datadir="C:\Program Files\MariaDB 10.5\data"
+          Start-Process -FilePath "C:\Program Files\MariaDB 10.5\bin\mysqld.exe" -ArgumentList "--console" -NoNewWindow
+          Start-Sleep -s 15 # Allow time for MariaDB to initialize
+
+          # Set up database and user
+          mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root'; FLUSH PRIVILEGES;"
+          mysql -u root -p"root" -e "CREATE DATABASE moodle;"
+
+      - name: Install Moodle dependencies
+        run: |
+          cd server/moodle
+          composer install
+
+      - name: Set up Moodle for PHPUnit
+        run: |
+          # Set up language and locale
+          New-Item -ItemType Directory -Force -Path "C:\locales\en_AU.UTF-8" | Out-Null
+          Set-Culture en-AU
+          Set-WinSystemLocale en-AU
+          Set-WinUserLanguageList en-AU -Force
+
+          # Run Moodle installation CLI
+          php server/moodle/admin/cli/install.php --lang=en --wwwroot="http://localhost:8000/" `
+              --dataroot="C:\moodledata" --dbpass="root" --skip-database --non-interactive `
+              --agree-license --allow-unstable --fullname="Tests for Moodle Homework Plugin" `
+              --shortname="mhp" --adminpass="Admin.123"
+
+          # Configure PHPUnit
+          Add-Content -Path server/moodle/config.php -Value "`$CFG->phpunit_prefix = 'phpu_';"
+          Add-Content -Path server/moodle/config.php -Value "`$CFG->phpunit_dataroot = 'C:\moodledata\phpunit';"
+
+      - name: Initialize PHPUnit
+        run: php admin/tool/phpunit/cli/init.php
+
+      - name: Run tests on mod_homework
+        run: |
+          cd server/moodle
+          vendor/bin/phpunit --testsuite mod_homework_testsuite
+
+      - name: Run tests on block_homework
+        run: |
+          cd server/moodle
+          vendor/bin/phpunit --testsuite block_homework_testsuite
+          
+  homework-plugin-test-ubuntu:
     runs-on: ubuntu-latest
 
     steps:
