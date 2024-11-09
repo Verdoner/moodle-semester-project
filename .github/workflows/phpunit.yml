@@ -18,7 +18,7 @@ jobs:
         id: setup-php
         uses: shivammathur/setup-php@v2
         with:
-          extensions: phar, iconv, mbstring, gd, intl, sodium, zip
+          extensions: mbstring, intl, iconv, gd, sodium, zip, fileinfo, phar, mysqli
           tools: composer
 
       - name: Set up php.ini
@@ -47,13 +47,17 @@ jobs:
         run: |
           cd server/moodle
           composer install
+
+      - name: Import SQL file
+        run: |
+          mysql moodle < ${{ github.workspace }}/MoodleSQL.sql
+        shell: bash
       
       - name: Run Moodle installation CLI
         run: |
           php server/moodle/admin/cli/install.php `
               --lang=en `
               --wwwroot="http://localhost:8000/" `
-              --dbtype="MariaDB" `
               --dbhost="127.0.0.1" `
               --dbname="moodle" `
               --dbuser="runneradmin" `
