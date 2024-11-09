@@ -82,7 +82,7 @@ jobs:
           cd ${{ github.workspace }}/server/moodle
           vendor/bin/phpunit --testsuite mod_homework_testsuite
 
-      - name: Run tests on mod_homework
+      - name: Run tests on block_homework
         if: always()
         run: |
           cd ${{ github.workspace }}/server/moodle
@@ -168,7 +168,7 @@ jobs:
           cd ${{ github.workspace }}/server/moodle
           vendor/bin/phpunit --testsuite mod_homework_testsuite
 
-      - name: Run tests on mod_homework
+      - name: Run tests on block_homework
         if: always()
         run: |
           cd ${{ github.workspace }}/server/moodle
