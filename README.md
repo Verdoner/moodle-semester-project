@@ -64,8 +64,15 @@ cp server/composer.docker-template.json server/moodle/composer.json && cp server
    - Open your Docker dashboard and locate the container labeled `server-webserver-1`.
    - When you see the message "**Running 'watch' task**" in the logs of this container, Moodle is ready for use.
 
-## Accessing Moodle and phpMyAdmin
+## Accessing MariaDB, Behat, Moodle and phpMyAdmin
 Once Moodle is ready, you can access the following services from your web browser:
+- **MariaDB**: You can connect to the MariaDB database using your preferred database management software, such as **HeidiSQL**, **Sequel Pro**, or **MySQL Workbench**. Use the following credentials and connection details:
+   - Host: `localhost` or `127.0.0.1` 
+   - Port: `3306`
+   - Username: `root`
+   - Password: `root`
+- **Behat**: Navigate to http://localhost:7900/?autoconnect=1&resize=scale&password=secret to view Behat tests running on Moodle.
+  > **Note**: If you get logged out of the VNC for the Behat tests, you can use the password `secret` to log back in.
 - **Moodle**: Navigate to http://localhost:8000 to view Moodle.
 - **phpMyAdmin**: Navigate to http://localhost:8080 to access the phpMyAdmin interface for managing the database.
 
