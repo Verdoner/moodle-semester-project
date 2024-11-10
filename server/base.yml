@@ -25,6 +25,8 @@ services:
       - "${ASSETDIR}/exttests/apache2_ports.conf:/etc/apache2/ports.conf"
       - "${ASSETDIR}/exttests/apache2.conf:/etc/apache2/sites-enabled/000-default.conf"
   selenium:
-    image: "selenium/standalone-firefox${MOODLE_DOCKER_SELENIUM_SUFFIX:-}:${MOODLE_DOCKER_BROWSER_TAG}"
+    image: "selenium/standalone-firefox:4.26.0-20241101" # image: "selenium/standalone-firefox${MOODLE_DOCKER_SELENIUM_SUFFIX:-}:${MOODLE_DOCKER_BROWSER_TAG}"
     volumes:
       - "./moodle:/var/www/html:ro"
+    ports:
+      - "7900:7900"
