@@ -1,6 +1,7 @@
 name: Behat for Moodle Homework Plugin
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "main" ]
     paths:
