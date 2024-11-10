@@ -18,3 +18,5 @@ services:
       MYSQL_DATABASE: moodle
     volumes:
       - ./MoodleSQL.sql:/docker-entrypoint-initdb.d/MoodleSQL.sql
+    ports:
+      - "3306:3306"
