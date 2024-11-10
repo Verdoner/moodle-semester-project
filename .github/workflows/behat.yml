@@ -2,15 +2,9 @@ name: Behat for Moodle Homework Plugin
 
 on:
   push:
-    branches: [ "main" ]
-    paths:
-      - 'server/moodle/blocks/homework/**'
-      - 'server/moodle/mod/homework/**'
+    branches: [ "main", "32-codebase-add-behat-to-github-actions" ]
   pull_request:
     types: [opened, reopened, synchronize]
-    paths:
-      - 'server/moodle/blocks/homework/**'
-      - 'server/moodle/mod/homework/**'
 
 jobs:
   homework-plugin-behat:
@@ -106,25 +100,25 @@ jobs:
         run: |
           cd ${{ github.workspace }}/server/moodle
           
-          vendor/bin/behat --config ${{ github.workspace }}/server/moodledata/bht_moodledata/behatrun/behat/behat.yml --profile=headlessfirefox --tags=@mod_homework
+          vendor/bin/behat --config ${{ github.workspace }}/server/moodledata/bht_moodledata/behatrun/behat/behat.yml --profile=headlessfirefox --tags=@mod_quiz
 
       - name: Run Behat tests on mod_homework with Google Chrome
         if: always()
         run: |
           cd ${{ github.workspace }}/server/moodle
           
-          vendor/bin/behat --config ${{ github.workspace }}/server/moodledata/bht_moodledata/behatrun/behat/behat.yml --profile=headlesschrome --tags=@mod_homework
+          vendor/bin/behat --config ${{ github.workspace }}/server/moodledata/bht_moodledata/behatrun/behat/behat.yml --profile=headlesschrome --tags=@mod_quiz
 
       - name: Run Behat tests on block_homework with Mozilla Firefox
         if: always()
         run: |
           cd ${{ github.workspace }}/server/moodle
           
-          vendor/bin/behat --config ${{ github.workspace }}/server/moodledata/bht_moodledata/behatrun/behat/behat.yml --profile=headlessfirefox --tags=@block_homework
+          vendor/bin/behat --config ${{ github.workspace }}/server/moodledata/bht_moodledata/behatrun/behat/behat.yml --profile=headlessfirefox --tags=@block_login
 
       - name: Run Behat tests on block_homework with Google Chrome
         if: always()
         run: |
           cd ${{ github.workspace }}/server/moodle
           
-          vendor/bin/behat --config ${{ github.workspace }}/server/moodledata/bht_moodledata/behatrun/behat/behat.yml --profile=headlesschrome --tags=@block_homework
+          vendor/bin/behat --config ${{ github.workspace }}/server/moodledata/bht_moodledata/behatrun/behat/behat.yml --profile=headlesschrome --tags=@block_login
