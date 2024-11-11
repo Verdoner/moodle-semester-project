@@ -223,14 +223,11 @@ To run Behat tests with a local Selenium server, you will need to download the S
       $CFG->behat_profiles = array(
           'default' => array(
               'browser' => "chrome", // or "firefox", "safari", "edge", or any other locally installed browser supported by Selenium
-              'wd_host' => 'http://host.docker.internal:4444/wd/hub', // Works on Windows/MacOS; for Linux, use a different IP as per https://stackoverflow.com/a/70725882
+              'wd_host' => 'http://host.docker.internal:4444/wd/hub',
           ),
       );
       ```
       - **Browser setting**: Set `browser` to match the locally installed browser you want Selenium to use (e.g., `"chrome"`, `"firefox"`, `"safari"` or `"edge"`).
-      - **Selenium WebDriver host (`wd_host`)**:
-        - For **Windows** and **MacOS**, the host should be set to `http://host.docker.internal:4444/wd/hub`.
-        - For **Linux**, refer to [this workaround](https://stackoverflow.com/a/70725882) for the correct IP address if `host.docker.internal` is not supported.
        
 5. **Reinitialize Behat**  
    After modifying the `config.php` file, you must reinitialize Behat to apply the new settings. Run the following command inside your Docker terminal:
