@@ -137,13 +137,7 @@ To run Behat tests with a local Selenium server, you will need to download the S
 3. **Run the Selenium server**  
    Navigate to the folder where the Selenium server JAR file is located.  
    Depending on your operating system, use one of the following commands to start the Selenium server:
-   - **On Windows**:  
-     Open a command prompt and run:
-     ```bash
-     start java -jar selenium-server-4.25.0.jar standalone
-     ```
-   - **On Unix-based systems (MacOS/Linux)**:  
-     Open a new terminal (dedicated to running Selenium) and execute:
+   - Open a new terminal (dedicated to running Selenium) and execute:
      ```bash
      java -jar selenium-server-4.25.0.jar standalone
      ```
