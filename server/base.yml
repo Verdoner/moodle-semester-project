@@ -18,7 +18,7 @@ services:
       MOODLE_DOCKER_BROWSER: firefox
       MOODLE_DOCKER_WEB_HOST: "${MOODLE_DOCKER_WEB_HOST}"
       MOODLE_DOCKER_TIMEOUT_FACTOR: "${MOODLE_DOCKER_TIMEOUT_FACTOR}"
-    command: /bin/bash -c "cd /var/www/html && (composer install || true) && (composer update || true) && (npm install || true) && (npm update || true) && (grunt watch &) && apache2-foreground"
+    command: /bin/bash -c "cd /var/www/html && (composer install || true) && (composer update || true) && (npm install || true) && (npm update || true) && (nohup php -S 127.0.0.1:8000 > /dev/null 2>&1 &) && (grunt watch &) && apache2-foreground"
   exttests:
     image: moodlehq/moodle-exttests
     volumes:
