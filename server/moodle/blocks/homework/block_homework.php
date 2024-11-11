@@ -44,12 +44,38 @@ class block_homework extends block_base {
 
     /**
      * Retrieves and prepares the content to be displayed by the block
+     *
+     * @return stdClass|null
      */
     public function get_content() {
 
-        global $OUTPUT, $DB, $value, $USER;
+        global $OUTPUT, $DB, $USER;
 
-        $homeworks = $DB->get_records('homework');
+        // Get current time.
+        $currenttime = time();
+
+        // Fetch courses user is enrolled in.
+        $usercourses = enrol_get_users_courses($USER->id);
+
+        // Extract course IDs.
+        $courseids = array_map(function($course) {
+           return $course->id;
+        }, $usercourses);
+
+
+        // Create a string of ? placeholders for each found course_id, seperated by commas.
+        $placeholders = implode(',', array_fill(0, count($courseids), '?'));
+
+        // Merge parameters.
+        $parameters = array_merge([$currenttime], $courseids);
+
+        // Construct WHERE condition for select.
+        $select = "duedate > ? AND course IN ($placeholders)";
+
+        // Fetch homeworks using get_records_select.
+        $homeworks = $DB->get_records_select('homework', $select, $parameters);
+
+
         $data = [];
 
         if ($this->content !== null) {
@@ -57,6 +83,7 @@ class block_homework extends block_base {
         }
 
         $this->content = new stdClass();
+
         // If the current page is a course then remove unrelated homework.
         if ($this->page->pagetype == 'course-view-topics') {
             $homeworks = $this->filter_homework_content($this->page->url, $homeworks);
@@ -70,7 +97,7 @@ class block_homework extends block_base {
             $tmp = [];
             $tmp['id'] = $homework->id;
             $tmp['name'] = $homework->name;
-            $tmp['duedate'] = $homework->duedate;
+            $tmp['duedate'] = date('d-m-Y', $homework->duedate);
             $tmp['intro'] = strip_tags($homework->intro);
             $tmp['courseTitle'] = $DB->get_field('course', 'fullname', ['id' => $homework->course]);
 
@@ -109,7 +136,8 @@ class block_homework extends block_base {
                         $filearea,
                         $itemid,
                         $filepath,
-                        $filename
+                        $filename,
+                        false
                     );
 
                     // Get appropriate icon for file type.
@@ -135,8 +163,6 @@ class block_homework extends block_base {
 
         // Render the content using a template and pass the homework data to it.
         $this->content->text = $OUTPUT->render_from_template('block_homework/data', ['data' => $data]);
-
-
         // Include JavaScript functionality for scrolling behavior in the block.
         $this->page->requires->js_call_amd('block_homework/scroll', 'init');
         $this->page->requires->js_call_amd('block_homework/sort', 'init');
@@ -146,7 +172,6 @@ class block_homework extends block_base {
             'init',
             ["homework", $data, $USER->id, $homeworkcompletionrecords]
         );
-
 
         return $this->content;
     }

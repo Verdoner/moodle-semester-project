@@ -34,8 +34,10 @@
     <div class="outer-box" id="outer-box">
         {{#data}}
             <div class="infobox">
-                <h2>name: {{name}}</h2>
-                <p>Intro: {{intro}}</p>
+                <h2>{{courseTitle}}</h2>
+                <h2>{{name}}</h2>
+                <h3>{{duedate}}</h3>
+                <p>{{intro}}</p>
                 <button class="timebutton" data-homework-id={{id}} id="{{id}}"">Time</button>
                 {{#files}}
                     <img src="{{iconurl}}" alt="File icon">

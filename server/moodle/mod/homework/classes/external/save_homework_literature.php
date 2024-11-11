@@ -35,10 +35,11 @@ use external_value;
 use external_single_structure;
 
 /**
- *
+ * Class for saving homework literature.
  */
 class save_homework_literature extends \external_api {
     /**
+     * Returns parameters inputfield, startpage and endpage
      *
      * @return external_function_parameters Define the parameters expected by this function.
      */
@@ -102,6 +103,7 @@ class save_homework_literature extends \external_api {
     }
 
     /**
+     * Returns status and message as single structure
      *
      * @return external_single_structure Define the return values.
      */
