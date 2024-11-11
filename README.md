@@ -202,6 +202,7 @@ To run Behat tests with a local Selenium server, you will need to download the S
      ```bash
      start java -jar selenium-server-4.25.0.jar standalone
      ```
+     This will start the Selenium server using port `4444`.  
 4. **Modify Moodle configuration for Behat**  
    To configure Moodle for use with the Selenium server, make the following adjustments in the `config.php` file located in the `/server/moodle` directory.
    1. Open `/server/moodle/config.php`.
