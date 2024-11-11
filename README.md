@@ -9,7 +9,8 @@ Before setting up the Moodle Docker environment, ensure the following prerequisi
 
 2. **Git**: [Install Git](https://git-scm.com/downloads)  
    Git is required to clone the repository and manage version control.
-> **Note**: Ensure all environment variables for Docker and Git are properly configured in your system.
+> [!IMPORTANT]
+> **Ensure all environment variables for Docker and Git are properly configured in your system.**
 
 ## Clone the Repository
 
@@ -56,7 +57,8 @@ cp server/composer.docker-template.json server/moodle/composer.json && cp server
    sudo sh start_moodle_unix.sh
    ```
    This will grant the necessary permissions to execute the script.
-   > Note: The initial startup may take some time, as it will install various Composer and Node modules.
+> [!NOTE]
+> **The initial startup may take some time, as it will install various Composer and Node modules.**
 
    ### Checking if Moodle is Ready
 
@@ -71,10 +73,12 @@ Once Moodle is ready, you can access the following services from your web browse
    - Port: `3306`
    - Username: `root`
    - Password: `root`
-- **Behat**: Navigate to http://localhost:7900/?autoconnect=1&resize=scale&password=secret to view Behat tests running on Moodle.
-  > **Note**: If you get logged out of the VNC for the Behat tests, you can use the password `secret` to log back in.
 - **Moodle**: Navigate to http://localhost:8000 to view Moodle.
 - **phpMyAdmin**: Navigate to http://localhost:8080 to access the phpMyAdmin interface for managing the database.
+- **Behat**: Navigate to http://localhost:7900/?autoconnect=1&resize=scale&password=secret to view Behat tests running on Moodle.
+   > **Note**: If you get logged out of the VNC for the Behat tests, you can use the password `secret` to log back in.
+> [!TIP]  
+> **If you’d like to run tests with a local Selenium server instead, please refer to the [Setting up Selenium server for Behat testing locally](#setting-up-selenium-server-for-behat-testing-locally) section. This provides an alternative approach for executing Behat tests locally, allowing you to select specific browsers and enabling direct interaction with the Selenium server setup.**
 
 ## Access Docker Terminal
 1. To open a terminal inside Docker, confirm you're in the cloned directory.
@@ -122,5 +126,61 @@ grunt amd --force --root=/mod/homework
 ## Exit Docker Terminal
 You can exit the Docker terminal with: `exit`
 
-## Notes
-- The setup may take some time due to dependency installation.
+# Additional Notes
+## Setting up Selenium server for Behat testing locally
+To run Behat tests with a local Selenium server, you will need to download the Selenium server JAR file and make some configuration changes.
+1. **Download Selenium server**  
+   Ensure you have **Java 11 or higher** installed, as it is required to run the Selenium server.
+   Then, download the Selenium server JAR file from the following link:
+   - [Selenium Server 4.25.0](https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.25.0/selenium-server-4.25.0.jar)
+      
+3. **Run the Selenium server**  
+   Navigate to the folder where the Selenium server JAR file is located.  
+   Depending on your operating system, use one of the following commands to start the Selenium server:
+   - **On Windows**:  
+     Open a command prompt and run:
+     ```bash
+     start java -jar selenium-server-4.25.0.jar standalone
+     ```
+   - **On Unix-based systems (MacOS/Linux)**:  
+     Open a new terminal (dedicated to running Selenium) and execute:
+     ```bash
+     java -jar selenium-server-4.25.0.jar standalone
+     ```
+4. **Modify Moodle configuration for Behat**  
+   To configure Moodle for use with the Selenium server, make the following adjustments in the `config.php` file located in the `/server/moodle` directory.
+   1. Open `/server/moodle/config.php`.
+   2. Locate the following lines:
+      ```php
+      $CFG->behat_wwwroot = 'http://webserver';
+      ...
+      $CFG->behat_profiles = array(
+          'default' => array(
+              'browser' => getenv('MOODLE_DOCKER_BROWSER'),
+              'wd_host' => 'http://selenium:4444/wd/hub',
+          ),
+      );
+      ```
+   3. Update them to the following configuration:
+      ```php
+      $CFG->behat_wwwroot = 'http://127.0.0.1:8000';
+      ...
+      $CFG->behat_profiles = array(
+          'default' => array(
+              'browser' => "chrome", // or "firefox", "safari", "edge", or any other locally installed browser supported by Selenium
+              'wd_host' => 'http://host.docker.internal:4444/wd/hub', // Works on Windows/MacOS; for Linux, use a different IP as per https://stackoverflow.com/a/70725882
+          ),
+      );
+      ```
+      - **Browser setting**: Set `browser` to match the locally installed browser you want Selenium to use (e.g., `"chrome"`, `"firefox"`, `"safari"` or `"edge"`).
+      - **Selenium WebDriver host (`wd_host`)**:
+        - For **Windows** and **MacOS**, the host should be set to `http://host.docker.internal:4444/wd/hub`.
+        - For **Linux**, refer to [this workaround](https://stackoverflow.com/a/70725882) for the correct IP address if `host.docker.internal` is not supported.
+       
+5. **Reinitialize Behat**  
+   After modifying the `config.php` file, you must reinitialize Behat to apply the new settings. Run the following command inside your Docker terminal:
+   ```bash
+   php admin/tool/behat/cli/init.php
+   ```
+   This step ensures that the updated configuration is recognized by Behat, allowing it to use the local Selenium server.
+   Now you can [run Behat tests](#behat) locally.
