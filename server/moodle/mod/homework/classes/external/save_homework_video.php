@@ -48,7 +48,7 @@ class save_homework_video extends \external_api {
             'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
             'starttime' => new external_value(PARAM_INT, 'startTime field value'),
             'endtime' => new external_value(PARAM_INT, 'endTime field value'),
-            'homework' => new external_value(PARAM_INT, 'homework field value'),
+            'homeworkid' => new external_value(PARAM_INT, 'homeworkId field value'),
             'fileid' => new external_value(PARAM_INT, 'Uploaded file ID', VALUE_OPTIONAL),
         ]);
     }
@@ -58,43 +58,35 @@ class save_homework_video extends \external_api {
      * @param $inputfield
      * @param $starttime
      * @param $endtime
-     * @param $homework
+     * @param $homeworkid
      * @param $fileid
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($inputfield, $starttime, $endtime, $homework, $fileid = null) {
+    public static function execute($inputfield, $starttime, $endtime, $homeworkid, $fileid = null) {
         global $DB, $USER;
 
         $record = new \stdClass();
-        $filesrecord = new \stdClass();
 
-        $record->userid = $USER->id;
+        $record->homework_id = $homeworkid;
         $record->description = $inputfield;
-        $record->starttime = $starttime;
-        $record->endtime = $endtime;
-        $record->homework = $homework;
-        if ($fileid) {
-            $record->fileid = $fileid;
 
-            $filesrecord->files_id = $fileid;
-            $filesrecord->homework_id = $homework;
-
-            try {
-                $DB->insert_record('files_homework', $filesrecord);
-            } catch (\dml_exception $e) {
-                debugging("Error inserting into files_homework: " . $e->getMessage(), DEBUG_DEVELOPER);
-                return ['status' => 'error', 'message' => 'Failed to save file record'];
-            }
-        }
         $record->timecreated = time();
         $record->timemodified = time();
+        $record->usermodified = $USER->id;
+
+        $record->introformat = 0;
+
+        $record->starttime = $starttime;
+        $record->endtime = $endtime;
+
+        $record->file_id = $fileid;
 
         try {
-            $DB->insert_record('homework_video', $record);
+            $DB->insert_record('homework_materials', $record);
         } catch (\dml_exception $e) {
-            debugging("Error inserting into homework_video: " . $e->getMessage(), DEBUG_DEVELOPER);
-            return ['status' => 'error', 'message' => 'Failed to save homework record'];
+            debugging("Error inserting into homework_materials: " . $e->getMessage(), DEBUG_DEVELOPER);
+            return ['status' => 'error', 'message' => 'Failed to save homework materials record'];
         }
 
         // Return a success response.
