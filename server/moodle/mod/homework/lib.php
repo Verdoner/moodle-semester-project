@@ -36,6 +36,7 @@ function homework_add_instance($homeworkdata) {
     $homeworkdata->timecreated = time();
     $homeworkdata->timemodified = time();
 
+
     // Save the due date if it's not empty.
     if (!empty($homeworkdata->duedateselector)) {
         $homeworkdata->duedate = $homeworkdata->duedateselector;  // Store the due date as a UNIX timestamp.
