@@ -51,6 +51,22 @@ $functions = [
         'type'        => 'read',
         'ajax'        => true,
     ],
+    'block_homework_get_courses' => [
+        'classname'   => 'block_homework\external\get_courses',
+        'methodname'  => 'execute',
+        'classpath'   => 'blocks/homework/classes/external/get_courses.php',
+        'description' => 'Get the courses',
+        'type'        => 'read',
+        'ajax'        => true,
+    ],
+    'block_homework_filter_homework' => [
+        'classname'   => 'block_homework\external\filter_homework',
+        'methodname'  => 'execute',
+        'classpath'   => 'blocks/homework/classes/external/filter_homework.php',
+        'description' => 'Filter the homework',
+        'type'        => 'read',
+        'ajax'        => true,
+    ]
 ];
 
 $services = [
@@ -59,6 +75,8 @@ $services = [
             'block_homework_get_infohomework_modal',
             'block_homework_save_homeworktime',
             'block_homework_get_homework',
+            'block_homework_get_courses',
+            'block_homework_filter_homework'
         ],
         'restrictedusers' => 0,
         'enabled' => 1,

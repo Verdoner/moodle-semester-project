@@ -172,6 +172,7 @@ class block_homework extends block_base {
             'init',
             ["homework", $data, $USER->id, $homeworkcompletionrecords]
         );
+        $this->page->requires->js_call_amd('block_homework/filter', 'init');
 
         return $this->content;
     }

@@ -109,13 +109,6 @@ class get_homework extends \external_api {
         return $homeworkarray;
     }
 
-    /**
-     *
-     * @return string - The name of the function
-     */
-    public static function get_homework_returns() {
-        return 'homework';
-    }
 
     /**
      *
