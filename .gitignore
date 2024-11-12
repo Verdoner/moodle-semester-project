@@ -1,4 +1,5 @@
-.DS_Store
-/server/local.yml
-/server/moodle/
-/server/moodledata/
+# Ignore everything by default
+*
+
+# Allow only the /server/moodle directory
+!/server/moodle/
