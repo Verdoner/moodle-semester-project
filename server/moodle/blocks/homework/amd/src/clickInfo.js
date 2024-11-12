@@ -45,7 +45,6 @@ export const init = async(title, data, user_id, completions) => {
                     if (item.id !== homeworkid){
                         continue;
                     }
-                        console.log(1)
                         if(!(item.hasOwnProperty('literature'))) {
                             throw new Error("missing id in homework")
                         }
@@ -76,7 +75,6 @@ export const init = async(title, data, user_id, completions) => {
                         videoslist.push(videos);
                         }
                     }
-                        console.log(literaturelist);
 
                 }
             })
@@ -96,7 +94,7 @@ export const init = async(title, data, user_id, completions) => {
                 },
                 done: async function(response) {
                     const modal = await MyModal.create({
-                        title: title,
+                        title: response.course + ": " + response.title,
                         body: `${response.html}`,
                         large: true,
                         removeOnClose: true,

@@ -43,17 +43,18 @@ class get_infohomework_modal extends external_api {
             'data1' => new external_multiple_structure(new external_single_structure([
                 'description' => new external_value(PARAM_TEXT, 'Description of the homework'),
                 'endpage' => new external_value(PARAM_INT, 'End page number'),
-                'homework_id' => new external_value(PARAM_INT, 'The homework ID'),
+                'homework' => new external_value(PARAM_INT, 'The homework ID'),
                 'id' => new external_value(PARAM_INT, 'Unique ID'),
                 'introformat' => new external_value(PARAM_INT, 'Format of the introduction'),
                 'startpage' => new external_value(PARAM_INT, 'Start page number'),
                 'timecreated' => new external_value(PARAM_INT, 'Timestamp when created'),
                 'timemodified' => new external_value(PARAM_INT, 'Timestamp when last modified'),
+                'fileid' => new external_value(PARAM_INT, 'The id of the file'),
             ])),
             'data2' => new external_multiple_structure(new external_single_structure([
                 'description' => new external_value(PARAM_TEXT, 'Description of the homework'),
                 'link' => new external_value(PARAM_TEXT, 'The link'),
-                'homework_id' => new external_value(PARAM_INT, 'The homework ID'),
+                'homework' => new external_value(PARAM_INT, 'The homework ID'),
                 'id' => new external_value(PARAM_INT, 'Unique ID'),
                 'timecreated' => new external_value(PARAM_INT, 'Timestamp when created'),
                 'timemodified' => new external_value(PARAM_INT, 'Timestamp when last modified'),
@@ -76,7 +77,7 @@ class get_infohomework_modal extends external_api {
      * @param int $homework_id The ID of the homework item
      * @return string[] - The HTML to be shown client-side
      */
-    public static function execute($homeworkid, $data1, $data2, $data3) {
+    public static function execute($homework_id, $data1, $data2, $data3) {
         global $DB;
 
         // Assuming you have the Mustache engine set up.
@@ -93,10 +94,13 @@ class get_infohomework_modal extends external_api {
             'videos' => $data3,
         ];
 
-        // Render the template.
+        // Render the template
         $html = $mustache->render(file_get_contents(__DIR__ . "/../../templates/timeinfotemplate.mustache"), $content);
 
-        return ['html' => $html];
+        $homework_title = $DB->get_field('homework', 'name', ['id' => $homework_id]);
+        $course_fullname = $DB->get_field('course', 'fullname', ['id' => $DB->get_field('homework', 'course', ['id' => $homework_id])]);
+
+        return ['html' => $html, 'title' => $homework_title, 'course' => $course_fullname];
     }
 
     /**
@@ -106,6 +110,8 @@ class get_infohomework_modal extends external_api {
     public static function execute_returns() {
         return new external_single_structure([
             'html' => new external_value(PARAM_RAW, 'HTML for the homework chooser modal'),
+            'title' => new external_value(PARAM_TEXT, 'Title of the homework'),
+            'course' => new external_value(PARAM_TEXT, 'Course name'),
         ]);
     }
 }
