@@ -29,12 +29,10 @@ function xmldb_homework_upgrade($oldversion): bool {
 
     $dbman = $DB->get_manager();
     if ($oldversion < 2024111201) { // Match this version with the latest in your XMLDB definition.
-
         // Homework savepoint reached.
         upgrade_mod_savepoint(true, 2024111201, 'homework');
     }
     if ($oldversion < 2024111202) {
-
         // Define field starttime to be added to homework_materials.
         $table = new xmldb_table('homework_materials');
         $field = new xmldb_field('starttime', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'endpage');
@@ -48,7 +46,6 @@ function xmldb_homework_upgrade($oldversion): bool {
         upgrade_mod_savepoint(true, 2024111202, 'homework');
     }
     if ($oldversion < 2024111203) {
-
         // Define field endtime to be added to homework_materials.
         $table = new xmldb_table('homework_materials');
         $field = new xmldb_field('endtime', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'starttime');
@@ -62,7 +59,6 @@ function xmldb_homework_upgrade($oldversion): bool {
         upgrade_mod_savepoint(true, 2024111203, 'homework');
     }
     if ($oldversion < 2024111204) {
-
         // Changing the default of field course_id on table homework to 0.
         $table = new xmldb_table('homework');
         $field = new xmldb_field('course_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'id');

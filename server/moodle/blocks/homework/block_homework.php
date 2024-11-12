@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Block definition class for the block_homework plugin.
@@ -21,16 +21,6 @@
  * @copyright Year, You Name <your@email.address>
  * @author    group 11
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-// Checks for Moodle environment.
-defined('MOODLE_INTERNAL') || die();
-
-/**
- * Class that creates the homework block
- * @copyright group 1
- * @package block_homework
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_homework extends block_base {
     /**
@@ -58,7 +48,7 @@ class block_homework extends block_base {
         $usercourses = enrol_get_users_courses($USER->id);
 
         // Extract course IDs.
-        $courseids = array_map(function($course) {
+        $courseids = array_map(function ($course) {
             return $course->id;
         }, $usercourses);
 

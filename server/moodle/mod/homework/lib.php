@@ -128,7 +128,7 @@ function homework_pluginfile(
     $file = $fs->get_file($context->id, 'homework', $filearea, $itemid, $filepath, $filename);
     if (!$file) {
         // The file does not exist.
-        //error_log() is forbidden, changed to debuggin
+        // error_log() is forbidden, changed to debugging.
         debugging("File not found: Context ID - $context->id, File area - $filearea, Item ID - $itemid,
             Path - $filepath, Filename - $filename");
         return false;
@@ -137,5 +137,4 @@ function homework_pluginfile(
     // Send file to browser with a cache lifetime of 1 day and no filtering.
     send_stored_file($file, 86400, 0, $forcedownload, $options);
     return true;
-
 }
