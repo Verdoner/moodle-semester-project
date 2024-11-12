@@ -49,7 +49,7 @@ final class modal_test extends advanced_testcase {
 
         $homework = $this->getDataGenerator()->get_plugin_generator('mod_homework')->create_instance(['course' => $course->id]);
         // Call the external function directly.
-        $result = \mod_homework\external\get_homework_chooser::execute($homework->id);
+        $result = \mod_homework\external\get_homework_chooser::execute(1);
 
         // Verify that the result contains the expected HTML structure.
         $this->assertNotEmpty($result);
