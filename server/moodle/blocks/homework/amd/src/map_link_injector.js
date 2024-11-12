@@ -8,34 +8,44 @@ define(function() {
             function DisplayMapLink() {
                 // Run a timeout of 500ms to make sure the modal and content are there.
                 setTimeout(() => {
+                    // Select the element containing location details.
                     const locationContent = document.querySelector('.location-content');
 
                     if (!locationContent) {
                         return;
                     }
 
-                    const regex = /,\s*(.*)\s\([^)]*\),\s*(.*)/;
+                    /*
+                    Define a regular expression to match and extract specific parts of the location text.
+                    The regex is designed to capture:
+                    1. The street address (e.g., "Alfred Nobels Vej 27").
+                    2. The city name (e.g., "Aalborg").
+
+                    Example of input:
+                    S.B2.02 (Auditorium), Alfred Nobels Vej 27 - Novi 8 (Anv27), Aalborg
+                    */
+                    const regex = /,\s*(([a-zA-Zæøå 0-9]|-[^\s])+)\s*[^)]*\),\s*(.*)/;
 
                     const realLocation = locationContent.textContent
                         .split("\n") // Split the text into an array of lines
                         .map(str => {
-
                             const match = str.match(regex);
                             if (match) {
                                 const location = match[1];
-                                const city = match[2];
+                                const city = match[3];
                                 return `${location}, ${city}`;
                             }
                             return str;
-                        })
-                        .join("\n");
+                        }).join("\n");
 
                     const link = document.createElement('a');
 
+                    // Set the Google Maps search URL as the hyperlink, using the formatted location details.
                     link.href = `https://www.google.com/maps/search/?api=1&query=${realLocation}`;
 
                     link.textContent = locationContent.textContent;
 
+                    // Open the link in a new browser tab or window.
                     link.target = '_blank';
 
                     locationContent.innerHTML = '';
