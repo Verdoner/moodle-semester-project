@@ -94,7 +94,7 @@ export const init = async(title, data, user_id, completions) => {
                 },
                 done: async function(response) {
                     const modal = await MyModal.create({
-                        title: response.course + ": " + response.title,
+                        title: "<a href='" + response.courseurl + "'>" + response.course + "</a>: <a href='" + response.homeworkurl + "'>" + response.title + "</a> | " + response.duedate,
                         body: `${response.html}`,
                         large: true,
                         removeOnClose: true,

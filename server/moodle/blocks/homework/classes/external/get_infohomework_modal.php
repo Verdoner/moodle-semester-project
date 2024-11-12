@@ -78,8 +78,8 @@ class get_infohomework_modal extends external_api {
      * @return string[] - The HTML to be shown client-side
      */
     public static function execute($homework_id, $data1, $data2, $data3) {
-        global $DB;
-
+        global $DB, $OUTPUT;
+        $homeworkdescription = strip_tags($DB->get_field('homework', 'intro', array('id' => $homework_id)));
         // Assuming you have the Mustache engine set up.
         $mustache = new \Mustache_Engine();
         $nohomework = "";
@@ -89,6 +89,7 @@ class get_infohomework_modal extends external_api {
         // Prepare data for the template.
         $content = [
             'nohomework' => $nohomework,
+            'homeworkdescription' => $homeworkdescription,
             'literature' => $data1,
             'links' => $data2,
             'videos' => $data3,
@@ -98,9 +99,13 @@ class get_infohomework_modal extends external_api {
         $html = $mustache->render(file_get_contents(__DIR__ . "/../../templates/timeinfotemplate.mustache"), $content);
 
         $homework_title = $DB->get_field('homework', 'name', ['id' => $homework_id]);
-        $course_fullname = $DB->get_field('course', 'fullname', ['id' => $DB->get_field('homework', 'course', ['id' => $homework_id])]);
+        $courseid = $DB->get_field('course', 'id', ['id' => $DB->get_field('homework', 'course', ['id' => $homework_id])]);
+        $course_fullname = $DB->get_field('course', 'fullname', ['id' => $courseid]);
+        $duedate = date('H:i d-m-Y', $DB->get_field('homework', 'duedate', ['id' => $homework_id]));
+        $courseurl = "/course/view.php?id=".$courseid;
+        $homeworkurl = "/mod/homework/view.php?id=".$homework_id;
 
-        return ['html' => $html, 'title' => $homework_title, 'course' => $course_fullname];
+        return ['html' => $html, 'title' => $homework_title, 'course' => $course_fullname, 'duedate' => $duedate, 'courseurl' => $courseurl, 'homeworkurl' => $homeworkurl];
     }
 
     /**
@@ -112,6 +117,10 @@ class get_infohomework_modal extends external_api {
             'html' => new external_value(PARAM_RAW, 'HTML for the homework chooser modal'),
             'title' => new external_value(PARAM_TEXT, 'Title of the homework'),
             'course' => new external_value(PARAM_TEXT, 'Course name'),
+            'duedate' => new external_value(PARAM_TEXT, 'Due date of the homework'),
+            'courseurl' => new external_value(PARAM_TEXT, 'The URL for the course'),
+            'homeworkurl' => new external_value(PARAM_TEXT, 'The URl for the homework'),
+
         ]);
     }
 }
