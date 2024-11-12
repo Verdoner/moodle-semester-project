@@ -61,7 +61,18 @@ function xmldb_homework_upgrade($oldversion): bool {
         // Homework savepoint reached.
         upgrade_mod_savepoint(true, 2024111203, 'homework');
     }
+    if ($oldversion < 2024111204) {
 
+        // Changing the default of field course_id on table homework to 0.
+        $table = new xmldb_table('homework');
+        $field = new xmldb_field('course_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'id');
+
+        // Launch change of default for field course_id.
+        $dbman->change_field_default($table, $field);
+
+        // Homework savepoint reached.
+        upgrade_mod_savepoint(true, 2024111204, 'homework');
+    }
 
     return true;
 }
