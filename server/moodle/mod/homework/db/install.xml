@@ -35,6 +35,8 @@
         <FIELD NAME="description" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="startpage" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Starting page of potential reading material"/>
         <FIELD NAME="endpage" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="starttime" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="endtime" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="link" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Potential link to a website on a material"/>
         <FIELD NAME="file_id" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>

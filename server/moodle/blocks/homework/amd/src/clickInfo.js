@@ -36,15 +36,11 @@ export const init = async(title, data, user_id, completions) => {
                 // Finding the ID of the homework module that matches the button ID.
                 for (let item of data) {
                     if(!(item.hasOwnProperty('id'))){
-                        throw new Error("missing id in homework")
+                        throw new Error("missing id in homework1")
                     }
                     if (item.id !== homeworkid){
                         continue;
                     }
-                        console.log(1)
-                        if(!(item.hasOwnProperty('literature'))) {
-                            throw new Error("missing id in homework")
-                        }
                         // For each material, push it to the material list if it is not in completions
                         for (let material of Object.values(item.materials)) {
                             let foundMaterial = Object.values(completions).some(entry => entry.material_id === material.id);
@@ -52,7 +48,7 @@ export const init = async(title, data, user_id, completions) => {
                                 materiallist.push(material);
                             }
                         }
-                        if(!(item.hasOwnProperty('material'))) {
+                        if(!(item.hasOwnProperty('materials'))) {
                             throw new Error("missing id in homework")
                         }
 
@@ -68,9 +64,7 @@ export const init = async(title, data, user_id, completions) => {
                 methodname: 'block_homework_get_infohomework_modal',
                 args:{
                     homework_id: homeworkid,
-                    data1: literaturelist,
-                    data2: linkslist,
-                    data3: videoslist,
+                    data: materiallist,
                 },
                 done: async function(response) {
                     const modal = await MyModal.create({

@@ -69,7 +69,7 @@ class block_homework extends block_base {
         $parameters = array_merge([$currenttime], $courseids);
 
         // Construct WHERE condition for select.
-        $select = "duedate > ? AND course_id IN ($placeholders)";
+        // $select = "duedate > ? AND course_id IN ($placeholders)";
 
         // Fetch homeworks using get_records_select.
         $homeworks = $DB->get_records_select('homework', $select, $parameters);
@@ -97,22 +97,22 @@ class block_homework extends block_base {
             $tmp['name'] = $homework->name;
             $tmp['duedate'] = date('d-m-Y', $homework->duedate);
             $tmp['intro'] = strip_tags($homework->intro);
+            $tmp['description'] = ($homework->description);
             $tmp['courseTitle'] = $DB->get_field('course', 'fullname', ['id' => $homework->course_id]);
 
             // Retrieving the records of all material of the current homework module.
             $materialrecords = $DB->get_records('homework_materials', ['homework_id' => $homework->id]);
-
 
             $files = [];
 
             // Get ids of homeworkfiles.
             $fileids = [];
             // Code commented out because it is unsure if the files are necessary.
-            /*
-            $homeworkfiles = $DB->get_records('files_homework', ['homework_id' => $homework->id]);
-            foreach ($homeworkfiles as $homeworkfile) {
-                array_push($fileids, $homeworkfile->files_id);
-            }*/
+
+            // ...$homeworkfiles = $DB->get_records('files_homework', ['homework_id' => $homework->id]);
+            // foreach ($homeworkfiles as $homeworkfile) {
+              // array_push($fileids, $homeworkfile->files_id);
+            // }
 
             // Get file records.
             if (!empty($fileids)) {

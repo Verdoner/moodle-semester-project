@@ -65,8 +65,8 @@ class save_homeworktime extends external_api {
         // For each completed literature material, add the time taken and ID to a new completion.
         foreach ($timecompleted as $currtimecompleted) {
             $record = new \stdClass();
-            $record->user_id = $user;
-            $record->matieral_id = $currtimecompleted['id'];
+            $record->usermodified = $user;
+            $record->material_id = $currtimecompleted['id'];
             $record->time_taken = $currtimecompleted['time'];
             $DB->insert_record('completions', $record);
         }

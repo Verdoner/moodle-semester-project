@@ -33,6 +33,35 @@ function xmldb_homework_upgrade($oldversion): bool {
         // Homework savepoint reached.
         upgrade_mod_savepoint(true, 2024111201, 'homework');
     }
+    if ($oldversion < 2024111202) {
+
+        // Define field starttime to be added to homework_materials.
+        $table = new xmldb_table('homework_materials');
+        $field = new xmldb_field('starttime', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'endpage');
+
+        // Conditionally launch add field starttime.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Homework savepoint reached.
+        upgrade_mod_savepoint(true, 2024111202, 'homework');
+    }
+    if ($oldversion < 2024111203) {
+
+        // Define field endtime to be added to homework_materials.
+        $table = new xmldb_table('homework_materials');
+        $field = new xmldb_field('endtime', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'starttime');
+
+        // Conditionally launch add field endtime.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Homework savepoint reached.
+        upgrade_mod_savepoint(true, 2024111203, 'homework');
+    }
+
 
     return true;
 }
