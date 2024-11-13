@@ -17,8 +17,8 @@ import ModalEvents from 'core/modal_events';
  * Fetches and initializes the completion modal for the homework module that was clicked on.
  * @param title Title of modal to be displayed on click
  * @param data Data retrieved from the database for the homework module and its materials
- * @param user_id ID of currently logged in user.
- * @param completions The completions of the currently logged in user.
+ * @param user_id ID of currently logged-in user.
+ * @param completions The completions of the currently logged-in user.
  * @returns {Promise<void>} A promise that, when fulfilled, opens the modal
  */
 export const init = async(title, data, user_id, completions) => {
@@ -40,13 +40,13 @@ export const init = async(title, data, user_id, completions) => {
                 // Finding the ID of the homework module that matches the button ID.
                 for (let item of data) {
                     if(!(item.hasOwnProperty('id'))){
-                        throw new Error("missing id in homework")
+                        throw new Error("missing id in homework");
                     }
                     if (item.id !== homeworkid){
                         continue;
                     }
                         if(!(item.hasOwnProperty('literature'))) {
-                            throw new Error("missing id in homework")
+                            throw new Error("missing id in homework");
                         }
                         // For each literature item, push it to the literature list if it is not in completions
                         for (let literature of Object.values(item.literature)) {
@@ -56,7 +56,7 @@ export const init = async(title, data, user_id, completions) => {
                             }
                         }
                         if(!(item.hasOwnProperty('links'))) {
-                            throw new Error("missing id in homework")
+                            throw new Error("missing id in homework");
                         }
                     // For each link item, push it to the link list if it is not in completions
                         for (let links of Object.values(item.links)) {
@@ -66,7 +66,7 @@ export const init = async(title, data, user_id, completions) => {
                         }
                     }
                         if(!item.hasOwnProperty('videos')) {
-                            throw new Error("missing id in homework")
+                            throw new Error("missing id in homework");
                         }
                     // For each video item, push it to the video list if it is not in completions
                     for (let videos of Object.values(item.videos)) {
@@ -88,12 +88,10 @@ export const init = async(title, data, user_id, completions) => {
                 methodname: 'block_homework_get_infohomework_modal',
                 args:{
                     homework_id: homeworkid,
-                    data1: literaturelist,
-                    data2: linkslist,
-                    data3: videoslist,
                 },
                 done: async function(response) {
                     const modal = await MyModal.create({
+                        // eslint-disable-next-line max-len
                         title: "<a href='" + response.courseurl + "'>" + response.course + "</a>: <a href='" + response.homeworkurl + "'>" + response.title + "</a> | " + response.duedate,
                         body: `${response.html}`,
                         large: true,
@@ -135,7 +133,7 @@ export const init = async(title, data, user_id, completions) => {
 
 /**
  * Handle clicking the submit button of the form and updating the database with completion and times
- * @param user_id ID of currently logged in user
+ * @param user_id ID of currently logged-in user
  * @param modal The modal that is being submitted
  */
 const handleFormSubmit = (user_id, modal) => {
@@ -151,7 +149,7 @@ const handleFormSubmit = (user_id, modal) => {
             timeData1.push({
                 id: inputField.id,
                 time: inputField.value,
-            })
+            });
         }
     }
     for (let inputField of linksInputFields) {
@@ -159,7 +157,7 @@ const handleFormSubmit = (user_id, modal) => {
             timeData2.push({
                 id: inputField.id,
                 time: inputField.value,
-            })
+            });
         }
     }
     for (let inputField of videosInputFields) {
@@ -167,7 +165,7 @@ const handleFormSubmit = (user_id, modal) => {
             timeData3.push({
                 id: inputField.id,
                 time: inputField.value,
-            })
+            });
         }
     }
 
@@ -186,8 +184,7 @@ const handleFormSubmit = (user_id, modal) => {
             timeCompletedLinks: timeData2,
             timeCompletedVideos: timeData3,
         },
-        done: function(response) {
-            console.log("Data saved successfully:", response);
+        done: function() {
             // Close the modal after successful submission
             modal.destroy();
             location.reload();
@@ -197,4 +194,4 @@ const handleFormSubmit = (user_id, modal) => {
 
         }
     }]);
-}
+};

@@ -40,35 +40,7 @@ class get_infohomework_modal extends external_api {
     public static function execute_parameters() {
         return new external_function_parameters([
             'homework_id' => new external_value(PARAM_INT, 'The ID of the homework item'),
-            'data1' => new external_multiple_structure(new external_single_structure([
-                'description' => new external_value(PARAM_TEXT, 'Description of the homework'),
-                'endpage' => new external_value(PARAM_INT, 'End page number'),
-                'homework' => new external_value(PARAM_INT, 'The homework ID'),
-                'id' => new external_value(PARAM_INT, 'Unique ID'),
-                'introformat' => new external_value(PARAM_INT, 'Format of the introduction'),
-                'startpage' => new external_value(PARAM_INT, 'Start page number'),
-                'timecreated' => new external_value(PARAM_INT, 'Timestamp when created'),
-                'timemodified' => new external_value(PARAM_INT, 'Timestamp when last modified'),
-                'fileid' => new external_value(PARAM_INT, 'The id of the file'),
-            ])),
-            'data2' => new external_multiple_structure(new external_single_structure([
-                'description' => new external_value(PARAM_TEXT, 'Description of the homework'),
-                'link' => new external_value(PARAM_TEXT, 'The link'),
-                'homework' => new external_value(PARAM_INT, 'The homework ID'),
-                'id' => new external_value(PARAM_INT, 'Unique ID'),
-                'timecreated' => new external_value(PARAM_INT, 'Timestamp when created'),
-                'timemodified' => new external_value(PARAM_INT, 'Timestamp when last modified'),
-                'usermodified' => new external_value(PARAM_INT, 'User who last modified'),
-            ])),
-            'data3' => new external_multiple_structure(new external_single_structure([
-                'description' => new external_value(PARAM_TEXT, 'Description of the homework'),
-                'homework_id' => new external_value(PARAM_INT, 'The homework ID'),
-                'fileid' => new external_value(PARAM_INT, 'The id of the file'),
-                'id' => new external_value(PARAM_INT, 'Unique ID'),
-                'introformat' => new external_value(PARAM_INT, 'Format of the introduction'),
-                'timecreated' => new external_value(PARAM_INT, 'Timestamp when created'),
-                'timemodified' => new external_value(PARAM_INT, 'Timestamp when last modified'),
-            ])),
+
         ]);
     }
 
@@ -77,35 +49,15 @@ class get_infohomework_modal extends external_api {
      * @param int $homework_id The ID of the homework item
      * @return string[] - The HTML to be shown client-side
      */
-    public static function execute($homework_id, $data1, $data2, $data3) {
-        global $DB, $OUTPUT;
-        $homeworkdescription = strip_tags($DB->get_field('homework', 'intro', array('id' => $homework_id)));
-        // Assuming you have the Mustache engine set up.
-        $mustache = new \Mustache_Engine();
-        $nohomework = "";
-        if (!$data1 && !$data2 && !$data3) {
-            $nohomework = "All completed";
-        }
-        // Prepare data for the template.
-        $content = [
-            'nohomework' => $nohomework,
-            'homeworkdescription' => $homeworkdescription,
-            'literature' => $data1,
-            'links' => $data2,
-            'videos' => $data3,
-        ];
-
-        // Render the template
-        $html = $mustache->render(file_get_contents(__DIR__ . "/../../templates/timeinfotemplate.mustache"), $content);
-
-        $homework_title = $DB->get_field('homework', 'name', ['id' => $homework_id]);
-        $courseid = $DB->get_field('course', 'id', ['id' => $DB->get_field('homework', 'course', ['id' => $homework_id])]);
-        $course_fullname = $DB->get_field('course', 'fullname', ['id' => $courseid]);
-        $duedate = date('H:i d-m-Y', $DB->get_field('homework', 'duedate', ['id' => $homework_id]));
-        $courseurl = "/course/view.php?id=".$courseid;
-        $homeworkurl = "/mod/homework/view.php?id=".$homework_id;
-
-        return ['html' => $html, 'title' => $homework_title, 'course' => $course_fullname, 'duedate' => $duedate, 'courseurl' => $courseurl, 'homeworkurl' => $homeworkurl];
+    public static function execute($homework_id) {
+        global $DB, $USER;
+        $homework = $DB->get_record('homework', ['id' => $homework_id]);
+        $course = $DB->get_record('course', ['id' => $DB->get_field('homework', 'course', ['id' => $homework_id])]);
+        $literaturearray = $DB->get_records('homework_literature', ['homework' => $homework->id]);
+        $linksarray = $DB->get_records('homework_links', ['homework' => $homework->id]);
+        $videosarray = $DB->get_records('homework_video', ['homework' => $homework->id]);
+        $completedmaterials = $DB->get_records('completions', ['user_id' => $USER->id]);
+        return self::get_info($homework, $course, $literaturearray, $linksarray, $videosarray, $completedmaterials);
     }
 
     /**
@@ -122,5 +74,59 @@ class get_infohomework_modal extends external_api {
             'homeworkurl' => new external_value(PARAM_TEXT, 'The URl for the homework'),
 
         ]);
+    }
+
+    public static function get_info($homework, $course, $literaturearray, $linksarray, $videosarray, $completedmaterials)
+    {
+        // Assuming you have the Mustache engine set up.
+        $mustache = new \Mustache_Engine();
+        $nohomework = "";
+
+
+        foreach ($completedmaterials as $completedmaterial) {
+            foreach ($literaturearray as $index => $literature) {
+                $literaturearray[$index] = json_decode(json_encode($literature), true);
+                if ($completedmaterial->literature_id == $literaturearray[$index]["id"]) {
+                    unset($literaturearray[$index]);
+                }
+            }
+            foreach ($linksarray as $index => $link) {
+                $linksarray[$index] = json_decode(json_encode($link), true);
+                if ($completedmaterial->link_id == $linksarray[$index]["id"]) {
+                    unset($linksarray[$index]);
+                }
+            }
+            foreach ($videosarray as $index => $video) {
+                $videosarray[$index] = json_decode(json_encode($video), true);
+                if ($completedmaterial->video_id == $videosarray[$index]["id"]) {
+                    unset($videosarray[$index]);
+                }
+            }
+        }
+        $literaturearray = array_values($literaturearray);
+        $linksarray = array_values($linksarray);
+        $videosarray = array_values($videosarray);
+
+        if (count($literaturearray) == 0 && count($linksarray) == 0 && count($videosarray) == 0) {
+            $nohomework = "All completed";
+        }
+        // Prepare data for the template.
+        $content = [
+            'nohomework' => $nohomework,
+            'homeworkdescription' => strip_tags($homework->intro),
+            'literature' => $literaturearray,
+            'links' => $linksarray,
+            'videos' => $videosarray,
+        ];
+
+        // Render the template
+        $html = $mustache->render(file_get_contents(__DIR__ . "/../../templates/timeinfotemplate.mustache"), $content);
+
+        $duedate = date('H:i d-m-Y', $homework->duedate);
+        $courseurl = "/course/view.php?id=".$course->id;
+        $homeworkurl = "/mod/homework/view.php?id=".$homework->id;
+
+        return ['html' => $html, 'title' => $homework->name, 'course' => $course->fullname,
+            'duedate' => $duedate, 'courseurl' => $courseurl, 'homeworkurl' => $homeworkurl];
     }
 }
