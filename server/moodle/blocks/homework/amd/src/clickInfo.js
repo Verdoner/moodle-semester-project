@@ -36,7 +36,7 @@ export const init = async(title, data, user_id, completions) => {
                 // Finding the ID of the homework module that matches the button ID.
                 for (let item of data) {
                     if(!(item.hasOwnProperty('id'))){
-                        throw new Error("missing id in homework1")
+                        throw new Error("missing id in homework")
                     }
                     if (item.id !== homeworkid){
                         continue;
