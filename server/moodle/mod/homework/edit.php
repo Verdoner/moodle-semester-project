@@ -84,7 +84,26 @@ $homeworkmaterials = $DB->get_records_sql(
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-foreach ($homeworkmaterials as $materials) : ?>
+foreach ($homeworkmaterials as $materials) :
+
+    // Generate the preview URL for the file if it exists
+    if ($materials->file_id !== null) {
+        // Retrieve additional metadata for generating the URL
+        $file = $DB->get_record('files', ['id' => $materials->file_id]);
+        if ($file) {
+            // Generate the preview URL using Moodle's pluginfile.php
+            $preview_url = moodle_url::make_pluginfile_url(
+                $file->contextid,
+                'mod_homework',
+                'content',
+                $file->itemid,
+                '/',
+                $file->filename
+            );
+        }
+        echo $file->filename;
+    }
+    ?>
 
     <div class="material" style="border: 1px solid #ccc;padding: 16px;border-radius: 8px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);background-color: #f9f9f9;">
         <p><?= htmlspecialchars($materials->description) ?></p>
@@ -97,9 +116,20 @@ foreach ($homeworkmaterials as $materials) : ?>
         <?php if ($materials->starttime !== null && $materials->endtime !== null): ?>
             <p><?= "Time (seconds): " . htmlspecialchars($materials->starttime) . " - " . htmlspecialchars($materials->endtime) ?></p>
         <?php endif; ?>
-        <?php if ($materials->file_id !== null): ?>
-            <p><?= "File: " . htmlspecialchars($materials->filename) ?></p>
+
+        <?php if ($materials->file_id !== null && isset($preview_url)): ?>
+            <?php if (strtolower(pathinfo($file->filename, PATHINFO_EXTENSION)) === 'mp4'): ?>
+                <!-- Display the video inline if it's an mp4 file -->
+                <video controls width="100%">
+                    <source src="<?= $preview_url ?>" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            <?php else: ?>
+                <!-- Provide a link for non-video files -->
+                <p><?= "File: " ?><a href="<?= $preview_url ?>" target="_blank"><?= htmlspecialchars($file->filename) ?></a> (Preview)</p>
+            <?php endif; ?>
         <?php endif; ?>
+
         <?= html_writer::tag('button', get_string('openhomeworkchooser', 'mod_homework'), [
             'type' => 'button',
             'id' => 'open-homework-chooser-' . $materials->id,

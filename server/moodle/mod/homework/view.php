@@ -23,6 +23,7 @@
  */
 
 require_once('../../config.php');
+
 global $OUTPUT, $PAGE, $DB, $CFG;
 
 use mod_homework\view_page;
