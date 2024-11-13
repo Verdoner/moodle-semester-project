@@ -35,10 +35,11 @@ $fs = get_file_storage();
 $fileoptions = [
     'contextid' => $context->id,
     'component' => 'mod_homework',
-    'filearea'  => 'homework_files',
+    'filearea'  => 'content',
     'itemid'    => 0,
     'filepath'  => '/',
     'filename'  => $_FILES['file']['name'],
+    'source' => $_FILES['file']['name'],
 ];
 
 // Delete existing file if needed.

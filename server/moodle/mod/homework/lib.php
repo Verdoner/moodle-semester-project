@@ -99,7 +99,7 @@ function homework_delete_instance($id) {
  * @param array $options additional options affecting the file serving
  * @return bool false if the file not found, just send the file otherwise and do not return anything
  */
-function homework_pluginfile(
+function mod_homework_pluginfile(
     $course,
     $cm,
     $context,
@@ -110,7 +110,6 @@ function homework_pluginfile(
 ): bool {
     // Make sure the user is logged in and has access to the module.
     require_login($course, true);
-
     // Extract the filename / filepath from the $args array.
     $filename = array_pop($args); // The last item in the $args array.
     if (empty($args)) {
@@ -121,7 +120,7 @@ function homework_pluginfile(
         $filepath = '/' . implode('/', $args) . '/';
     }
 
-    $itemid = null;
+    $itemid = 0;
 
     // Retrieve the file from the Files API.
     $fs = get_file_storage();

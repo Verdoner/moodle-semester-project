@@ -90,8 +90,7 @@ echo $record->name . '<br>';
 echo $record->duedate . '<br>';
 echo $record->description . '<br>';
 
-$homeworkliterature = $DB->get_records('homework_literature', ['homework' => $cm->instance]);
-$homeworklinks = $DB->get_records('homework_links', ['homework' => $cm->instance]);
+$homeworkmaterials = $DB->get_records('homework_materials', ['homework_id' => $cm->instance]);
 ?>
 <?php
 /**
@@ -102,34 +101,99 @@ $homeworklinks = $DB->get_records('homework_links', ['homework' => $cm->instance
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-foreach ($homeworkliterature as $literature) : ?>
-    <div class="literature">
-        <p><?= htmlspecialchars($literature->description) ?></p>
-        <p><?= htmlspecialchars($literature->startpage) . " - " . htmlspecialchars($literature->endpage) ?></p>
+foreach ($homeworkmaterials as $material) : ?>
+    <div class="material"">
+        <p><?php echo htmlspecialchars($material->description) ?></p>
+        <?php if ($material->startpage != null) : ?>
+        <p><?php echo "Pages: " . htmlspecialchars($material->startpage) . " - " . htmlspecialchars($material->endpage) ?></p>
+        <?php elseif ($material->link != null): ?>
+        <p><?php echo "Link: " . htmlspecialchars($material->link)?></p>
+        <?php elseif ($material->starttime != null): ?>
+        <p><?php
+            // Create a string showing the start time as HH:MM:SS or MM:SS if no hours.
+            // Sina turde ikke en funktion fordi hun ikke fatter php så hun skrev det bare imperativt :(.
+            $startseconds = $material->starttime;
+            $startminutes = floor($startseconds / 60);
+            $starthours = floor($startminutes / 60);
+            $startseconds = $startseconds % 60;
+            $starttime =
+                ($starthours != 0 ? ($starthours < 10 ? "0" . $starthours : $starthours) . ":" : "")
+                . ($startminutes < 10 ? "0" . $startminutes : $startminutes) . ":"
+                . ($startseconds < 10 ? "0" . $startseconds : $startseconds);
+            // Create a string showing the end time as HH:MM:SS or MM:SS if no hours.
+            $endseconds = $material->endtime;
+            $endminutes = floor($endseconds / 60);
+            $endhours = floor($endminutes / 60);
+            $endseconds = $endseconds % 60;
+            $endtime =
+                ($endhours != 0 ? ($endhours < 10 ? "0" . $endhours : $endhours) . ":" : "")
+                . ($endminutes < 10 ? "0" . $endminutes : $endminutes) . ":"
+                . ($endseconds < 10 ? "0" . $endseconds : $endseconds);
+            echo "Watch: " . htmlspecialchars($starttime) . " - " . htmlspecialchars($endtime) ?></p>
+            <?php if ($material->file_id != null):
+                $fs = get_file_storage();
+                $url = null;
+                $haspermission = has_capability('mod/homework:managefiles', $context);
+
+                if ($haspermission) {
+                    // Debugging: Check file details
+                    echo 'File ID: ' . $material->file_id . '<br>';
+                    $filerecord = $DB->get_record('files', ['id' => $material->file_id]);
+
+                    if ($filerecord) {
+                        echo 'File found: ' . $filerecord->filename . '<br>';
+
+                        // Fetch file using get_file_storage
+                        $video = $fs->get_file(
+                        $filerecord->contextid,
+                        $filerecord->component,
+                        $filerecord->filearea,
+                        $filerecord->itemid,
+                        $filerecord->filepath,
+                        $filerecord->filename
+                        );
+
+                        if ($video && !$video->is_directory()) {
+                            // Debugging: Check if the video is retrieved
+                            echo 'Video file found, generating URL...<br>';
+
+                            // Generate a URL for the file.
+                            $url = moodle_url::make_pluginfile_url(
+                                $video->get_contextid(),
+                                $video->get_component(),
+                                $video->get_filearea(),
+                                $video->get_itemid(),
+                                $video->get_filepath(),
+                                $video->get_filename(),
+                                false
+                            );
+
+                            echo 'Generated URL: ' . $url->out() . '<br>';
+
+                            // Output video player
+                            if ($url) {
+                                    echo '<video controls width="640" height="360">';
+                                    echo '<source src="' . $url->out() . '" type="video/mp4">';
+                                    echo 'Your browser does not support the video tag.';
+                                    echo '</video>';
+                            } else {
+                                echo 'Error: URL not generated.<br>';
+                            }
+                        } else {
+                            echo 'Error: Video file not found or is a directory.<br>';
+                        }
+                    } else {
+                        echo 'File not found in DB.<br>';
+                    }
+                } else {
+                    echo 'You do not have permission to manage files in this homework activity.<br>';
+                }
+                ?>
+
+            <?php endif; ?>
+        <?php endif; ?>
     </div>
-<?php endforeach; ?>
-<?php
-/**
- * Loop through each item in the homework links and display it.
- *
- * @var object $link Link item with description and link properties.
- * @package   mod_homework
- * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-foreach ($homeworklinks as $link) : ?>
-    <div class="literature">
-        <p><?= htmlspecialchars($link->description) ?></p>
-        <a href="<?= htmlspecialchars($link->link) ?>"><?= htmlspecialchars($link->link) ?></a>
-    </div>
-    <?php
-/**
- *
- * @package   mod_homework
- * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-endforeach; ?>
+        <?php endforeach; ?>
 <?php
 /**
  *
