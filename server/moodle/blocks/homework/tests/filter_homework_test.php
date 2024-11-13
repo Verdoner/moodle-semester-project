@@ -40,7 +40,6 @@ final class filter_homework_test extends \advanced_testcase {
      */
     public function test_filter_homework(): void {
         // Create test data
-        $tmparray = [];
         $homeworksarray = [];
 
         $homeworksarray[] = [
