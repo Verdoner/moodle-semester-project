@@ -66,25 +66,73 @@ if ($PAGE->has_secondary_navigation()) {
 echo $OUTPUT->header();
 
 echo html_writer::tag('div', 'This is the homework edit page', ['class' => 'content']);
-$records = $DB->get_records('homework');
 
-// Add the button for opening the homework chooser modal.
-echo html_writer::tag('button', get_string('openhomeworkchooser', 'mod_homework'), [
-    'type' => 'button',
-    'id' => 'open-homework-chooser',
-    'class' => 'btn btn-primary',
-]);
+$homeworkmaterials = $DB->get_records_sql(
+    "SELECT hm.*, f.filename
+            FROM {homework_materials} hm
+            LEFT JOIN {files} f ON hm.file_id = f.id
+            WHERE hm.homework_id = :homework_id",
+    ['homework_id' => $cm->instance]
+);
+?>
+<?php
+/**
+ * Loop through each item in the homework literature and display it.
+ *
+ * @var object $literature Literature item with description, startpage, and endpage properties.
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+foreach ($homeworkmaterials as $materials) : ?>
 
-// Add a container for the modal if needed.
-echo html_writer::tag('div', '', ['id' => 'homework-chooser-container']);
-
-$records = $DB->get_records('homework');
+    <div class="material" style="border: 1px solid #ccc;padding: 16px;border-radius: 8px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);background-color: #f9f9f9;">
+        <p><?= htmlspecialchars($materials->description) ?></p>
+        <?php if ($materials->startpage !== null && $materials->endpage !== null): ?>
+            <p><?= "Page: " . htmlspecialchars($materials->startpage) . " - " . htmlspecialchars($materials->endpage) ?></p>
+        <?php endif; ?>
+        <?php if ($materials->link !== null): ?>
+            <p><?= "Link: " ?><a href="<?= htmlspecialchars($materials->link) ?>"><?= htmlspecialchars($materials->link) ?></a></p>
+        <?php endif; ?>
+        <?php if ($materials->starttime !== null && $materials->endtime !== null): ?>
+            <p><?= "Time (seconds): " . htmlspecialchars($materials->starttime) . " - " . htmlspecialchars($materials->endtime) ?></p>
+        <?php endif; ?>
+        <?php if ($materials->file_id !== null): ?>
+            <p><?= "File: " . htmlspecialchars($materials->filename) ?></p>
+        <?php endif; ?>
+        <?= html_writer::tag('button', get_string('openhomeworkchooser', 'mod_homework'), [
+            'type' => 'button',
+            'id' => 'open-homework-chooser-' . $materials->id,
+            'class' => 'btn btn-primary'
+        ]); ?>
+    </div>
+<?php endforeach; ?>
+<?php
+/**
+ *
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 echo html_writer::start_tag('div', ['class' => 'mod-quiz-edit-content']);
 
-// Include the AMD module.
-$PAGE->requires->js_call_amd('mod_homework/homeworkchooser', 'init', [$cm->id,
-get_string('homeworkchooser', 'mod_homework'), $instance->id]);
+$homeworkmaterialids = array_map(function($material) {
+    return [
+        'id' => $material->id,
+        'description' => $material->description,
+        'startpage' => $material->startpage,
+        'endpage' => $material->endpage,
+        'link' => $material->link,
+        'starttime' => $material->starttime,
+        'endtime' => $material->endtime,
+        'file_id' => $material->file_id,
+        'filename' => $material->filename
+    ];
+}, $homeworkmaterials);
+
+$PAGE->requires->js_call_amd('mod_homework/homeworkchooseredit', 'init', [$cm->id,
+    get_string('homeworkchooser', 'mod_homework'), $instance->id, $homeworkmaterialids]);
 
 // Output the footer - REQUIRED.
 echo $OUTPUT->footer();

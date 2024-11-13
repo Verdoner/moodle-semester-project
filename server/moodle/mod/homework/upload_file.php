@@ -35,7 +35,7 @@ $fs = get_file_storage();
 $fileoptions = [
     'contextid' => $context->id,
     'component' => 'mod_homework',
-    'filearea'  => 'homework_files',
+    'filearea'  => 'content',
     'itemid'    => 0,
     'filepath'  => '/',
     'filename'  => $_FILES['file']['name'],
@@ -60,7 +60,6 @@ if (
         $fileoptions['filepath'],
         $fileoptions['filename']
     );
-    $existingfile->delete();
 }
 
 // Save new file.

@@ -35,19 +35,23 @@ use external_value;
 use external_single_structure;
 
 /**
- * Class for saving homework literature.
+ * Class for editing homework materials.
  */
-class save_homework_literature extends \external_api {
+class edit_homework_material extends \external_api {
     /**
-     * Returns parameters inputfield, startpage and endpage
+     * Returns parameters inputfield, link, startpage, endpage, starttime, endtime, homeworkid and fileid
      *
      * @return external_function_parameters Define the parameters expected by this function.
      */
     public static function execute_parameters() {
         return new external_function_parameters([
+            'id' => new external_value(PARAM_INT, 'homework id value'),
             'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
-            'startpage' => new external_value(PARAM_INT, 'startPage field value'),
-            'endpage' => new external_value(PARAM_INT, 'endPage field value'),
+            'link' => new external_value(PARAM_TEXT, 'link field value', VALUE_OPTIONAL),
+            'startpage' => new external_value(PARAM_INT, 'startPage field value', VALUE_OPTIONAL),
+            'endpage' => new external_value(PARAM_INT, 'endPage field value', VALUE_OPTIONAL),
+            'starttime' => new external_value(PARAM_INT, 'startTime field value', VALUE_OPTIONAL),
+            'endtime' => new external_value(PARAM_INT, 'endTime field value', VALUE_OPTIONAL),
             'homeworkid' => new external_value(PARAM_INT, 'homeworkId field value'),
             'fileid' => new external_value(PARAM_INT, 'Uploaded file ID', VALUE_OPTIONAL),
         ]);
@@ -56,19 +60,24 @@ class save_homework_literature extends \external_api {
     /**
      * The main function to handle the request.
      *
+     * @param $id
      * @param $inputfield
+     * @param $link
      * @param $startpage
      * @param $endpage
+     * @param $starttime
+     * @param $endtime
      * @param $homeworkid
      * @param $fileid
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($inputfield, $startpage, $endpage, $homeworkid, $fileid = null) {
-        global $DB, $USER, $PAGE;
+    public static function execute($id, $inputfield, $link = null, $startpage, $endpage, $starttime = null, $endtime = null, $homeworkid, $fileid = null) {
+        global $DB, $USER;
 
         $record = new \stdClass();
 
+        $record->id = $id;
         $record->homework_id = $homeworkid;
         $record->description = $inputfield;
 
@@ -78,20 +87,25 @@ class save_homework_literature extends \external_api {
 
         $record->introformat = 0;
 
+        $record->link = $link;
+
         $record->startpage = $startpage;
         $record->endpage = $endpage;
+
+        $record->starttime = $starttime;
+        $record->endtime = $endtime;
 
         $record->file_id = $fileid;
 
         try {
-            $DB->insert_record('homework_materials', $record);
+            $DB->update_record('homework_materials', $record);
         } catch (\dml_exception $e) {
             debugging("Error inserting into homework_materials: " . $e->getMessage(), DEBUG_DEVELOPER);
             return ['status' => 'error', 'message' => 'Failed to save homework materials record'];
         }
 
         // Return a success response.
-        return ['status' => 'success', 'message' => 'Data saved successfully', 'page' => json_encode($PAGE->cm)];
+        return ['status' => 'success', 'message' => 'Data saved successfully'];
     }
 
     /**
@@ -103,7 +117,6 @@ class save_homework_literature extends \external_api {
         return new external_single_structure([
             'status' => new external_value(PARAM_TEXT, 'Status of the request'),
             'message' => new external_value(PARAM_TEXT, 'Message with details about the request status'),
-            'page' => new external_value(PARAM_TEXT, 'Page object'),
         ]);
     }
 }

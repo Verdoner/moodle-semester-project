@@ -55,7 +55,7 @@ final class save_homework_test extends advanced_testcase {
         $endpage = 10;
         $homework = 1;
 
-        $result = \mod_homework\external\save_homework_literature::execute($inputfield, $startpage, $endpage, $homework, null);
+        $result = \mod_homework\external\save_homework_material::execute($inputfield, $startpage, $endpage, $homework, null);
 
         // Assert that the status is 'success'.
         $this->assertEquals('success', $result['status']);

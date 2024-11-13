@@ -90,8 +90,13 @@ echo $record->name . '<br>';
 echo $record->duedate . '<br>';
 echo $record->description . '<br>';
 
-$homeworkliterature = $DB->get_records('homework_literature', ['homework' => $cm->instance]);
-$homeworklinks = $DB->get_records('homework_links', ['homework' => $cm->instance]);
+$homeworkmaterials = $DB->get_records_sql(
+        "SELECT hm.*, f.filename
+            FROM {homework_materials} hm
+            LEFT JOIN {files} f ON hm.file_id = f.id
+            WHERE hm.homework_id = :homework_id",
+            ['homework_id' => $cm->instance]
+);
 ?>
 <?php
 /**
@@ -102,34 +107,24 @@ $homeworklinks = $DB->get_records('homework_links', ['homework' => $cm->instance
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-foreach ($homeworkliterature as $literature) : ?>
-    <div class="literature">
-        <p><?= htmlspecialchars($literature->description) ?></p>
-        <p><?= htmlspecialchars($literature->startpage) . " - " . htmlspecialchars($literature->endpage) ?></p>
+foreach ($homeworkmaterials as $materials) : ?>
+
+    <div class="material" style="border: 1px solid #ccc;padding: 16px;border-radius: 8px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);background-color: #f9f9f9;">
+        <p><?= htmlspecialchars($materials->description) ?></p>
+        <?php if ($materials->startpage !== null && $materials->endpage !== null): ?>
+            <p><?= "Page: " . htmlspecialchars($materials->startpage) . " - " . htmlspecialchars($materials->endpage) ?></p>
+        <?php endif; ?>
+        <?php if ($materials->link !== null): ?>
+            <p><?= "Link: " ?><a href="<?= htmlspecialchars($materials->link) ?>"><?= htmlspecialchars($materials->link) ?></a></p>
+        <?php endif; ?>
+        <?php if ($materials->starttime !== null && $materials->endtime !== null): ?>
+            <p><?= "Time (seconds): " . htmlspecialchars($materials->starttime) . " - " . htmlspecialchars($materials->endtime) ?></p>
+        <?php endif; ?>
+        <?php if ($materials->file_id !== null): ?>
+            <p><?= "File: " . htmlspecialchars($materials->filename) ?></p>
+        <?php endif; ?>
     </div>
 <?php endforeach; ?>
-<?php
-/**
- * Loop through each item in the homework links and display it.
- *
- * @var object $link Link item with description and link properties.
- * @package   mod_homework
- * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-foreach ($homeworklinks as $link) : ?>
-    <div class="literature">
-        <p><?= htmlspecialchars($link->description) ?></p>
-        <a href="<?= htmlspecialchars($link->link) ?>"><?= htmlspecialchars($link->link) ?></a>
-    </div>
-    <?php
-/**
- *
- * @package   mod_homework
- * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-endforeach; ?>
 <?php
 /**
  *
@@ -138,7 +133,19 @@ endforeach; ?>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 if ($viewobj->canedit && !$viewobj->hashomework) {
-    echo html_writer::link($viewobj->editurl, get_string('addhomework', 'homework'), ['class' => 'btn btn-secondary']);
+    // Add the button for opening the homework chooser modal.
+    echo html_writer::tag('button', get_string('openhomeworkchooser', 'mod_homework'), [
+        'type' => 'button',
+        'id' => 'open-homework-chooser',
+        'class' => 'btn btn-primary',
+    ]);
+
+    // Add a container for the modal if needed.
+    // echo html_writer::tag('div', '', ['id' => 'homework-chooser-container']);
+
+    // Include the AMD module.
+    $PAGE->requires->js_call_amd('mod_homework/homeworkchooser', 'init', [$cm->id,
+        get_string('homeworkchooser', 'mod_homework'), $instance->id]);
 }
 
 // Output the footer - REQUIRED.

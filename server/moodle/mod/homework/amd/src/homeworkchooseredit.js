@@ -15,55 +15,70 @@ let uploadedFileIds = []; // Store file IDs after successful upload
  * @param {int} cmid
  * @param {string} title
  * @param {int} currentHomework
+ * @param {array} homeworkids
  * @returns {Promise<void>}
  */
-export const init = async(cmid, title, currentHomework) => {
-    $('#open-homework-chooser').on('click', () => {
-        Ajax.call([{
-            methodname: 'mod_homework_get_homework_chooser',
-            args: {cmid: cmid},
-            done: async function (response) {
-                const modal = await MyModal.create({
-                    title: title,
-                    body: `${response.html}`,
-                    // footer: 'An example footer content',
-                    large: true,
-                    removeOnClose: true
-                });
+export const init = async(cmid, title, currentHomework, homeworkids) => {
+    Object.values(homeworkids).forEach(homeworkid => {
+        $('#open-homework-chooser-' + homeworkid.id).on('click', () => {
+            Ajax.call([{
+                methodname: 'mod_homework_get_homework_chooser',
+                args: {cmid: cmid},
+                done: async function (response) {
+                    const modal = await MyModal.create({
+                        title: title,
+                        body: `${response.html}`,
+                        // footer: 'An example footer content',
+                        large: true,
+                        removeOnClose: true
+                    });
 
-                // Show the modal
-                modal.show();
+                    // Show the modal
+                    modal.show();
 
-                // Initialize elements once the modal content is rendered
-                modal.getRoot().on(ModalEvents.shown, () => {
-                    // Initialize the elements after modal is displayed
-                    const dropzoneContainer = modal.getRoot().find('#dropzone-container')[0];
+                    // Initialize elements once the modal content is rendered
+                    modal.getRoot().on(ModalEvents.shown, () => {
+                        // Initialize the elements after modal is displayed
+                        const dropzoneContainer = modal.getRoot().find('#dropzone-container')[0];
 
-                    initializeDropzone(dropzoneContainer);
-                });
+                        modal.getRoot().find('#inputField')[0].value = homeworkid.description;
+                        modal.getRoot().find('#link')[0].value = homeworkid.link;
+                        modal.getRoot().find('#startPage')[0].value = homeworkid.startpage;
+                        modal.getRoot().find('#endPage')[0].value = homeworkid.endpage;
+                        modal.getRoot().find('#startTime')[0].value = homeworkid.starttime;
+                        modal.getRoot().find('#endTime')[0].value = homeworkid.endtime;
 
-                // Attach an event listener to handle the modal hidden event
-                modal.getRoot().on(ModalEvents.hidden, () => {
-                    console.log('Modal closed!');
-                });
+                        if (homeworkid.file_id) {
+                            uploadedFileIds.push(homeworkid.file_id);
+                        }
 
-                // Attach event listeners for buttons
-                modal.getRoot().on('click', '[data-action="submit"]', (e) => {
-                    e.preventDefault();
+                        initializeDropzone(dropzoneContainer);
+                        displayUploadedFile(homeworkid);
+                    });
 
-                    handleFormSubmit(modal, currentHomework);
-                });
+                    // Attach an event listener to handle the modal hidden event
+                    modal.getRoot().on(ModalEvents.hidden, () => {
+                        console.log('Modal closed!');
+                    });
 
-                modal.getRoot().on('click', '[data-action="cancel"]', (e) => {
-                    e.preventDefault();
-                    modal.destroy();
-                });
-            },
-            fail: (error) => {
-                console.error("Failed to load homework chooser content:", error);
-            }
-        }]);
-    });
+                    // Attach event listeners for buttons
+                    modal.getRoot().on('click', '[data-action="submit"]', (e) => {
+                        e.preventDefault();
+
+                        handleFormSubmit(modal, currentHomework, homeworkid["id"]);
+                    });
+
+                    modal.getRoot().on('click', '[data-action="cancel"]', (e) => {
+                        e.preventDefault();
+                        modal.destroy();
+                    });
+                },
+                fail: (error) => {
+                    console.error("Failed to load homework chooser content:", error);
+                }
+            }]);
+        });
+    })
 };
 
 const initializeDropzone = (container) => {
@@ -153,7 +168,7 @@ const uploadDropzoneFile = async () => {
  * @param {Modal} modal - The instance of the modal containing the form.
  * @param currentHomework - The id of the homework which is being edited.
  */
-const handleFormSubmit = async (modal, currentHomework) => {
+const handleFormSubmit = async (modal, currentHomework, homeworkid) => {
     let inputField = modal.getRoot().find('#inputField')[0];
     let linkField = modal.getRoot().find('#link')[0];
     let startPageInput = modal.getRoot().find('#startPage')[0];
@@ -187,8 +202,9 @@ const handleFormSubmit = async (modal, currentHomework) => {
     await uploadDropzoneFile();
 
     Ajax.call([{
-        methodname: 'mod_homework_save_homework_material',
+        methodname: 'mod_homework_edit_homework_material',
         args: {
+            id: homeworkid,
             inputfield: inputField.value,
             link: linkField.value.trim() !== "" ? linkField.value.trim() : null,
             startpage: startPageInput.value.trim() !== "" ? startPageInput.value.trim() : null,
