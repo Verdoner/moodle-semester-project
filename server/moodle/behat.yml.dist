@@ -1,7 +1,8 @@
 default:
   suites:
     default:
-      paths: {  }
+      paths:
+        - blocks/homework/tests/behat
       contexts: {  }
   extensions:
     Behat\MinkExtension:
