@@ -21,10 +21,12 @@ global $CFG;
 require_once("$CFG->libdir/externallib.php");
 
 use core_external\external_api;
+use dml_exception;
 use external_function_parameters;
-use external_multiple_structure;
 use external_value;
 use external_single_structure;
+use JsonException;
+use Mustache_Engine;
 
 /**
  * The external function for requesting the modal for plugin.
@@ -37,22 +39,24 @@ class get_infohomework_modal extends external_api {
      * Returns the parameters for the execute function.
      * @return external_function_parameters
      */
-    public static function execute_parameters() {
+    public static function execute_parameters(): external_function_parameters{
         return new external_function_parameters([
-            'homework_id' => new external_value(PARAM_INT, 'The ID of the homework item'),
-
+            'homeworkID' => new external_value(PARAM_INT, 'The ID of the homework item'),
         ]);
     }
 
     /**
      * Generates the custom HTML for the homework chooser modal.
-     * @param int $homework_id The ID of the homework item
+     *
+     * @param int $homeworkID The ID of the homework item
      * @return string[] - The HTML to be shown client-side
+     * @throws dml_exception|JsonException
      */
-    public static function execute($homework_id) {
+    public static function execute(int $homeworkID): array
+    {
         global $DB, $USER;
-        $homework = $DB->get_record('homework', ['id' => $homework_id]);
-        $course = $DB->get_record('course', ['id' => $DB->get_field('homework', 'course', ['id' => $homework_id])]);
+        $homework = $DB->get_record('homework', ['id' => $homeworkID]);
+        $course = $DB->get_record('course', ['id' => $DB->get_field('homework', 'course', ['id' => $homeworkID])]);
         $literaturearray = $DB->get_records('homework_literature', ['homework' => $homework->id]);
         $linksarray = $DB->get_records('homework_links', ['homework' => $homework->id]);
         $videosarray = $DB->get_records('homework_video', ['homework' => $homework->id]);
@@ -64,7 +68,7 @@ class get_infohomework_modal extends external_api {
      * Returns the structure of the function's response.
      * @return external_single_structure - Definition of the function's return type and description
      */
-    public static function execute_returns() {
+    public static function execute_returns(): external_single_structure{
         return new external_single_structure([
             'html' => new external_value(PARAM_RAW, 'HTML for the homework chooser modal'),
             'title' => new external_value(PARAM_TEXT, 'Title of the homework'),
@@ -76,29 +80,32 @@ class get_infohomework_modal extends external_api {
         ]);
     }
 
-    public static function get_info($homework, $course, $literaturearray, $linksarray, $videosarray, $completedmaterials)
+    /**
+     * @throws JsonException
+     */
+    public static function get_info($homework, $course, $literaturearray, $linksarray, $videosarray, $completedmaterials): array
     {
         // Assuming you have the Mustache engine set up.
-        $mustache = new \Mustache_Engine();
+        $mustache = new Mustache_Engine();
         $nohomework = "";
 
 
         foreach ($completedmaterials as $completedmaterial) {
             foreach ($literaturearray as $index => $literature) {
-                $literaturearray[$index] = json_decode(json_encode($literature), true);
-                if ($completedmaterial->literature_id == $literaturearray[$index]["id"]) {
+                $literaturearray[$index] = json_decode(json_encode($literature, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
+                if ($completedmaterial->literature_id === $literaturearray[$index]["id"]) {
                     unset($literaturearray[$index]);
                 }
             }
             foreach ($linksarray as $index => $link) {
-                $linksarray[$index] = json_decode(json_encode($link), true);
-                if ($completedmaterial->link_id == $linksarray[$index]["id"]) {
+                $linksarray[$index] = json_decode(json_encode($link, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
+                if ($completedmaterial->link_id === $linksarray[$index]["id"]) {
                     unset($linksarray[$index]);
                 }
             }
             foreach ($videosarray as $index => $video) {
-                $videosarray[$index] = json_decode(json_encode($video), true);
-                if ($completedmaterial->video_id == $videosarray[$index]["id"]) {
+                $videosarray[$index] = json_decode(json_encode($video, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
+                if ($completedmaterial->video_id === $videosarray[$index]["id"]) {
                     unset($videosarray[$index]);
                 }
             }
@@ -107,7 +114,7 @@ class get_infohomework_modal extends external_api {
         $linksarray = array_values($linksarray);
         $videosarray = array_values($videosarray);
 
-        if (count($literaturearray) == 0 && count($linksarray) == 0 && count($videosarray) == 0) {
+        if (count($literaturearray) === 0 && count($linksarray) === 0 && count($videosarray) === 0) {
             $nohomework = "All completed";
         }
         // Prepare data for the template.
@@ -120,6 +127,7 @@ class get_infohomework_modal extends external_api {
         ];
 
         // Render the template
+        // :TODO Add links to literature and videos
         $html = $mustache->render(file_get_contents(__DIR__ . "/../../templates/timeinfotemplate.mustache"), $content);
 
         $duedate = date('H:i d-m-Y', $homework->duedate);

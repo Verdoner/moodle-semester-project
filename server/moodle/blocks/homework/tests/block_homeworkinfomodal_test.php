@@ -193,8 +193,9 @@ final class block_homeworkinfomodal_test extends advanced_testcase {
         $this->assertNotNull($dom->getElementById('links-2'));
         // Check for input with specific attributes & their labels.
         $this->assertNotNull($xpath->query("//i[@class='fa-solid fa-link']")->item(0));
-        $link2description = $xpath->query("//div[@id='links-2']//h3")->item(0);
+        $link2description = $xpath->query("//div[@id='links-2']//a")->item(0);
         $this->assertEquals($links[1]->description, $link2description->textContent);
+        $this->assertEquals($links[1]->link, $link2description->getAttribute('href'));
         $this->assertNotNull($xpath->query("//div[@id='links-2']//form"));
         $input = $xpath->query("//input[@class='homework-time-links'][@id='2'][@name='homework-time'][@min='1']");
         $this->assertEquals(1, $input->length, 'Expected input with class \'homework-time-links\'');

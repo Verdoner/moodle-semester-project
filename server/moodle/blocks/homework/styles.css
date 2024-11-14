@@ -56,7 +56,7 @@
     height: 30px;
 }
 
-#info-homework-modal .homeworkmaterialcontainer > div h3{
+#info-homework-modal .homeworkmaterialcontainer > div h3, #info-homework-modal .homeworkmaterialcontainer > div a{
     margin: 0;
     flex: 1;
     font-size: 20px;

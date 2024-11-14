@@ -1,7 +1,6 @@
 import $ from 'jquery';
 import Ajax from 'core/ajax';
 import MyModal from 'block_homework/modals';
-import ModalEvents from 'core/modal_events';
 
 /**
  * Homework/amd/src/modal_homework.js
@@ -15,79 +14,17 @@ import ModalEvents from 'core/modal_events';
 
 /**
  * Fetches and initializes the completion modal for the homework module that was clicked on.
- * @param title Title of modal to be displayed on click
- * @param data Data retrieved from the database for the homework module and its materials
- * @param user_id ID of currently logged-in user.
- * @param completions The completions of the currently logged-in user.
+ * @param userID ID of currently logged-in user.
  * @returns {Promise<void>} A promise that, when fulfilled, opens the modal
  */
-export const init = async(title, data, user_id, completions) => {
-    let homeworkid;
-    let literaturelist = [];
-    let linkslist = [];
-    let videoslist =[];
-
-    const buttons = document.getElementsByClassName("timebutton");
-
-    //For each button, retrieve the ID, as it points to the homework material
-    for(let i = 0; i < buttons.length; i++) {
-        (function(index) {
-            buttons[index].addEventListener("click", function(event) {
-                homeworkid = event.target.id;
-                literaturelist = [];
-                linkslist = [];
-                videoslist = [];
-                // Finding the ID of the homework module that matches the button ID.
-                for (let item of data) {
-                    if(!(item.hasOwnProperty('id'))){
-                        throw new Error("missing id in homework");
-                    }
-                    if (item.id !== homeworkid){
-                        continue;
-                    }
-                        if(!(item.hasOwnProperty('literature'))) {
-                            throw new Error("missing id in homework");
-                        }
-                        // For each literature item, push it to the literature list if it is not in completions
-                        for (let literature of Object.values(item.literature)) {
-                            let foundLiterature =  Object.values(completions).some(entry => entry.literature_id === literature.id);
-                            if (!foundLiterature) {
-                                literaturelist.push(literature);
-                            }
-                        }
-                        if(!(item.hasOwnProperty('links'))) {
-                            throw new Error("missing id in homework");
-                        }
-                    // For each link item, push it to the link list if it is not in completions
-                        for (let links of Object.values(item.links)) {
-                        let foundLinks =  Object.values(completions).some(entry => entry.link_id === links.id);
-                        if (!foundLinks) {
-                        linkslist.push(links);
-                        }
-                    }
-                        if(!item.hasOwnProperty('videos')) {
-                            throw new Error("missing id in homework");
-                        }
-                    // For each video item, push it to the video list if it is not in completions
-                    for (let videos of Object.values(item.videos)) {
-                        let foundVideos =  Object.values(completions).some(entry => entry.video_id === videos.id);
-                        if (!foundVideos) {
-                        videoslist.push(videos);
-                        }
-                    }
-
-                }
-            })
-        })(i);
-    }
-
+export const init = async(userID) => {
     // Create the modal using block_homework_get_infohomework_modal
     $(document).ready(function() {
-        $('.timebutton').on('click', () => {
+        $('.timebutton').on('click', (e) => {
             Ajax.call([{
                 methodname: 'block_homework_get_infohomework_modal',
-                args:{
-                    homework_id: homeworkid,
+                args: {
+                    homeworkID: e.target.id,
                 },
                 done: async function(response) {
                     const modal = await MyModal.create({
@@ -100,22 +37,10 @@ export const init = async(title, data, user_id, completions) => {
                     // Show the modal.
                     await modal.show();
 
-                    // Initialize elements once the modal content is rendered.
-                    modal.getRoot().on(ModalEvents.shown, () => {
-                        // Initialize the elements after modal is displayed.
-
-                        // Attach event listeners for page input validation.
-
-
-
-                    });
-
                     // Attach event listeners for buttons
                     modal.getRoot().on('click', '[data-action="submit"]', (e) => {
                         e.preventDefault();
-                        handleFormSubmit(user_id, modal);
-
-
+                        handleFormSubmit(userID, modal);
                     });
 
                     modal.getRoot().on('click', '[data-action="cancel"]', (e) => {
@@ -133,10 +58,10 @@ export const init = async(title, data, user_id, completions) => {
 
 /**
  * Handle clicking the submit button of the form and updating the database with completion and times
- * @param user_id ID of currently logged-in user
+ * @param userID ID of currently logged-in user
  * @param modal The modal that is being submitted
  */
-const handleFormSubmit = (user_id, modal) => {
+const handleFormSubmit = (userID, modal) => {
     let literatureInputFields = document.querySelectorAll('.homework-time-literature');
     let linksInputFields = document.querySelectorAll('.homework-time-links');
     let videosInputFields = document.querySelectorAll('.homework-time-videos');
@@ -145,7 +70,7 @@ const handleFormSubmit = (user_id, modal) => {
     let timeData3 = [];
     // Finds the data of all input fields, both literature, link and video, and adds the ID and time to an array.
     for (let inputField of literatureInputFields) {
-        if(inputField.value !== "") {
+        if (inputField.value !== "") {
             timeData1.push({
                 id: inputField.id,
                 time: inputField.value,
@@ -153,7 +78,7 @@ const handleFormSubmit = (user_id, modal) => {
         }
     }
     for (let inputField of linksInputFields) {
-        if(inputField.value !== "") {
+        if (inputField.value !== "") {
             timeData2.push({
                 id: inputField.id,
                 time: inputField.value,
@@ -161,7 +86,7 @@ const handleFormSubmit = (user_id, modal) => {
         }
     }
     for (let inputField of videosInputFields) {
-        if(inputField.value !=="") {
+        if (inputField.value !== "") {
             timeData3.push({
                 id: inputField.id,
                 time: inputField.value,
@@ -170,16 +95,16 @@ const handleFormSubmit = (user_id, modal) => {
     }
 
     // If no data has been filled, do nothing.
-    if(!timeData1.length && !timeData2.length && !timeData3.length){
+    if (!timeData1.length && !timeData2.length && !timeData3.length) {
         modal.destroy();
         return;
     }
 
     // If data has been filled, call block_homework_save_homeworktime with the user ID and data
     Ajax.call([{
-        methodname: 'block_homework_save_homeworktime',  // Your PHP function that will handle the data
+        methodname: 'block_homework_save_homeworktime', // Your PHP function that will handle the data
         args: {
-            user: user_id,
+            user: userID,
             timeCompletedLiterature: timeData1,
             timeCompletedLinks: timeData2,
             timeCompletedVideos: timeData3,
@@ -191,7 +116,6 @@ const handleFormSubmit = (user_id, modal) => {
         },
         fail: function(error) {
             console.error("Failed to save data:", error);
-
         }
     }]);
 };

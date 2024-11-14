@@ -8,31 +8,31 @@
         {{#literature}}
             <div id="literature-{{id}}">
                 <i class="fa-solid fa-file-text"></i>
-            <h3>{{description}}</h3>
-            <form>
+                <h3>{{description}}</h3>
+                <form>
                     <input type="number" class="homework-time-literature" id="{{id}}" name="homework-time" min="1" placeholder="Completion time (min)">
-            </form>
+                </form>
             </div>
         {{/literature}}
 
         {{#links}}
-                    <div id="links-{{id}}">
-                        <i class="fa-solid fa-link"></i>
-                    <h3>{{description}}</h3>
-                    <form>
-                            <input type="number" class="homework-time-links" id="{{id}}" name="homework-time" min="1" placeholder="Completion time (min)">
-                    </form>
-                    </div>
+            <div id="links-{{id}}">
+                <i class="fa-solid fa-link"></i>
+                <a href="{{link}}">{{description}}</a>
+                <form>
+                    <input type="number" class="homework-time-links" id="{{id}}" name="homework-time" min="1" placeholder="Completion time (min)">
+                </form>
+            </div>
         {{/links}}
 
         {{#videos}}
-                    <div id="videos-{{id}}">
-                        <i class="fa-solid fa-file-video-o"></i>
-                    <h3>{{description}}</h3>
-                    <form>
-                            <input type="number" class="homework-time-videos" id="{{id}}" name="homework-time" min="1" placeholder="Completion time (min)">
-                    </form>
-                    </div>
+            <div id="videos-{{id}}">
+                <i class="fa-solid fa-file-video-o"></i>
+                <h3>{{description}}</h3>
+                <form>
+                    <input type="number" class="homework-time-videos" id="{{id}}" name="homework-time" min="1" placeholder="Completion time (min)">
+                </form>
+            </div>
          {{/videos}}
         </div>
 </div>
