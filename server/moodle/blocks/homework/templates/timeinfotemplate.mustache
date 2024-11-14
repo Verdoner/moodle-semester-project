@@ -8,7 +8,7 @@
         {{#literature}}
             <div id="literature-{{id}}">
                 <i class="fa-solid fa-file-text"></i>
-                <h3>{{description}}</h3>
+                <a href="{{fileurl}}">{{description}}</a>
                 <form>
                     <input type="number" class="homework-time-literature" id="{{id}}" name="homework-time" min="1" placeholder="Completion time (min)">
                 </form>
@@ -28,7 +28,7 @@
         {{#videos}}
             <div id="videos-{{id}}">
                 <i class="fa-solid fa-file-video-o"></i>
-                <h3>{{description}}</h3>
+                <a href="{{fileurl}}">{{description}}</a>
                 <form>
                     <input type="number" class="homework-time-videos" id="{{id}}" name="homework-time" min="1" placeholder="Completion time (min)">
                 </form>

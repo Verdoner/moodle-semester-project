@@ -20,6 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once("$CFG->libdir/externallib.php");
 
+use coding_exception;
 use core_external\external_api;
 use dml_exception;
 use external_function_parameters;
@@ -56,12 +57,41 @@ class get_infohomework_modal extends external_api {
     {
         global $DB, $USER;
         $homework = $DB->get_record('homework', ['id' => $homeworkID]);
-        $course = $DB->get_record('course', ['id' => $DB->get_field('homework', 'course', ['id' => $homeworkID])]);
-        $literaturearray = $DB->get_records('homework_literature', ['homework' => $homework->id]);
-        $linksarray = $DB->get_records('homework_links', ['homework' => $homework->id]);
-        $videosarray = $DB->get_records('homework_video', ['homework' => $homework->id]);
-        $completedmaterials = $DB->get_records('completions', ['user_id' => $USER->id]);
-        return self::get_info($homework, $course, $literaturearray, $linksarray, $videosarray, $completedmaterials);
+        $course = $DB->get_record('course', ['id' => $homework->course_id]);
+        $materials = $DB->get_records('homework_materials', ['homework_id' => $homework->id]);
+        $completedmaterials = $DB->get_records('completions', ['usermodified' => $USER->id]);
+        $literaturearray = [];
+        $linksarray = [];
+        $videosarray = [];
+        foreach ($materials as $material) {
+            $completed = false;
+            foreach ($completedmaterials as $completedmaterial) {
+                if ($completedmaterial->material_id === $material->id) {
+                    $completed = true;
+                    break;
+                }
+            }
+            if ($completed) {
+                continue;
+            }
+            if ($material->startpage !== null && $material->endpage !== null) {
+                if($material->file_id !== null){
+                    $material->fileurl = self::get_file_link_by_id($material->file_id);
+                }
+                $literaturearray[] = $material;
+            }
+            else if($material->link !== null) {
+                $linksarray[] = $material;
+            }
+            else if($material->starttime !== null && $material->endtime !== null) {
+                if($material->file_id !== null){
+                    $material->fileurl = self::get_file_link_by_id($material->file_id);
+                }
+                $videosarray[] = $material;
+            }
+        }
+
+        return self::get_info($homework, $course, $literaturearray, $linksarray, $videosarray);
     }
 
     /**
@@ -76,41 +106,17 @@ class get_infohomework_modal extends external_api {
             'duedate' => new external_value(PARAM_TEXT, 'Due date of the homework'),
             'courseurl' => new external_value(PARAM_TEXT, 'The URL for the course'),
             'homeworkurl' => new external_value(PARAM_TEXT, 'The URl for the homework'),
-
         ]);
     }
 
     /**
      * @throws JsonException
      */
-    public static function get_info($homework, $course, $literaturearray, $linksarray, $videosarray, $completedmaterials): array
+    public static function get_info($homework, $course, $literaturearray, $linksarray, $videosarray): array
     {
         // Assuming you have the Mustache engine set up.
         $mustache = new Mustache_Engine();
         $nohomework = "";
-        foreach ($completedmaterials as $completedmaterial) {
-            foreach ($literaturearray as $index => $literature) {
-                $literaturearray[$index] = json_decode(json_encode($literature, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
-                if ($completedmaterial->literature_id === $literaturearray[$index]["id"]) {
-                    unset($literaturearray[$index]);
-                }
-            }
-            foreach ($linksarray as $index => $link) {
-                $linksarray[$index] = json_decode(json_encode($link, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
-                if ($completedmaterial->link_id === $linksarray[$index]["id"]) {
-                    unset($linksarray[$index]);
-                }
-            }
-            foreach ($videosarray as $index => $video) {
-                $videosarray[$index] = json_decode(json_encode($video, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
-                if ($completedmaterial->video_id === $videosarray[$index]["id"]) {
-                    unset($videosarray[$index]);
-                }
-            }
-        }
-        $literaturearray = array_values($literaturearray);
-        $linksarray = array_values($linksarray);
-        $videosarray = array_values($videosarray);
 
         if (count($literaturearray) === 0 && count($linksarray) === 0 && count($videosarray) === 0) {
             $nohomework = "All completed";
@@ -125,7 +131,6 @@ class get_infohomework_modal extends external_api {
         ];
 
         // Render the template
-        // :TODO Add links to literature and videos
         $html = $mustache->render(file_get_contents(__DIR__ . "/../../templates/timeinfotemplate.mustache"), $content);
 
         $duedate = date('H:i d-m-Y', $homework->duedate);
@@ -135,4 +140,44 @@ class get_infohomework_modal extends external_api {
         return ['html' => $html, 'title' => $homework->name, 'course' => $course->fullname,
             'duedate' => $duedate, 'courseurl' => $courseurl, 'homeworkurl' => $homeworkurl];
     }
+
+    /**
+     * Get a direct link to a file by its file ID.
+     *
+     * @param int $fileID The ID of the file in Moodle's file storage.
+     * @return string|null The URL to the file or null if the file is not found.
+     * @throws dml_exception|coding_exception
+     */
+    public static function get_file_link_by_id(int $fileID) :null|string{
+        global $DB;
+
+        // Retrieve the file record from the database.
+        $file = $DB->get_record('files', ['id' => $fileID]);
+
+        // Check if the file exists and is valid.
+        if (!$file || $file->filename === '.' || $file->filename === '') {
+            return null;
+        }
+
+        // Generate the file URL.
+        $context = \context::instance_by_id($file->contextid);
+        $fs = get_file_storage();
+        $stored_file = $fs->get_file($file->contextid, $file->component, $file->filearea, $file->itemid, $file->filepath, $file->filename);
+
+        if ($stored_file) {
+            // Moodle's file plugin serves the files through pluginfile.php.
+            $file_url = \moodle_url::make_pluginfile_url(
+                $stored_file->get_contextid(),
+                $stored_file->get_component(),
+                $stored_file->get_filearea(),
+                $stored_file->get_itemid(),
+                $stored_file->get_filepath(),
+                $stored_file->get_filename()
+            );
+            return $file_url->out();
+        }
+
+        return null;
+    }
+
 }
