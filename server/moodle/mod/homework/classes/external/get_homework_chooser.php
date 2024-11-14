@@ -59,7 +59,7 @@ class get_homework_chooser extends external_api {
         $html = '
             <div id="homework-chooser-modal">
                 <form>
-                    <label for="inputField">Input Field:</label><br>
+                    <label for="inputField">Description:</label><br>
                     <textarea type="text" id="inputField" name="inputField"></textarea><br><br>
                     <label>Choose one:</label><br>
                     <input checked type="radio" id="option1" name="option" value="option1">
@@ -68,7 +68,7 @@ class get_homework_chooser extends external_api {
                     <label for="option2">Link</label><br>
                     <input type="radio" id="option3" name="option" value="option3">
                     <label for="option3">Video</label><br>
-                    <input type="radio" id="option3" name="option" value="option3">
+                    <input type="radio" id="option4" name="option" value="option4">
                     <label for="option4">Existing Resource</label><br><br>
                     <div id="page-range-input">
                         <label for="startPage">Page Range:</label><br>
@@ -88,14 +88,11 @@ class get_homework_chooser extends external_api {
                         <label for="link">Link:</label><br>
                         <input name="link" id="link" type="url" placeholder="Enter URL">
                     </div>
-                    <div id="dropzone-pdf-container">
-                    </div>
-                    <div id="dropzone-video-container" style="display:none;">
                     <div id="ExiResDiv" style="display:none">
                         <label for="existingresource">Existing Resource:</label><br>
                         <select name="existingresource" id="existingresource" onchange="existingResourceChange()">
                             '.collection_files_controller::get_choices().'
-                            <div id="typeLiterature" style="visibility: hidden;">
+                            <div id="typeLiterature">
                                 <label for="startPage">Page Range:</label><br>
                                 <input type="number" id="startPage" name="startPage" min="1" placeholder="Start Page" style="width: 50px;">
                                 <span>-</span>
@@ -114,6 +111,9 @@ class get_homework_chooser extends external_api {
                                 <input name="link" id="link" type="url" placeholder="Enter URL">
                             </div>
                     </div>
+                    <div id="dropzone-pdf-container">
+                    </div>
+                    <div id="dropzone-video-container" style="display:none;">
                 </form>
             </div>
             <script type="text/javascript">

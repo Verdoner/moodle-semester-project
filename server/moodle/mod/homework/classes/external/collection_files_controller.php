@@ -33,7 +33,7 @@ class collection_files_controller extends \external_api {
         $choices = '';
         if ($materials != null) {
             foreach ($materials as $material) {
-                $choices .= '<option value="'.$material->description.'"></option>\n';
+                $choices .= '<option value="'.$material.'"></option>\n';
             }
         }
         return $choices;
