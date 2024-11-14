@@ -94,9 +94,9 @@ $homeworkmaterials = $DB->get_records('homework_materials', ['homework_id' => $c
 ?>
 <?php
 /**
- * Loop through each item in the homework literature and display it.
+ * Loop through each item in the homework material and display it.
  *
- * @var object $literature Literature item with description, startpage, and endpage properties.
+ * @var object $material Literature item with description, startpage, and endpage properties.
  * @package   mod_homework
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -106,29 +106,18 @@ foreach ($homeworkmaterials as $material) : ?>
         <p><?php echo htmlspecialchars($material->description) ?></p>
         <?php if ($material->startpage != null) : ?>
         <p><?php echo "Pages: " . htmlspecialchars($material->startpage) . " - " . htmlspecialchars($material->endpage) ?></p>
-        <?php elseif ($material->link != null): ?>
-        <p><?php echo "Link: " . htmlspecialchars($material->link)?></p>
-        <?php elseif ($material->starttime != null): ?>
+        <?php elseif ($material->link != null):
+            // Checks to see if a link starts with "http" if not, then add it to the string,
+            // this makes sure its is completely new site that is opened.
+            $link = !str_starts_with($material->link, 'http') ? "https://" . $material->link : $material->link;
+        ?>
+        <p><?php echo 'Link: <a href="' . $link . '" target="_blank">Click here</a>';?></p>
+
+        <?php endif; if ($material->starttime != null): ?>
         <p><?php
-            // Create a string showing the start time as HH:MM:SS or MM:SS if no hours.
-            // Sina turde ikke en funktion fordi hun ikke fatter php så hun skrev det bare imperativt :(.
-            $startseconds = $material->starttime;
-            $startminutes = floor($startseconds / 60);
-            $starthours = floor($startminutes / 60);
-            $startseconds = $startseconds % 60;
-            $starttime =
-                ($starthours != 0 ? ($starthours < 10 ? "0" . $starthours : $starthours) . ":" : "")
-                . ($startminutes < 10 ? "0" . $startminutes : $startminutes) . ":"
-                . ($startseconds < 10 ? "0" . $startseconds : $startseconds);
-            // Create a string showing the end time as HH:MM:SS or MM:SS if no hours.
-            $endseconds = $material->endtime;
-            $endminutes = floor($endseconds / 60);
-            $endhours = floor($endminutes / 60);
-            $endseconds = $endseconds % 60;
-            $endtime =
-                ($endhours != 0 ? ($endhours < 10 ? "0" . $endhours : $endhours) . ":" : "")
-                . ($endminutes < 10 ? "0" . $endminutes : $endminutes) . ":"
-                . ($endseconds < 10 ? "0" . $endseconds : $endseconds);
+            // Create strings showing the times as HH:MM:SS or MM:SS if no hours.
+            $starttime = converttime($material->starttime);
+            $endtime = converttime($material->endtime);
             echo "Watch: " . htmlspecialchars($starttime) . " - " . htmlspecialchars($endtime) ?></p>
             <?php if ($material->file_id != null):
                 $fs = get_file_storage();
@@ -136,14 +125,12 @@ foreach ($homeworkmaterials as $material) : ?>
                 $haspermission = has_capability('mod/homework:managefiles', $context);
 
                 if ($haspermission) {
-                    // Debugging: Check file details
-                    echo 'File ID: ' . $material->file_id . '<br>';
+                    // Debugging: Check file details.
                     $filerecord = $DB->get_record('files', ['id' => $material->file_id]);
 
                     if ($filerecord) {
-                        echo 'File found: ' . $filerecord->filename . '<br>';
 
-                        // Fetch file using get_file_storage
+                        // Fetch file using get_file_storage.
                         $video = $fs->get_file(
                         $filerecord->contextid,
                         $filerecord->component,
@@ -154,9 +141,6 @@ foreach ($homeworkmaterials as $material) : ?>
                         );
 
                         if ($video && !$video->is_directory()) {
-                            // Debugging: Check if the video is retrieved
-                            echo 'Video file found, generating URL...<br>';
-
                             // Generate a URL for the file.
                             $url = moodle_url::make_pluginfile_url(
                                 $video->get_contextid(),
@@ -167,10 +151,7 @@ foreach ($homeworkmaterials as $material) : ?>
                                 $video->get_filename(),
                                 false
                             );
-
-                            echo 'Generated URL: ' . $url->out() . '<br>';
-
-                            // Output video player
+                            // Output video player.
                             if ($url) {
                                     echo '<video controls width="640" height="360">';
                                     echo '<source src="' . $url->out() . '" type="video/mp4">';
@@ -191,6 +172,55 @@ foreach ($homeworkmaterials as $material) : ?>
                 ?>
 
             <?php endif; ?>
+        <?php elseif ($material->file_id != null) :
+            $fs = get_file_storage();
+            $url = null;
+            $haspermission = has_capability('mod/homework:managefiles', $context);
+
+            if ($haspermission) {
+                // Debugging: Check file details.
+                $filerecord = $DB->get_record('files', ['id' => $material->file_id]);
+
+                if ($filerecord) {
+
+                    // Fetch file using get_file_storage.
+                    $file = $fs->get_file(
+                    $filerecord->contextid,
+                    $filerecord->component,
+                    $filerecord->filearea,
+                    $filerecord->itemid,
+                    $filerecord->filepath,
+                    $filerecord->filename
+                    );
+
+                    if ($file && !$file->is_directory()) {
+                        // Generate a URL for the file.
+                        $url = moodle_url::make_pluginfile_url(
+                            $file->get_contextid(),
+                            $file->get_component(),
+                            $file->get_filearea(),
+                            $file->get_itemid(),
+                            $file->get_filepath(),
+                            $file->get_filename(),
+                            false
+                        );
+                        // Output the hyperlink for the user.
+                        if ($url) {
+                                echo '<a href="' . $url . '" download>Click here to download the file: </a>';
+                        } else {
+                            echo 'Error: URL not generated.<br>';
+                        }
+                    } else {
+                        echo 'Error: File not found or is a directory.<br>';
+                    }
+                } else {
+                    echo 'File not found in DB.<br>';
+                }
+            } else {
+                echo 'You do not have permission to manage files in this homework activity.<br>';
+            }
+        ?>
+
         <?php endif; ?>
     </div>
         <?php endforeach; ?>
@@ -207,3 +237,19 @@ if ($viewobj->canedit && !$viewobj->hashomework) {
 
 // Output the footer - REQUIRED.
 echo $OUTPUT->footer();
+
+/**
+ * Converts a number of seconds into a time in HH:MM:SS format, or MM:SS format if no hours
+ * @param int $seconds number of seconds
+ * @return string The time in HH:MM:SS or MM:SS format
+ */
+function converttime($seconds) {
+    $minutes = floor($seconds / 60);
+    $hours = floor($minutes / 60);
+    $seconds = $seconds % 60;
+    $time =
+        ($hours != 0 ? ($hours < 10 ? "0" . $hours : $hours) . ":" : "")
+        . ($minutes < 10 ? "0" . $minutes : $minutes) . ":"
+        . ($seconds < 10 ? "0" . $seconds : $seconds);
+    return $time;
+}
