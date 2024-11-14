@@ -83,15 +83,20 @@ $viewobj->canedit = true;
 $viewobj->editurl = new moodle_url('/mod/homework/edit.php', ['id' => $cm->id]);
 
 // Add the actual page content here.
-echo html_writer::tag('div', 'This is the homework view page', ['class' => 'content']);
+/*echo html_writer::tag('div', 'This is the homework view page', ['class' => 'content']);
 $record = $DB->get_record('homework', ['id' => $cm->instance], '*', MUST_EXIST);
 
 echo $record->name . '<br>';
 echo $record->duedate . '<br>';
-echo $record->description . '<br>';
+echo $record->description . '<br>';*/
+
+
+
+
 
 $homeworkliterature = $DB->get_records('homework_literature', ['homework' => $cm->instance]);
 $homeworklinks = $DB->get_records('homework_links', ['homework' => $cm->instance]);
+
 ?>
 <?php
 /**
@@ -102,10 +107,14 @@ $homeworklinks = $DB->get_records('homework_links', ['homework' => $cm->instance
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+echo '<div class="view-homework-container">';
 foreach ($homeworkliterature as $literature) : ?>
     <div class="literature">
-        <p><?= htmlspecialchars($literature->description) ?></p>
-        <p><?= htmlspecialchars($literature->startpage) . " - " . htmlspecialchars($literature->endpage) ?></p>
+        <div class="literature-container">
+            <i class="fa-solid fa-book"></i>
+            <p><?= htmlspecialchars($literature->description) ?></p>
+        </div>
+        <p>Read page: <?= htmlspecialchars($literature->startpage) . " - " . htmlspecialchars($literature->endpage) ?></p>
     </div>
 <?php endforeach; ?>
 <?php
@@ -118,10 +127,12 @@ foreach ($homeworkliterature as $literature) : ?>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 foreach ($homeworklinks as $link) : ?>
-    <div class="literature">
-        <p><?= htmlspecialchars($link->description) ?></p>
-        <a href="<?= htmlspecialchars($link->link) ?>"><?= htmlspecialchars($link->link) ?></a>
-    </div>
+        <div class="literature">
+            <div class="literature-container">
+                <i class="fa-solid fa-link"></i>
+                <a href="<?= htmlspecialchars($link->link) ?>"><?= htmlspecialchars($link->description) ?> </a>
+            </div>
+        </div>
     <?php
 /**
  *
@@ -129,7 +140,9 @@ foreach ($homeworklinks as $link) : ?>
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-endforeach; ?>
+endforeach;
+echo '</div>';?>
+
 <?php
 /**
  *
