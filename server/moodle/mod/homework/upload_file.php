@@ -36,7 +36,7 @@ $fileoptions = [
     'contextid' => $context->id,
     'component' => 'mod_homework',
     'filearea'  => 'content',
-    'itemid'    => 0,
+    'itemid'    => time(),
     'filepath'  => '/',
     'filename'  => $_FILES['file']['name'],
 ];

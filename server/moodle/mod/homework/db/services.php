@@ -49,6 +49,14 @@ $functions = [
         'type'        => 'read',
         'ajax'        => true,
     ],
+    'mod_homework_delete_file' => [
+        'classname'   => 'mod_homework\external\delete_file',
+        'methodname'  => 'execute',
+        'classpath'   => 'mod/homework/classes/external/delete_file.php',
+        'description' => 'Delete a file associated with a homework entry',
+        'type'        => 'write',
+        'ajax'        => true,
+    ],
 ];
 
 $services = [
@@ -57,8 +65,13 @@ $services = [
             'mod_homework_save_homework_material',
             'mod_homework_edit_homework_material',
             'mod_homework_get_homework_chooser',
+            'mod_homework_delete_file',
         ],
         'restrictedusers' => 0,
         'enabled' => 1,
     ],
 ];
+
+
+
+

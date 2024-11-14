@@ -47,12 +47,12 @@ class edit_homework_material extends \external_api {
         return new external_function_parameters([
             'id' => new external_value(PARAM_INT, 'homework id value'),
             'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
+            'homeworkid' => new external_value(PARAM_INT, 'homeworkId field value'),
             'link' => new external_value(PARAM_TEXT, 'link field value', VALUE_OPTIONAL),
             'startpage' => new external_value(PARAM_INT, 'startPage field value', VALUE_OPTIONAL),
             'endpage' => new external_value(PARAM_INT, 'endPage field value', VALUE_OPTIONAL),
             'starttime' => new external_value(PARAM_INT, 'startTime field value', VALUE_OPTIONAL),
             'endtime' => new external_value(PARAM_INT, 'endTime field value', VALUE_OPTIONAL),
-            'homeworkid' => new external_value(PARAM_INT, 'homeworkId field value'),
             'fileid' => new external_value(PARAM_INT, 'Uploaded file ID', VALUE_OPTIONAL),
         ]);
     }
@@ -62,17 +62,17 @@ class edit_homework_material extends \external_api {
      *
      * @param $id
      * @param $inputfield
+     * @param $homeworkid
      * @param $link
      * @param $startpage
      * @param $endpage
      * @param $starttime
      * @param $endtime
-     * @param $homeworkid
      * @param $fileid
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($id, $inputfield, $link = null, $startpage, $endpage, $starttime = null, $endtime = null, $homeworkid, $fileid = null) {
+    public static function execute($id, $inputfield, $homeworkid, $link = null, $startpage = null, $endpage = null, $starttime = null, $endtime = null, $fileid = null) {
         global $DB, $USER;
 
         $record = new \stdClass();
@@ -105,7 +105,7 @@ class edit_homework_material extends \external_api {
         }
 
         // Return a success response.
-        return ['status' => 'success', 'message' => 'Data saved successfully'];
+        return ['status' => 'success', 'message' => 'Data updated successfully'];
     }
 
     /**

@@ -94,14 +94,13 @@ foreach ($homeworkmaterials as $materials) :
             // Generate the preview URL using Moodle's pluginfile.php
             $preview_url = moodle_url::make_pluginfile_url(
                 $file->contextid,
-                'mod_homework',
-                'content',
+                $file->component,
+                $file->filearea,
                 $file->itemid,
-                '/',
+                $file->filepath,
                 $file->filename
             );
         }
-        echo $file->filename;
     }
     ?>
 
@@ -144,8 +143,6 @@ foreach ($homeworkmaterials as $materials) :
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-echo html_writer::start_tag('div', ['class' => 'mod-quiz-edit-content']);
 
 $homeworkmaterialids = array_map(function($material) {
     return [

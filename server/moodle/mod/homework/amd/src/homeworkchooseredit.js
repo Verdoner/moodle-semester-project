@@ -56,7 +56,7 @@ export const init = async(cmid, title, currentHomework, homeworkids) => {
                         displayUploadedFile(homeworkid);
                     });
 
-                    // Attach an event listener to handle the modal hidden event
+                    // Attach an event listener to handle the modal hidden event.
                     modal.getRoot().on(ModalEvents.hidden, () => {
                         console.log('Modal closed!');
                     });
@@ -71,6 +71,8 @@ export const init = async(cmid, title, currentHomework, homeworkids) => {
                     modal.getRoot().on('click', '[data-action="cancel"]', (e) => {
                         e.preventDefault();
                         modal.destroy();
+
+                        location.reload();
                     });
                 },
                 fail: (error) => {
@@ -124,17 +126,34 @@ const displayUploadedFile = (file) => {
         deleteButton.style.fontWeight = "bold";
         deleteButton.style.marginLeft = "5px";
 
-        // Delete the file preview and reset dropZoneFiles when "X" is clicked
+        // Handle file deletion when "X" is clicked
         deleteButton.addEventListener("click", () => {
-            dropZoneFiles = []; // Clear the files array
-            previewContainer.innerHTML = ""; // Remove the preview
+            if (confirm("Are you sure you want to delete this file?")) {
+                // AJAX call to delete the file on the server
+                Ajax.call([{
+                    methodname: 'mod_homework_delete_file',
+                    args: {
+                        id: file.id,
+                        file_id: file.file_id
+                    }, // Pass the correct file ID
+                    done: function(response) {
+                        console.log("File deleted successfully");
+                        dropZoneFiles = []; // Clear the files array
+                        previewContainer.innerHTML = ""; // Remove the preview
+                        uploadedFileIds = []; // Clear the files array
+                    },
+                    fail: function(error) {
+                        console.error("Failed to delete file:", error);
+                    }
+                }]);
+            }
         });
 
         fileWrapper.appendChild(deleteButton);
-
         previewContainer.appendChild(fileWrapper);
     }
 };
+
 
 const uploadDropzoneFile = async () => {
     for (let file of dropZoneFiles) {
@@ -217,6 +236,8 @@ const handleFormSubmit = async (modal, currentHomework, homeworkid) => {
         done: function(response) {
             console.log("Data saved successfully:", response);
             modal.destroy();
+
+            location.reload();
         },
         fail: function(error) {
             console.error("Failed to save data:", error);
