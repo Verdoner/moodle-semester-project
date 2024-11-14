@@ -66,7 +66,7 @@ class filter_homework extends \external_api {
                     'id' => $homework->id,
                     'name' => $homework->name,
                     'intro' => $homework->intro,
-                    'duedate' => $homework->duedate,
+                    'duedate' => date('d-m-y',$homework->duedate),
                     'course' => $course->fullname,
                 ];
             }
