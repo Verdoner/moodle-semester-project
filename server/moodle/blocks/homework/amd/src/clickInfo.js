@@ -23,9 +23,7 @@ import ModalEvents from 'core/modal_events';
  */
 export const init = async(title, data, user_id, completions) => {
     let homeworkid;
-    let literaturelist = [];
-    let linkslist = [];
-    let videoslist =[];
+    let materiallist = [];
 
     const buttons = document.getElementsByClassName("timebutton");
 
@@ -34,9 +32,7 @@ export const init = async(title, data, user_id, completions) => {
         (function(index) {
             buttons[index].addEventListener("click", function(event) {
                 homeworkid = event.target.id;
-                literaturelist = [];
-                linkslist = [];
-                videoslist = [];
+                materiallist = [];
                 // Finding the ID of the homework module that matches the button ID.
                 for (let item of data) {
                     if(!(item.hasOwnProperty('id'))){
@@ -45,38 +41,16 @@ export const init = async(title, data, user_id, completions) => {
                     if (item.id !== homeworkid){
                         continue;
                     }
-                        console.log(1)
-                        if(!(item.hasOwnProperty('literature'))) {
-                            throw new Error("missing id in homework")
-                        }
-                        // For each literature item, push it to the literature list if it is not in completions
-                        for (let literature of Object.values(item.literature)) {
-                            let foundLiterature =  Object.values(completions).some(entry => entry.literature_id === literature.id);
-                            if (!foundLiterature) {
-                                literaturelist.push(literature);
+                        // For each material, push it to the material list if it is not in completions
+                        for (let material of Object.values(item.materials)) {
+                            let foundMaterial = Object.values(completions).some(entry => entry.material_id === material.id);
+                            if (!foundMaterial) {
+                                materiallist.push(material);
                             }
                         }
-                        if(!(item.hasOwnProperty('links'))) {
+                        if(!(item.hasOwnProperty('materials'))) {
                             throw new Error("missing id in homework")
                         }
-                    // For each link item, push it to the link list if it is not in completions
-                        for (let links of Object.values(item.links)) {
-                        let foundLinks =  Object.values(completions).some(entry => entry.link_id === links.id);
-                        if (!foundLinks) {
-                        linkslist.push(links);
-                        }
-                    }
-                        if(!item.hasOwnProperty('videos')) {
-                            throw new Error("missing id in homework")
-                        }
-                    // For each video item, push it to the video list if it is not in completions
-                    for (let videos of Object.values(item.videos)) {
-                        let foundVideos =  Object.values(completions).some(entry => entry.video_id === videos.id);
-                        if (!foundVideos) {
-                        videoslist.push(videos);
-                        }
-                    }
-                        console.log(literaturelist);
 
                 }
             })
@@ -90,9 +64,7 @@ export const init = async(title, data, user_id, completions) => {
                 methodname: 'block_homework_get_infohomework_modal',
                 args:{
                     homework_id: homeworkid,
-                    data1: literaturelist,
-                    data2: linkslist,
-                    data3: videoslist,
+                    data: materiallist,
                 },
                 done: async function(response) {
                     const modal = await MyModal.create({
@@ -141,32 +113,12 @@ export const init = async(title, data, user_id, completions) => {
  * @param modal The modal that is being submitted
  */
 const handleFormSubmit = (user_id, modal) => {
-    let literatureInputFields = document.querySelectorAll('.homework-time-literature');
-    let linksInputFields = document.querySelectorAll('.homework-time-links');
-    let videosInputFields = document.querySelectorAll('.homework-time-videos');
-    let timeData1 = [];
-    let timeData2 = [];
-    let timeData3 = [];
+    let inputFields = document.querySelectorAll('.homework-time');
+    let timeData = [];
     // Finds the data of all input fields, both literature, link and video, and adds the ID and time to an array.
-    for (let inputField of literatureInputFields) {
+    for (let inputField of inputFields) {
         if(inputField.value !== "") {
-            timeData1.push({
-                id: inputField.id,
-                time: inputField.value,
-            })
-        }
-    }
-    for (let inputField of linksInputFields) {
-        if(inputField.value !== "") {
-            timeData2.push({
-                id: inputField.id,
-                time: inputField.value,
-            })
-        }
-    }
-    for (let inputField of videosInputFields) {
-        if(inputField.value !=="") {
-            timeData3.push({
+            timeData.push({
                 id: inputField.id,
                 time: inputField.value,
             })
@@ -174,7 +126,7 @@ const handleFormSubmit = (user_id, modal) => {
     }
 
     // If no data has been filled, do nothing.
-    if(!timeData1.length && !timeData2.length && !timeData3.length){
+    if(!timeData.length){
         modal.destroy();
         return;
     }
@@ -184,9 +136,7 @@ const handleFormSubmit = (user_id, modal) => {
         methodname: 'block_homework_save_homeworktime',  // Your PHP function that will handle the data
         args: {
             user: user_id,
-            timeCompletedLiterature: timeData1,
-            timeCompletedLinks: timeData2,
-            timeCompletedVideos: timeData3,
+            timeCompleted: timeData,
         },
         done: function(response) {
             console.log("Data saved successfully:", response);

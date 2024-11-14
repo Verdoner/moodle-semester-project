@@ -47,10 +47,30 @@ final class save_homeworktime_test extends advanced_testcase {
             ['id' => 2, 'time' => 45],
         ];
 
+        // Execute the external function.
+        $resultliterature = save_homeworktime::execute($userid, $timecompletedliterature);
+
+        // Check that the return structure and values are as expected.
+        $this->assertIsArray($resultliterature, 'Result should be an array');
+        $this->assertArrayHasKey('status', $resultliterature);
+        $this->assertArrayHasKey('message', $resultliterature);
+        $this->assertEquals('success', $resultliterature['status']);
+        $this->assertEquals('Data saved successfully', $resultliterature['message']);
+
         $timecompletedlinks = [
             ['id' => 3, 'time' => 20],
             ['id' => 4, 'time' => 35],
         ];
+
+        // Execute the external function.
+        $resultlinks = save_homeworktime::execute($userid, $timecompletedlinks);
+
+        // Check that the return structure and values are as expected.
+        $this->assertIsArray($resultlinks, 'Result should be an array');
+        $this->assertArrayHasKey('status', $resultlinks);
+        $this->assertArrayHasKey('message', $resultlinks);
+        $this->assertEquals('success', $resultlinks['status']);
+        $this->assertEquals('Data saved successfully', $resultlinks['message']);
 
         $timecompletedvideos = [
             ['id' => 5, 'time' => 50],
@@ -58,39 +78,45 @@ final class save_homeworktime_test extends advanced_testcase {
         ];
 
         // Execute the external function.
-        $result = save_homeworktime::execute($userid, $timecompletedliterature, $timecompletedlinks, $timecompletedvideos);
+        $resultvideos = save_homeworktime::execute($userid, $timecompletedvideos);
 
         // Check that the return structure and values are as expected.
-        $this->assertIsArray($result, 'Result should be an array');
-        $this->assertArrayHasKey('status', $result);
-        $this->assertArrayHasKey('message', $result);
-        $this->assertEquals('success', $result['status']);
-        $this->assertEquals('Data saved successfully', $result['message']);
+        $this->assertIsArray($resultvideos, 'Result should be an array');
+        $this->assertArrayHasKey('status', $resultvideos);
+        $this->assertArrayHasKey('message', $resultvideos);
+        $this->assertEquals('success', $resultvideos['status']);
+        $this->assertEquals('Data saved successfully', $resultvideos['message']);
 
         // Verify data has been saved in the database for literature.
         foreach ($timecompletedliterature as $item) {
             $this->assertRecordExists('completions', [
-                'user_id' => $userid,
-                'literature_id' => $item['id'],
-                'time_taken' => $item['time'],
+                'timecreated' => time(),
+                'timemodified' => time(),
+                'usermodified' => (int) $userid,
+                'material_id' => $item['id'],
+                'timetaken' => $item['time'],
             ]);
         }
 
         // Verify data has been saved in the database for links.
         foreach ($timecompletedlinks as $item) {
             $this->assertRecordExists('completions', [
-                'user_id' => $userid,
-                'link_id' => $item['id'],
-                'time_taken' => $item['time'],
+                'timecreated' => time(),
+                'timemodified' => time(),
+                'usermodified' => (int) $userid,
+                'material_id' => $item['id'],
+                'timetaken' => $item['time'],
             ]);
         }
 
         // Verify data has been saved in the database for videos.
         foreach ($timecompletedvideos as $item) {
             $this->assertRecordExists('completions', [
-                'user_id' => $userid,
-                'video_id' => $item['id'],
-                'time_taken' => $item['time'],
+                'timecreated' => time(),
+                'timemodified' => time(),
+                'usermodified' => (int) $userid,
+                'material_id' => $item['id'],
+                'timetaken' => $item['time'],
             ]);
         }
     }

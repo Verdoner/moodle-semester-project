@@ -40,7 +40,7 @@ class get_infohomework_modal extends external_api {
     public static function execute_parameters() {
         return new external_function_parameters([
             'homework_id' => new external_value(PARAM_INT, 'The ID of the homework item'),
-            'data1' => new external_multiple_structure(new external_single_structure([
+            'data' => new external_multiple_structure(new external_single_structure([
                 'description' => new external_value(PARAM_TEXT, 'Description of the homework'),
                 'endpage' => new external_value(PARAM_INT, 'End page number'),
                 'homework_id' => new external_value(PARAM_INT, 'The homework ID'),
@@ -49,24 +49,9 @@ class get_infohomework_modal extends external_api {
                 'startpage' => new external_value(PARAM_INT, 'Start page number'),
                 'timecreated' => new external_value(PARAM_INT, 'Timestamp when created'),
                 'timemodified' => new external_value(PARAM_INT, 'Timestamp when last modified'),
-            ])),
-            'data2' => new external_multiple_structure(new external_single_structure([
-                'description' => new external_value(PARAM_TEXT, 'Description of the homework'),
-                'link' => new external_value(PARAM_TEXT, 'The link'),
-                'homework_id' => new external_value(PARAM_INT, 'The homework ID'),
-                'id' => new external_value(PARAM_INT, 'Unique ID'),
-                'timecreated' => new external_value(PARAM_INT, 'Timestamp when created'),
-                'timemodified' => new external_value(PARAM_INT, 'Timestamp when last modified'),
-                'usermodified' => new external_value(PARAM_INT, 'User who last modified'),
-            ])),
-            'data3' => new external_multiple_structure(new external_single_structure([
-                'description' => new external_value(PARAM_TEXT, 'Description of the homework'),
-                'homework_id' => new external_value(PARAM_INT, 'The homework ID'),
-                'fileid' => new external_value(PARAM_INT, 'The id of the file'),
-                'id' => new external_value(PARAM_INT, 'Unique ID'),
-                'introformat' => new external_value(PARAM_INT, 'Format of the introduction'),
-                'timecreated' => new external_value(PARAM_INT, 'Timestamp when created'),
-                'timemodified' => new external_value(PARAM_INT, 'Timestamp when last modified'),
+                'usermodified' => new external_value(PARAM_INT, 'User when last modified'),
+                'link' => new external_value(PARAM_TEXT, 'Link to material'),
+                'file_id' => new external_value(PARAM_INT, 'id of file'),
             ])),
         ]);
     }
@@ -76,21 +61,19 @@ class get_infohomework_modal extends external_api {
      * @param int $homework_id The ID of the homework item
      * @return string[] - The HTML to be shown client-side
      */
-    public static function execute($homeworkid, $data1, $data2, $data3) {
+    public static function execute($homeworkid, $data) {
         global $DB;
 
         // Assuming you have the Mustache engine set up.
         $mustache = new \Mustache_Engine();
         $nohomework = "";
-        if (!$data1 && !$data2 && !$data3) {
+        if (!$data) {
             $nohomework = "All completed";
         }
         // Prepare data for the template.
         $content = [
             'nohomework' => $nohomework,
-            'literature' => $data1,
-            'links' => $data2,
-            'videos' => $data3,
+            'materials' => $data,
         ];
 
         // Render the template.

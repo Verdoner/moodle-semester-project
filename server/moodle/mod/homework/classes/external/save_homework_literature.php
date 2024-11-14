@@ -48,7 +48,7 @@ class save_homework_literature extends \external_api {
             'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
             'startpage' => new external_value(PARAM_INT, 'startPage field value'),
             'endpage' => new external_value(PARAM_INT, 'endPage field value'),
-            'homework' => new external_value(PARAM_INT, 'homework field value'),
+            'homeworkid' => new external_value(PARAM_INT, 'homeworkId field value'),
             'fileid' => new external_value(PARAM_INT, 'Uploaded file ID', VALUE_OPTIONAL),
         ]);
     }
@@ -59,43 +59,35 @@ class save_homework_literature extends \external_api {
      * @param $inputfield
      * @param $startpage
      * @param $endpage
-     * @param $homework
+     * @param $homeworkid
      * @param $fileid
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($inputfield, $startpage, $endpage, $homework, $fileid = null) {
+    public static function execute($inputfield, $startpage, $endpage, $homeworkid, $fileid = null) {
         global $DB, $USER, $PAGE;
 
         $record = new \stdClass();
-        $filesrecord = new \stdClass();
 
-        $record->userid = $USER->id;
+        $record->homework_id = $homeworkid;
         $record->description = $inputfield;
-        $record->startpage = $startpage;
-        $record->endpage = $endpage;
-        if ($fileid) {
-            $record->fileid = $fileid;
 
-            $filesrecord->files_id = $fileid;
-            $filesrecord->homework_id = $homework;
-
-            try {
-                $DB->insert_record('files_homework', $filesrecord);
-            } catch (\dml_exception $e) {
-                debugging("Error inserting into files_homework: " . $e->getMessage(), DEBUG_DEVELOPER);
-                return ['status' => 'error', 'message' => 'Failed to save file record'];
-            }
-        }
         $record->timecreated = time();
         $record->timemodified = time();
-        $record->homework = $homework;
+        $record->usermodified = $USER->id;
+
+        $record->introformat = 0;
+
+        $record->startpage = $startpage;
+        $record->endpage = $endpage;
+
+        $record->file_id = $fileid;
 
         try {
-            $DB->insert_record('homework_literature', $record);
+            $DB->insert_record('homework_materials', $record);
         } catch (\dml_exception $e) {
-            debugging("Error inserting into homework_literature: " . $e->getMessage(), DEBUG_DEVELOPER);
-            return ['status' => 'error', 'message' => 'Failed to save homework record'];
+            debugging("Error inserting into homework_materials: " . $e->getMessage(), DEBUG_DEVELOPER);
+            return ['status' => 'error', 'message' => 'Failed to save homework materials record'];
         }
 
         // Return a success response.
