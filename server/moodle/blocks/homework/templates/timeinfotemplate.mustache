@@ -1,0 +1,14 @@
+<div id="info-homework-modal">
+    <h1>Mark homework completed</h1>
+    <p>{{nohomework}}</p>
+    <!-- Add additional content or buttons here -->
+        {{#materials}}
+            <div id="materials-{{id}}">
+            <h3>{{description}}</h3>
+            <form>
+                    <label for="homework-time">Time for Homework (in minutes):</label>
+                    <input type="number" class="homework-time" id="{{id}}" name="homework-time" min="1">
+            </form>
+            </div>
+        {{/materials}}
+</div>

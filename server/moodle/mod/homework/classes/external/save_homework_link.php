@@ -20,7 +20,6 @@
  * @package   mod_homework
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *
  */
 
 namespace mod_homework\external;
@@ -41,42 +40,57 @@ use external_single_structure;
 class save_homework_link extends \external_api {
     /**
      * Define the parameters expected by this function.
+     *
      * @return external_function_parameters
      */
     public static function execute_parameters() {
         return new external_function_parameters([
             'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
             'link' => new external_value(PARAM_TEXT, 'link field value'),
+            'homeworkid' => new external_value(PARAM_INT, 'homeworkId field value'),
         ]);
     }
 
     /**
      * The main function to handle the request.
+     *
      * @param $inputfield
      * @param $link
+     * @param $homeworkid
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($inputfield, $link) {
+    public static function execute($inputfield, $link, $homeworkid) {
         global $DB, $USER;
 
         // Handle the input field value here.
-        // For example, save to a database.
         $record = new \stdClass();
+
+        $record->homework_id = $homeworkid;
         $record->description = $inputfield;
-        $record->link = $link;
-        $record->usermodified = $USER->id;
+
         $record->timecreated = time();
         $record->timemodified = time();
+        $record->usermodified = $USER->id;
+
+        $record->introformat = 0;
+
+        $record->link = $link;
 
         // Save to database.
-        $DB->insert_record('homework_links', $record);
+        try {
+            $DB->insert_record('homework_materials', $record);
+        } catch (\dml_exception $e) {
+            debugging("Error inserting into homework_materials: " . $e->getMessage(), DEBUG_DEVELOPER);
+            return ['status' => 'error', 'message' => 'Failed to save homework materials record'];
+        }
 
         // Return a success response.
         return ['status' => 'success', 'message' => 'Data saved successfully'];
     }
 
     /**
+     * Returns single structure of status and message.
      *
      * @return external_single_structure Define the return values.
      */

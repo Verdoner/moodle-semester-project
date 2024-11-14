@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Block definition class for the block_homework plugin.
@@ -22,26 +22,48 @@
  * @author    group 11
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-// Checks for Moodle environment
-defined('MOODLE_INTERNAL') || die();
-
-
 class block_homework extends block_base {
-
-    //constructor for the block
+    /**
+     * Constructor for the block
+     * @return void Saves the title as the correct title and nothing else
+     * @throws coding_exception Moodle standard exception if error
+     */
     public function init() {
         $this->title = get_string('homework', 'block_homework');
     }
 
     /**
      * Retrieves and prepares the content to be displayed by the block
+     *
+     * @return stdClass|null
      */
     public function get_content() {
 
-        global $OUTPUT, $PAGE, $DB;
+        global $OUTPUT, $DB, $USER;
 
-        $homeworks = $DB->get_records('homework');
+        // Get current time.
+        $currenttime = time();
+
+        // Fetch courses user is enrolled in.
+        $usercourses = enrol_get_users_courses($USER->id);
+
+        // Extract course IDs.
+        $courseids = array_map(function ($course) {
+            return $course->id;
+        }, $usercourses);
+
+        // Create a string of ? placeholders for each found course_id, seperated by commas.
+        $placeholders = implode(',', array_fill(0, count($courseids), '?'));
+
+        // Merge parameters.
+        $parameters = array_merge([$currenttime], $courseids);
+
+        // Construct WHERE condition for select.
+        // $select = "duedate > ? AND course_id IN ($placeholders)";
+
+        // Fetch homeworks using get_records_select.
+        $homeworks = $DB->get_records_select('homework', $select, $parameters);
+
         $data = [];
 
         if ($this->content !== null) {
@@ -50,31 +72,42 @@ class block_homework extends block_base {
 
         $this->content = new stdClass();
 
-        //If the current page is a course then remove unrelated homework
-        if ($PAGE->pagetype == 'course-view-topics') {
-            $homeworks = $this->filter_homework_content($PAGE->url, $homeworks);
+        // If the current page is a course then remove unrelated homework.
+        if ($this->page->pagetype == 'course-view-topics') {
+            $homeworks = $this->filter_homework_content($this->page->url, $homeworks);
         }
 
-        foreach($homeworks as $homework) {
+        // Retrieving all of the user's completions.
+        $homeworkcompletionrecords = $DB->get_records('completions', ['usermodified' => $USER->id]);
+
+        // Adding the details of each homework module to an associative array that will be pushed to the data array.
+        foreach ($homeworks as $homework) {
             $tmp = [];
+            $tmp['id'] = $homework->id;
             $tmp['name'] = $homework->name;
-            $tmp['duedate'] = $homework->duedate;
+            $tmp['duedate'] = date('d-m-Y', $homework->duedate);
             $tmp['intro'] = strip_tags($homework->intro);
-            $tmp['courseTitle'] = $DB->get_field('course', 'fullname', ['id' => $homework->course]);
+            $tmp['description'] = ($homework->description);
+            $tmp['courseTitle'] = $DB->get_field('course', 'fullname', ['id' => $homework->course_id]);
+
+            // Retrieving the records of all material of the current homework module.
+            $materialrecords = $DB->get_records('homework_materials', ['homework_id' => $homework->id]);
 
             $files = [];
 
-            //Get ids of homeworkfiles
+            // Get ids of homeworkfiles.
             $fileids = [];
-            $homeworkfiles = $DB->get_records('files_homework', ['files_id'=>$homework->id]);
-            foreach ($homeworkfiles as $homeworkfile) {
-                array_push($fileids, $homeworkfile->files_id);
-            }
+            // Code commented out because it is unsure if the files are necessary.
 
-            //Get file records
-            if(!empty($fileids)) {
-                $file_records = $DB->get_records_list('files', 'id', $fileids);
-                foreach ($file_records as $file) {
+            // ...$homeworkfiles = $DB->get_records('files_homework', ['homework_id' => $homework->id]);
+            // foreach ($homeworkfiles as $homeworkfile) {
+              // array_push($fileids, $homeworkfile->files_id);
+            // }
+
+            // Get file records.
+            if (!empty($fileids)) {
+                $filerecords = $DB->get_records_list('files', 'id', $fileids);
+                foreach ($filerecords as $file) {
                     $contextid = $file->contextid;
                     $component = $file->component;
                     $filearea = $file->filearea;
@@ -82,55 +115,68 @@ class block_homework extends block_base {
                     $filepath = $file->filepath;
                     $filename = $file->filename;
 
-                    //Generate url
+                    // Generate url.
                     $url = moodle_url::make_pluginfile_url(
                         $contextid,
                         $component,
                         $filearea,
                         $itemid,
                         $filepath,
-                        $filename
+                        $filename,
+                        false
                     );
 
-                    //Get appropriate icon for file type
+                    // Get appropriate icon for file type.
                     $iconurl = $OUTPUT->image_url(file_mimetype_icon($file->mimetype));
 
                     $files[] = [
                         'fileurl' => $url->out(),
                         'filename' => $filename,
-                        'iconurl' => $iconurl
+                        'iconurl' => $iconurl,
                     ];
                 }
             }
 
             $tmp['files'] = $files;
+            $tmp['materials'] = $materialrecords;
+            $tmp['completions'] = $homeworkcompletionrecords;
 
             array_push($data, $tmp);
         }
 
-
-        // Render the content using a template and pass the homework data to it
+        // Render the content using a template and pass the homework data to it.
         $this->content->text = $OUTPUT->render_from_template('block_homework/data', ['data' => $data]);
-
-        // Include JavaScript functionality for scrolling behavior in the block
-        $PAGE->requires->js_call_amd('block_homework/scroll', 'init');
+        // Include JavaScript functionality for scrolling behavior in the block.
+        $this->page->requires->js_call_amd('block_homework/scroll', 'init');
+        $this->page->requires->js_call_amd('block_homework/sort', 'init');
+        $this->page->requires->js_call_amd('block_homework/homework_injector', 'init', [$homeworks]);
+        $this->page->requires->js_call_amd(
+            'block_homework/clickInfo',
+            'init',
+            ["homework", $data, $USER->id, $homeworkcompletionrecords]
+        );
 
         return $this->content;
     }
 
-    public static function filter_homework_content($URL,$homeworks): array
-    {
-        //Use a regex to remove everything but digits from the url
-        $courseid = preg_replace('/\D/', '',$URL);
-        $tmpHomeworks = [];
+    /**
+     * Filter the URL
+     * @param $url
+     * @param $homeworks
+     * @return array
+     */
+    public static function filter_homework_content($url, $homeworks): array {
+        // Use a regex to remove everything but digits from the url.
+        $courseid = preg_replace('/\D/', '', $url);
+        $tmphomeworks = [];
 
-        //Check each homework to see if the course matches the id
+        // Check each homework to see if the course matches the id.
         foreach ($homeworks as $homework) {
-            if($courseid == $homework->course){
-                array_push($tmpHomeworks, $homework);
+            if ($courseid == $homework->course) {
+                array_push($tmphomeworks, $homework);
             }
         }
-        return $tmpHomeworks;
+        return $tmphomeworks;
     }
 
 
@@ -146,5 +192,4 @@ class block_homework extends block_base {
             'my' => true,
         ];
     }
-
 }

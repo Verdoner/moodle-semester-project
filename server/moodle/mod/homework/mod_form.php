@@ -61,6 +61,9 @@ class mod_homework_mod_form extends moodleform_mod {
             'optional'  => true,
         ]);
 
+        // Add hidden course_id field.
+        $mform->addElement('hidden', 'course_id');
+        $mform->setType('course_id', PARAM_INT);
 
         // MUST MOODLE.
         $this->standard_coursemodule_elements();
