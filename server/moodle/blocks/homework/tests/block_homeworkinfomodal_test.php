@@ -28,6 +28,7 @@ namespace block_homework;
 use advanced_testcase;
 use core\exception\coding_exception;
 use DOMDocument;
+use stdClass;
 
 /**
  * Test for modal rendering.
@@ -36,6 +37,7 @@ use DOMDocument;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class block_homeworkinfomodal_test extends advanced_testcase {
+
     /**
      *
      * @return void
@@ -43,22 +45,32 @@ final class block_homeworkinfomodal_test extends advanced_testcase {
      * @runInSeparateProcess
      * @covers :: \block_homework\external\get_infohomework_modal
      */
-    public function test_get_homeworkinfo_modal(): void {
+    public function test_get_info()
+    {
         global $DB;
 
         // Set up necessary data for the test, such as course and module.
         $this->resetAfterTest();
         $course = $this->getDataGenerator()->create_course();
 
-        $homework = $this->getDataGenerator()->get_plugin_generator('block_homework')->create_instance(['course' => $course->id]);
-        $homeworkid = $homework->id;
+        $homework = new stdClass();
+        $homework->id = 1;
+        $homework->course = $course->id;
+        $homework->name = 'test';
+        $homework->timecreated = strtotime('2023-10-01 10:00:00');
+        $homework->timemodified = strtotime('2023-10-01 10:00:00');
+        $homework->intro = 'test description';
+        $homework->introformat = 1;
+        $homework->description = 'test description';
+        $homework->duedate = strtotime('2023-10-01 10:00:00');
+        $homework->eventid = null;
 
-        // Data for literature.
-        $dataliterature = [
-            [
+        // Data1.
+        $literature = [
+            (object)[
                 'description' => 'Math homework on integrals',
                 'endpage' => 10,
-                'homework_id' => $homeworkid,
+                'homework_id' => $homework->id,
                 'id' => 1,
                 'introformat' => 1,
                 'startpage' => 1,
@@ -66,10 +78,10 @@ final class block_homeworkinfomodal_test extends advanced_testcase {
                 'timemodified' => strtotime('2023-10-02 12:00:00'),
                 'usermodified' => 3,
             ],
-            [
+            (object)[
                 'description' => 'Science project on climate change',
                 'endpage' => 15,
-                'homework_id' => $homeworkid,
+                'homework_id' => $homework->id,
                 'id' => 2,
                 'introformat' => 1,
                 'startpage' => 11,
@@ -79,34 +91,33 @@ final class block_homeworkinfomodal_test extends advanced_testcase {
             ],
         ];
 
-        // Data for links.
-        $datalinks = [
-            [
+        // Data2.
+        $links = [
+            (object)[
                 'description' => 'Project guidelines',
-                'link' => 'https://example.com/guidelines',
-                'homework_id' => $homeworkid,
-                'id' => 3,
+                'link' => 'http://example.com/guidelines',
+                'homework_id' => $homework->id,
+                'id' => 1,
                 'timecreated' => strtotime('2023-10-01 10:00:00'),
                 'timemodified' => strtotime('2023-10-02 12:00:00'),
                 'usermodified' => 5,
             ],
-            [
+            (object)[
                 'description' => 'Reference materials',
-                'link' => 'https://example.com/references',
-                'homework_id' => $homeworkid,
-                'id' => 4,
+                'link' => 'http://example.com/references',
+                'homework_id' => $homework->id,
+                'id' => 2,
                 'timecreated' => strtotime('2023-10-03 09:00:00'),
                 'timemodified' => strtotime('2023-10-04 14:00:00'),
                 'usermodified' => 6,
             ],
         ];
-
-        // Data for videos.
-        $datavideos = [
-            [
+      
+        // Data3.
+        $videos = [
+            (object) [
                 'description' => 'Presentation for math homework',
-                'endtime' => 10,
-                'homework_id' => $homeworkid,
+                'homework_id' => $homework->id,
                 'fileid' => 501,
                 'id' => 5,
                 'introformat' => 1,
@@ -115,10 +126,9 @@ final class block_homeworkinfomodal_test extends advanced_testcase {
                 'timemodified' => strtotime('2023-10-02 12:00:00'),
                 'usermodified' => 7,
             ],
-            [
+            (object) [
                 'description' => 'Presentation for science project',
-                'endtime' => 15,
-                'homework_id' => $homeworkid,
+                'homework_id' => $homework->id,
                 'fileid' => 502,
                 'id' => 6,
                 'introformat' => 1,
@@ -129,10 +139,35 @@ final class block_homeworkinfomodal_test extends advanced_testcase {
             ],
         ];
 
+        $completions = [
+            (object) [
+                'id' => 1,
+                'user_id' => 1,
+                'literature_id' => 1,
+                'time_taken' => 30,
+                'link_id' => null,
+                'video_id' => null,
+            ],
+            (object) [
+                'id' => 2,
+                'user_id' => 1,
+                'literature_id' => null,
+                'time_taken' => 30,
+                'link_id' => 1,
+                'video_id' => null,
+            ],
+            (object) [
+                'id' => 3,
+                'user_id' => 1,
+                'literature_id' => null,
+                'time_taken' => 30,
+                'link_id' => null,
+                'video_id' => 1,
+            ]
+        ];
+
         // Call the external function directly.
-        $resultliterature = \block_homework\external\get_infohomework_modal::execute($homeworkid, $dataliterature);
-        $resultlinks = \block_homework\external\get_infohomework_modal::execute($homeworkid, $datalinks);
-        $resultvideos = \block_homework\external\get_infohomework_modal::execute($homeworkid, $datavideos);
+        $result = \block_homework\external\get_infohomework_modal::get_info($homework, $course, $literature, $links, $videos, $completions);
 
         // Verify that the result contains the expected HTML structure.
         $this->assertNotEmpty($resultliterature);
@@ -145,67 +180,47 @@ final class block_homeworkinfomodal_test extends advanced_testcase {
         $this->assertArrayHasKey('html', $resultvideos);
 
         // Parse the HTML using DOMDocument to check for the required elements.
-        $domliterature = new DOMDocument();
-        @$domliterature->loadHTML($resultliterature['html']);  // Suppressing warnings from invalid HTML.
+        $dom = new DOMDocument();
+        @$dom->loadHTML($result['html']);  // Suppressing warnings from invalid HTML.
 
-        $domlinks = new DOMDocument();
-        @$domlinks->loadHTML($resultlinks['html']);  // Suppressing warnings from invalid HTML.
+        // Check that each element is present in the HTML.
+        $this->assertNotNull($dom->getElementById('info-homework-modal'), 'Modal container is missing');
+        $xpath = new \DOMXPath($dom);
+        $homeworkdescription = $xpath->query("//p[@class='homeworkdescription']")->item(0);
+        $this->assertEquals($homework->description, $homeworkdescription->textContent, 'Homework description is incorrect');
+        $this->assertNotNull($xpath->query("//div[@class='homeworkmaterialcontainer']")->item(0));
 
-        $domvideos = new DOMDocument();
-        @$domvideos->loadHTML($resultvideos['html']);  // Suppressing warnings from invalid HTML.
+        //Check for input with specific attributes & their labels for literature.
+        $this->assertNotNull($dom->getElementById('literature-2'));
+        // Check for input with specific attributes & their labels.
+        $this->assertNotNull($xpath->query("//i[@class='fa-solid fa-file-text']")->item(0));
+        $lit2description = $xpath->query("//div[@id='literature-2']//h3")->item(0);
+        $this->assertEquals($literature[1]->description, $lit2description->textContent);
+        $this->assertNotNull($xpath->query("//div[@id='literature-2']//form"));
+        $input = $xpath->query("//input[@class='homework-time-literature'][@id='2'][@name='homework-time'][@min='1']");
+        $this->assertEquals(1, $input->length, 'Expected input with class \'homework-time-literature\'');
 
-        // Check that each element is present in the HTML for literature.
-        $this->assertNotNull($domliterature->getElementById('info-homework-modal'), 'Modal container is missing');
-        $modaltitleliterature = $domliterature->getElementsByTagName('h1')->item(0);
-        $this->assertEquals('Mark homework completed', $modaltitleliterature->textContent, 'Modal title is incorrect');
-        $xpathliterature = new \DOMXPath($domliterature);
-        $this->assertNotNull($domliterature->getElementById('materials-1'));
-        $this->assertNotNull($domliterature->getElementById('materials-2'));
-
-        // Check that each element is present in the HTML for links.
-        $this->assertNotNull($domlinks->getElementById('info-homework-modal'), 'Modal container is missing');
-        $modaltitlelinks = $domlinks->getElementsByTagName('h1')->item(0);
-        $this->assertEquals('Mark homework completed', $modaltitlelinks->textContent, 'Modal title is incorrect');
-        $xpathlinks = new \DOMXPath($domlinks);
-        $this->assertNotNull($domlinks->getElementById('materials-3'));
-        $this->assertNotNull($domlinks->getElementById('materials-4'));
-
-        // Check that each element is present in the HTML for videos.
-        $this->assertNotNull($domvideos->getElementById('info-homework-modal'), 'Modal container is missing');
-        $modaltitlevideos = $domvideos->getElementsByTagName('h1')->item(0);
-        $this->assertEquals('Mark homework completed', $modaltitlevideos->textContent, 'Modal title is incorrect');
-        $xpathvideos = new \DOMXPath($domvideos);
-        $this->assertNotNull($domvideos->getElementById('materials-5'));
-        $this->assertNotNull($domvideos->getElementById('materials-6'));
-
-        // Check for input with specific attributes & their labels for literature.
-        $literaturelabel1 = $xpathliterature->query('//div[@id="materials-1"]//h3')->item(0);
-        $this->assertEquals('Math homework on integrals', $literaturelabel1->textContent, 'Modal title is incorrect');
-        $literatureinput1 = $xpathliterature->query("//input[@class='homework-time'][@id='1'][@name='homework-time'][@min='1']");
-        $this->assertEquals(1, $literatureinput1->length, 'Expected input with class \'homework-time-literature\'');
-        $literaturelabel2 = $xpathliterature->query('//div[@id="materials-2"]//h3')->item(0);
-        $this->assertEquals('Science project on climate change', $literaturelabel2->textContent, 'Modal title is incorrect');
-        $literatureinput2 = $xpathliterature->query("//input[@class='homework-time'][@id='2'][@name='homework-time'][@min='1']");
-        $this->assertEquals(1, $literatureinput2->length, 'Expected input with class \'homework-time-literature\'');
 
         // Check for input with specific attributes & their labels for links.
-        $linkslabel1 = $xpathlinks->query('//div[@id="materials-3"]//h3')->item(0);
-        $this->assertEquals('Project guidelines', $linkslabel1->textContent, 'Modal title is incorrect');
-        $linksinput1 = $xpathlinks->query("//input[@class='homework-time'][@id='3'][@name='homework-time'][@min='1']");
-        $this->assertEquals(1, $linksinput1->length, 'Expected input with class \'homework-time-links\'');
-        $linkslabel2 = $xpathlinks->query('//div[@id="materials-4"]//h3')->item(0);
-        $this->assertEquals('Reference materials', $linkslabel2->textContent, 'Modal title is incorrect');
-        $linksinput2 = $xpathlinks->query("//input[@class='homework-time'][@id='4'][@name='homework-time'][@min='1']");
-        $this->assertEquals(1, $linksinput2->length, 'Expected input with class \'homework-time-links\'');
+        $this->assertNotNull($dom->getElementById('links-2'));
+        // Check for input with specific attributes & their labels.
+        $this->assertNotNull($xpath->query("//i[@class='fa-solid fa-link']")->item(0));
+        $link2description = $xpath->query("//div[@id='links-2']//a")->item(0);
+        $this->assertEquals($links[1]->description, $link2description->textContent);
+        $this->assertEquals($links[1]->link, $link2description->getAttribute('href'));
+        $this->assertNotNull($xpath->query("//div[@id='links-2']//form"));
+        $input = $xpath->query("//input[@class='homework-time-links'][@id='2'][@name='homework-time'][@min='1']");
+        $this->assertEquals(1, $input->length, 'Expected input with class \'homework-time-links\'');
 
-        // Check for input with specific attributes & their labels for videos.
-        $videoslabel1 = $xpathvideos->query('//div[@id="materials-5"]//h3')->item(0);
-        $this->assertEquals('Presentation for math homework', $videoslabel1->textContent, 'Modal title is incorrect');
-        $videosinput1 = $xpathvideos->query("//input[@class='homework-time'][@id='5'][@name='homework-time'][@min='1']");
-        $this->assertEquals(1, $videosinput1->length, 'Expected input with class \'homework-time-videos\'');
-        $videoslabel2 = $xpathvideos->query('//div[@id="materials-6"]//h3')->item(0);
-        $this->assertEquals('Presentation for science project', $videoslabel2->textContent, 'Modal title is incorrect');
-        $videosinput2 = $xpathvideos->query("//input[@class='homework-time'][@id='6'][@name='homework-time'][@min='1']");
-        $this->assertEquals(1, $videosinput2->length, 'Expected input with class \'homework-time-videos\'');
+
+        // Check for input with specific attributes & their labels, for videos.
+        $this->assertNotNull($dom->getElementById('videos-2'));
+        // Check for input with specific attributes & their labels.
+        $this->assertNotNull($xpath->query("//i[@class='fa-solid fa-file-video-o']")->item(0));
+        $lit2description = $xpath->query("//div[@id='videos-2']//h3")->item(0);
+        $this->assertEquals($videos[1]->description, $lit2description->textContent);
+        $this->assertNotNull($xpath->query("//div[@id='videos-2']//form"));
+        $input = $xpath->query("//input[@class='homework-time-videos'][@id='2'][@name='homework-time'][@min='1']");
+        $this->assertEquals(1, $input->length, 'Expected input with class \'homework-time-videos\'');
     }
 }
