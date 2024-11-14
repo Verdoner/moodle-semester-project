@@ -63,7 +63,7 @@ final class save_homework_test extends advanced_testcase {
 
         // Verify that the data was saved in the database.
         $record = $DB->get_record_select(
-            'homework_literature',
+            'homework_materials',
             $DB->sql_compare_text('description') . ' = :description',
             ['description' => $inputfield],
             '*',
@@ -71,7 +71,7 @@ final class save_homework_test extends advanced_testcase {
         );
         $this->assertEquals($startpage, $record->startpage);
         $this->assertEquals($endpage, $record->endpage);
-        $this->assertEquals($homework, $record->homework);
+        $this->assertEquals($homework, $record->homework_id);
     }
 
     /**
@@ -97,14 +97,14 @@ final class save_homework_test extends advanced_testcase {
 
         // Verify that the data was saved in the database.
         $record = $DB->get_record_select(
-            'homework_links',
+            'homework_materials',
             $DB->sql_compare_text('description') . ' = :description',
             ['description' => $inputfield],
             '*',
             MUST_EXIST
         );
         $this->assertEquals($link, $record->link);
-        $this->assertEquals($homework, $record->homework);
+        $this->assertEquals($homework, $record->homework_id);
     }
 
     /**
@@ -131,14 +131,14 @@ final class save_homework_test extends advanced_testcase {
 
         // Verify that the data was saved in the database.
         $record = $DB->get_record_select(
-            'homework_video',
+            'homework_materials',
             $DB->sql_compare_text('description') . ' = :description',
             ['description' => $inputfield],
             '*',
             MUST_EXIST
         );
 
-        $this->assertEquals($homework, $record->homework);
+        $this->assertEquals($homework, $record->homework_id);
     }
 
     /**

@@ -88,8 +88,6 @@ class get_infohomework_modal extends external_api {
         // Assuming you have the Mustache engine set up.
         $mustache = new Mustache_Engine();
         $nohomework = "";
-
-
         foreach ($completedmaterials as $completedmaterial) {
             foreach ($literaturearray as $index => $literature) {
                 $literaturearray[$index] = json_decode(json_encode($literature, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);

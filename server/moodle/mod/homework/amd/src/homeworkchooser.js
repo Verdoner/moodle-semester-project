@@ -37,24 +37,12 @@ export const init = async(cmid, title, currentHomework) => {
                 // Initialize elements once the modal content is rendered
                 modal.getRoot().on(ModalEvents.shown, () => {
                     // Initialize the elements after modal is displayed
-                    const startPageInput = modal.getRoot().find('#startPage')[0];
-                    const endPageInput = modal.getRoot().find('#endPage')[0];
-                    const startTimeInput = modal.getRoot().find('#startTime')[0];
-                    const endTimeInput = modal.getRoot().find('#endTime')[0];
                     const radioButtons = modal.getRoot().find('input[name="option"]');
                     const pageRangeInput = modal.getRoot().find('#page-range-input')[0];
                     const videoTimeInput = modal.getRoot().find('#video-time-input')[0];
                     const linkDiv = modal.getRoot().find('#linkDiv')[0];
                     const dropzonePdfContainer = modal.getRoot().find('#dropzone-pdf-container')[0];
                     const dropzoneVideoContainer = modal.getRoot().find('#dropzone-video-container')[0];
-
-                    // Attach event listeners for page input validation
-                    startPageInput.addEventListener('input', validatePageRange);
-                    endPageInput.addEventListener('input', validatePageRange);
-
-                    // Attach event listeners for time input validation
-                    startTimeInput.addEventListener('input', validateTimeRange);
-                    endTimeInput.addEventListener('input', validateTimeRange);
 
                     // Attach event listeners for radio buttons
                     radioButtons.each((_, radio) => {
@@ -63,40 +51,6 @@ export const init = async(cmid, title, currentHomework) => {
 
                     initializePDFDropzone(dropzonePdfContainer);
                     initializeVideoDropzone(dropzoneVideoContainer)
-
-                    // Function to validate page range
-                    /**
-                     *
-                     */
-                    function validatePageRange() {
-                        const startPage = parseInt(startPageInput.value, 10);
-                        const endPage = parseInt(endPageInput.value, 10);
-
-                        if (endPageInput.value !== "" && startPageInput.value !== "") {
-                            if (endPage < startPage) {
-                                endPageInput.setCustomValidity("End Page must be greater than or equal to Start Page");
-                            } else {
-                                endPageInput.setCustomValidity(""); // Clear error message if valid
-                            }
-                        } else {
-                            endPageInput.setCustomValidity(""); // Clear error if either field is empty
-                        }
-                    }
-
-                    function validateTimeRange() {
-                        const startTime = parseInt(startTimeInput.value, 10);
-                        const endTime = parseInt(endTimeInput.value, 10);
-
-                        if (endTimeInput.value !== "" && startTimeInput.value !== "") {
-                            if (endTime < startTime) {
-                                endTimeInput.setCustomValidity("End Time must be greater than or equal to Start Page");
-                            } else {
-                                endTimeInput.setCustomValidity(""); // Clear error message if valid
-                            }
-                        } else {
-                            endTimeInput.setCustomValidity(""); // Clear error if either field is empty
-                        }
-                    }
 
                     // Function to toggle between text and link inputs
                     /**
@@ -217,17 +171,37 @@ const uploadDropzoneFiles = async () => {
 
 /**
  * Handles form submission inside the modal.
- * @param {int} cminstance
  * @param {Modal} modal - The instance of the modal containing the form.
  * @param currentHomework - The id of the homework which is being edited.
  */
 const handleFormSubmit = async (modal, currentHomework) => {
     let inputField = modal.getRoot().find('#inputField')[0];
 
-    if (modal.getRoot().find('#option1').is(':checked')) {
+    // Set up a custom validity message if the field is empty
+    if (inputField.value.trim() === "") {
+        inputField.setCustomValidity("Input field must not be empty");
+    } else {
+        inputField.setCustomValidity(""); // Clear the custom message when input is valid
+    }
 
-        let startPage = modal.getRoot().find('#startPage').val();
-        let endPage = modal.getRoot().find('#endPage').val();
+    // Manually check the validity of the input field
+    inputField.reportValidity();
+
+    // If the field is invalid, stop the function execution
+    if (!inputField.checkValidity()) {
+        return; // Exit if input field is invalid
+    }
+
+    if (modal.getRoot().find('#option1').is(':checked')) {
+        let startPageInput = modal.getRoot().find('#startPage')[0];
+        let endPageInput = modal.getRoot().find('#endPage')[0];
+
+        if (!validatePageRange(startPageInput, endPageInput)) {
+            return;
+        }
+
+        let startPage = startPageInput.value;
+        let endPage = endPageInput.value;
 
         await uploadDropzoneFiles();
 
@@ -238,7 +212,7 @@ const handleFormSubmit = async (modal, currentHomework) => {
                 inputfield: inputField.value,
                 startpage: startPage,
                 endpage: endPage,
-                homework: currentHomework,
+                homeworkid: currentHomework,
                 fileid: uploadedFileIds.length ? uploadedFileIds[0] : null
             },
             done: function(response) {
@@ -262,7 +236,7 @@ const handleFormSubmit = async (modal, currentHomework) => {
             args: {
                 inputfield: inputField.value,
                 link: link,
-                homework: currentHomework,
+                homeworkid: currentHomework,
             },
             done: function(response) {
                 console.log("Data saved successfully:", response);
@@ -273,18 +247,25 @@ const handleFormSubmit = async (modal, currentHomework) => {
             }
         }]);
     } else if (modal.getRoot().find('#option3').is(':checked')) {
-        let startTime = modal.getRoot().find('#startTime').val();
-        let endTime = modal.getRoot().find('#endTime').val();
+        let startTimeInput = modal.getRoot().find('#startTime')[0];
+        let endTimeInput = modal.getRoot().find('#endTime')[0];
+
+        if (!validateTimeRange(startTimeInput, endTimeInput)) {
+            return;
+        }
+
+        let startTime = startTimeInput.value;
+        let endTime = endTimeInput.value;
 
         await uploadDropzoneFiles();
 
         Ajax.call([{
             methodname: 'mod_homework_save_homework_video',
             args: {
-                inputfield: inputField,
+                inputfield: inputField.value,
                 starttime: startTime,
                 endtime: endTime,
-                instance: cminstance,
+                homeworkid: currentHomework,
                 fileid: uploadedFileIds.length ? uploadedFileIds[0] : null
             },
             done: function(response) {
@@ -295,6 +276,46 @@ const handleFormSubmit = async (modal, currentHomework) => {
                 console.error("Failed to save data:", error);
             }
         }]);
+    }
+
+    function validatePageRange(startPageInput, endPageInput) {
+        const startPage = parseInt(startPageInput.value, 10);
+        const endPage = parseInt(endPageInput.value, 10);
+
+        if (endPageInput.value !== "" && startPageInput.value !== "") {
+            if (endPage < startPage) {
+                endPageInput.setCustomValidity("End Page must be greater than or equal to Start Page");
+                endPageInput.reportValidity();
+                return false;
+            } else {
+                endPageInput.setCustomValidity(""); // Clear error message if valid
+            }
+        } else {
+            endPageInput.setCustomValidity(""); // Clear error if either field is empty
+        }
+
+        endPageInput.reportValidity();
+        return endPageInput.checkValidity(); // Return true if valid
+    }
+
+    function validateTimeRange(startTimeInput, endTimeInput) {
+        const startTime = parseInt(startTimeInput.value, 10);
+        const endTime = parseInt(endTimeInput.value, 10);
+
+        if (endTimeInput.value !== "" && startTimeInput.value !== "") {
+            if (endTime < startTime) {
+                endTimeInput.setCustomValidity("End Time must be greater than or equal to Start Time");
+                endTimeInput.reportValidity();
+                return false;
+            } else {
+                endTimeInput.setCustomValidity(""); // Clear error message if valid
+            }
+        } else {
+            endTimeInput.setCustomValidity(""); // Clear error if either field is empty
+        }
+
+        endTimeInput.reportValidity();
+        return endTimeInput.checkValidity(); // Return true if valid
     }
 };
 
