@@ -93,11 +93,52 @@ class get_homework_chooser extends external_api {
                     <div id="dropzone-video-container" style="display:none;">
                     <div id="ExiResDiv" style="display:none">
                         <label for="existingresource">Existing Resource:</label><br>
-                        <select name="existingresource" id="existingresource">
+                        <select name="existingresource" id="existingresource" onchange="existingResourceChange()">
                             '.collection_files_controller::get_choices().'
+                            <div id="typeLiterature" style="visibility: hidden;">
+                                <label for="startPage">Page Range:</label><br>
+                                <input type="number" id="startPage" name="startPage" min="1" placeholder="Start Page" style="width: 50px;">
+                                <span>-</span>
+                                <label for="endPage"></label>
+                                <input type="number" id="endPage" name="endPage" min="1" placeholder="End Page" style="width: 50px;">
+                            </div>
+                            <div id="typeVideo" style="visibility: hidden;">
+                                <label for="startTime">Time Range (seconds):</label><br>
+                                <input type="number" id="startTime" name="startTime" min="1" placeholder="Start Time" style="width: 50px;">
+                                <span>-</span>
+                                <label for="endTime"></label>
+                                <input type="number" id="endTime" name="endTime" min="1" placeholder="End Time" style="width: 50px;">
+                            </div>
+                            <div id="typeLink" style="visibility: hidden;">
+                                <label for="link">Link:</label><br>
+                                <input name="link" id="link" type="url" placeholder="Enter URL">
+                            </div>
                     </div>
                 </form>
             </div>
+            <script type="text/javascript">
+                function existingResourceChange()
+                {
+                    var resource = document.getElementById("existingresource").value;
+                    if(resource.startpage!=null)
+                    {
+                        document.getElementById("typeLiterature").style.visibility = "visible";
+                        document.getElementById("typeVideo").style.visibility = "hidden";
+                        document.getElementById("typeLink").style.visibility = "hidden";
+                    }
+                    else if(resource.starttime!=null)
+                    {
+                        document.getElementById("typeLiterature").style.visibility = "hidden";
+                        document.getElementById("typeVideo").style.visibility = "visible";
+                        document.getElementById("typeLink").style.visibility = "hidden";
+                    } else
+                    {
+                        document.getElementById("typeLiterature").style.visibility = "hidden";
+                        document.getElementById("typeVideo").style.visibility = "hidden";
+                        document.getElementById("typeLink").style.visibility = "visible";
+                    }
+                }
+            </script>
         ';
         return ['html' => $html];
     }
