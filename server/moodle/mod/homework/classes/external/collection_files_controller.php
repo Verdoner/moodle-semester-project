@@ -19,21 +19,23 @@ class collection_files_controller extends \external_api {
      * @return int[]
      * @throws \dml_exception
      */
-    public static function get_collection_file_ids(): array {
+    public static function get_choices(): string {
         global $DB, $COURSE;
 
-        //$sql = "SELECT id FROM homework WHERE course = ".$COURSE->id;
-        $results = $DB->get_records('homework', ['course'=>$COURSE->id]);
+        $homeworks = $DB->get_records('homework', ['course_id'=>$COURSE->id]);
 
-
-        $files = array();
-        foreach ($results as $result) {
-            //$sql = "SELECT files_id FROM files_homework WHERE homework_id = ".$result->id;
-            //$temp = $DB->get_records_sql($sql);
-            $temp = $DB->get_record('files_homework', ['homework_id'=>$result->homework_id]);
-            $files = array_merge($files, $temp->files_id);
+        $materials = array();
+        foreach ($homeworks as $homework) {
+            $material = $DB->get_record('homework_materials', ['homework_id'=>$homework->id]);
+            $materials = array_merge($materials, $material);
         }
 
-        return $files;
+        $choices = '';
+        if ($materials != null) {
+            foreach ($materials as $material) {
+                $choices .= '<option value="'.$material->description.'"></option>\n';
+            }
+        }
+        return $choices;
     }
 }
