@@ -66,4 +66,15 @@ class mod_homework_generator extends testing_module_generator {
         // Return the updated homework instance.
         return $DB->get_record('course_modules', ['id' => $coursemodule->coursemodule]);
     }
+
+    /**
+     *
+     * @param $material
+     * @return void
+     * @throws dml_exception
+     */
+    public function create_material(array $material) {
+        global $DB;
+        $DB->insert_record('homework_materials', (object) $material);
+    }
 }

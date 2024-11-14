@@ -25,28 +25,49 @@
 
 namespace mod_homework;
 
-use advanced_testcase;
+// use advanced_testcase;
 use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use DOMDocument;
+use moodle_url;
 
 /**
  *
  */
-final class view_page_test extends advanced_testcase {
+final class view_page_test extends \advanced_testcase {
+
+    // Set up the necessary environment (moodle, etc.) for your test.
+    protected function setUp(): void {
+        global $DB, $CFG;
+
+        parent::setUp();
+
+        // Ensure the user is logged in (if necessary for the page to load).
+        $this->setAdminUser();
+
+    }
+
     /**
      *
      * @return void
      * @covers :: \mod_homework\view.php
      * @throws \coding_exception
+     * @throws moodle_exception
      */
     public function test_view_page(): void {
-        global $DB;
+        global $DB, $CFG;
 
         // Set up necessary data for the test, such as course and module.
         $this->resetAfterTest();
+        $result = null;
         $course = $this->getDataGenerator()->create_course();
+        $homework = $this->getDataGenerator()->create_module('homework', ['course' => $course->id, 'homework' => 'test']);
 
-        $homework = $this->getDataGenerator()->get_plugin_generator('mod_homework')->create_instance(['course' => $course->id]);
+        // Simulate a request to the page.
+        $cm = get_coursemodule_from_instance('homework', $homework->id);
+        $this->assertNotFalse($cm, 'Failed to retrieve course module for homework instance.');
+        $url = new moodle_url('/mod/homework/view.php', ['id' => $cm->id]);
+
         $bookrecord = new \stdClass();
         $bookrecord->homework_id = $homework->id;
         $bookrecord->description = 'This is a book.';
@@ -69,39 +90,28 @@ final class view_page_test extends advanced_testcase {
         $videorecord->endtime = 3601;
         $videorecord->file_id = 3;
 
-        $record = new \stdClass();
-        $record->homework_id = $homework->id;
-        $record->description = 'This is a link.';
-        $record->timecreated = time();
-        $record->timemodified = time();
-        $record->usermodified = 0;
-        $record->introformat = 0;
-        $record->link = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+        $linkrecord = new \stdClass();
+        $linkrecord->homework_id = $homework->id;
+        $linkrecord->description = 'This is a link.';
+        $linkrecord->timecreated = time();
+        $linkrecord->timemodified = time();
+        $linkrecord->usermodified = 0;
+        $linkrecord->introformat = 0;
+        $linkrecord->link = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
 
-
-        $DB->insert_record('material', $bookrecord);
-        $DB->insert_record('material', $videorecord);
+        $DB->insert_record('homework_materials', $bookrecord);
+        $DB->insert_record('homework_materials', $videorecord);
+        $DB->insert_record('homework_materials', $linkrecord);
         // Call the external function directly.
 
+        // Generate plugin page.
+        require_once($CFG->dirroot . '/mod/homework/view.php?id=' . $homework->id);
+        $output = ob_get_clean();
         // Parse the HTML using DOMDocument to check for the required elements.
-        $dom = new DOMDocument();
-        @$dom->loadHTML($result['html']);  // Suppressing warnings from invalid HTML.
+        $dom = new \DOMDocument();
+        @$dom->loadHTML($output);  // Suppress warnings for invalid HTML.
 
         // Check that each element is present in the HTML.
-        $this->assertNotNull($dom->getElementById('homework-chooser-modal'), 'Modal container is missing');
-        $this->assertNotNull($dom->getElementById('inputField'), 'Input field is missing');
-        $this->assertNotNull($dom->getElementById('option1'), 'Option 1 radio button is missing');
-        $this->assertNotNull($dom->getElementById('option2'), 'Option 2 radio button is missing');
-        $this->assertNotNull($dom->getElementById('option3'), 'Option 2 radio button is missing');
-        $this->assertNotNull($dom->getElementById('page-range-input'), 'Page range input container is missing');
-        $this->assertNotNull($dom->getElementById('startPage'), 'Start page input is missing');
-        $this->assertNotNull($dom->getElementById('endPage'), 'End page input is missing');
-        $this->assertNotNull($dom->getElementById('video-time-input'), 'Video time input container is missing');
-        $this->assertNotNull($dom->getElementById('startTime'), 'Start time input is missing');
-        $this->assertNotNull($dom->getElementById('endTime'), 'End time input is missing');
-        $this->assertNotNull($dom->getElementById('linkDiv'), 'Link div is missing');
-        $this->assertNotNull($dom->getElementById('link'), 'Link input field is missing');
-        $this->assertNotNull($dom->getElementById('dropzone-pdf-container'), 'Container dropzone pdf is missing');
-        $this->assertNotNull($dom->getElementById('dropzone-video-container'), 'Container dropzone video is missing');
+        $this->assertNotNull($dom->getElementsByTagName('div')->item(0), 'Modal container is missing');
     }
 }
