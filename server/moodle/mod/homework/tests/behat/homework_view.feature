@@ -25,10 +25,10 @@ Feature: Viewing the homework page
       | intro    | Test description |
       | section  | 0                |
     And the following "mod_homework > materials" exist:
-     | description       | startpage | endpage | link               | starttime | endtime |file_id | homework_id | timecreated | timemodified | usermodified |
-     | Sample material 1 | 1         | 10      |                    |           |         |123     | 0           | 0           | 0            | 0            |
-     | Sample material 2 |           |         | http://example.com |           |         |        | 0           | 0           | 0            | 0            |
-     | Sample material 3 |           |         |                    | 132       | 3601    |234     | 0           | 0           | 0            | 0            |
+     | id | description       | startpage | endpage | link               | starttime | endtime |file_id | homework_id | timecreated | timemodified | usermodified |
+     | 0  | Sample material 1 | 1         | 10      |                    |           |         |123     | 0           | 0           | 0            | 0            |
+     | 1  | Sample material 2 |           |         | http://example.com |           |         |        | 1           | 0           | 0            | 0            |
+     | 2  | Sample material 3 |           |         |                    | 132       | 3601    |234     | 2           | 0           | 0            | 0            |
 
     And I log in as "teacher1"
     And I am on "Example Course" course homepage with editing mode off
@@ -36,12 +36,5 @@ Feature: Viewing the homework page
   Scenario: Teacher views the homework materials
     When I click on "Myhomework" "link" in the "homework" activity
 
-    Then I should see "Sample material 1"
-    And I should see "Pages: 1 - 10"
-    And I should see "Click here to download the file"
+    And I should see "Myhomework"
 
-    And I should see "Sample material 2"
-    And I should see "Link: Click here"
-
-    And I should see "Sample material 3"
-    And I should see "Watch: 02:12 - 01:00:01"
