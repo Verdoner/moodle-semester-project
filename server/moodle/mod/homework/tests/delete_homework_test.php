@@ -30,7 +30,7 @@ use dml_exception;
 /**
  *
  */
-final class edit_homework_test extends advanced_testcase {
+final class delete_homework_test extends advanced_testcase {
     /**
      * Setup routine before running each test.
      */
@@ -95,42 +95,15 @@ final class edit_homework_test extends advanced_testcase {
 
         $recordid = $record->id;
 
-        // Updated data for editing the homework material.
-        $newinputfield = 'Updated Literature';
-        $newstartpage = 2;
-        $newendpage = 15;
+        $deleteresult = \mod_homework\external\delete_homework_material::execute($recordid, $fileid);
 
-        // Call the edit method to update the existing record.
-        $editresult = \mod_homework\external\edit_homework_material::execute(
-            $recordid,
-            $newinputfield,
-            $homeworkid,
-            $link,
-            $newstartpage,
-            $newendpage,
-            $starttime,
-            $endtime,
-            $fileid
-        );
+        // Assert that the status is 'success' for deletion.
+        $this->assertEquals('success', $deleteresult['status']);
+        $this->assertEquals('Data deleted successfully', $deleteresult['message']);
 
-        // Assert that the edit was successful.
-        $this->assertEquals('success', $editresult['status']);
-        $this->assertEquals('Data edited successfully', $editresult['message']);
-
-        // Verify that the updated data was saved in the database.
-        // Verify that the data was saved in the database.
-        $updatedrecord = $DB->get_record_select(
-            'homework_materials',
-            $DB->sql_compare_text('description') . ' = :description',
-            ['description' => $newinputfield],
-            '*',
-            MUST_EXIST
-        );
-
-        $this->assertEquals($newinputfield, $updatedrecord->description);
-        $this->assertEquals($newstartpage, $updatedrecord->startpage);
-        $this->assertEquals($newendpage, $updatedrecord->endpage);
-        $this->assertEquals($homeworkid, $updatedrecord->homework_id);
+        // Verify that the record no longer exists in the database.
+        $deletedrecord = $DB->get_record('homework_materials', ['id' => $recordid]);
+        $this->assertFalse($deletedrecord);
     }
 
     /**
@@ -182,40 +155,15 @@ final class edit_homework_test extends advanced_testcase {
 
         $recordid = $record->id;
 
-        // Updated data for editing the homework material.
-        $newinputfield = 'Updated Link';
-        $newlink = 'https://www.youtube.com';
+        $deleteresult = \mod_homework\external\delete_homework_material::execute($recordid, $fileid);
 
-        // Call the edit method to update the existing record.
-        $editresult = \mod_homework\external\edit_homework_material::execute(
-            $recordid,
-            $newinputfield,
-            $homeworkid,
-            $newlink,
-            $startpage,
-            $endpage,
-            $starttime,
-            $endtime,
-            $fileid
-        );
+        // Assert that the status is 'success' for deletion.
+        $this->assertEquals('success', $deleteresult['status']);
+        $this->assertEquals('Data deleted successfully', $deleteresult['message']);
 
-        // Assert that the edit was successful.
-        $this->assertEquals('success', $editresult['status']);
-        $this->assertEquals('Data edited successfully', $editresult['message']);
-
-        // Verify that the updated data was saved in the database.
-        // Verify that the data was saved in the database.
-        $updatedrecord = $DB->get_record_select(
-            'homework_materials',
-            $DB->sql_compare_text('description') . ' = :description',
-            ['description' => $newinputfield],
-            '*',
-            MUST_EXIST
-        );
-
-        $this->assertEquals($newinputfield, $updatedrecord->description);
-        $this->assertEquals($newlink, $updatedrecord->link);
-        $this->assertEquals($homeworkid, $updatedrecord->homework_id);
+        // Verify that the record no longer exists in the database.
+        $deletedrecord = $DB->get_record('homework_materials', ['id' => $recordid]);
+        $this->assertFalse($deletedrecord);
     }
 
     /**
@@ -268,41 +216,14 @@ final class edit_homework_test extends advanced_testcase {
 
         $recordid = $record->id;
 
-        // Updated data for editing the homework material.
-        $newinputfield = 'Updated Video';
-        $newstarttime = 1;
-        $newendtime = 61;
+        $deleteresult = \mod_homework\external\delete_homework_material::execute($recordid, $fileid);
 
-        // Call the edit method to update the existing record.
-        $editresult = \mod_homework\external\edit_homework_material::execute(
-            $recordid,
-            $newinputfield,
-            $homeworkid,
-            $link,
-            $startpage,
-            $endpage,
-            $newstarttime,
-            $newendtime,
-            $fileid
-        );
+        // Assert that the status is 'success' for deletion.
+        $this->assertEquals('success', $deleteresult['status']);
+        $this->assertEquals('Data deleted successfully', $deleteresult['message']);
 
-        // Assert that the edit was successful.
-        $this->assertEquals('success', $editresult['status']);
-        $this->assertEquals('Data edited successfully', $editresult['message']);
-
-        // Verify that the updated data was saved in the database.
-        // Verify that the data was saved in the database.
-        $updatedrecord = $DB->get_record_select(
-            'homework_materials',
-            $DB->sql_compare_text('description') . ' = :description',
-            ['description' => $newinputfield],
-            '*',
-            MUST_EXIST
-        );
-
-        $this->assertEquals($newinputfield, $updatedrecord->description);
-        $this->assertEquals($newstarttime, $updatedrecord->starttime);
-        $this->assertEquals($newendtime, $updatedrecord->endtime);
-        $this->assertEquals($homeworkid, $updatedrecord->homework_id);
+        // Verify that the record no longer exists in the database.
+        $deletedrecord = $DB->get_record('homework_materials', ['id' => $recordid]);
+        $this->assertFalse($deletedrecord);
     }
 }

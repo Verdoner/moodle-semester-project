@@ -41,6 +41,14 @@ $functions = [
         'type'        => 'write',
         'ajax'        => true,
     ],
+    'mod_homework_delete_homework_material' => [
+        'classname'   => 'mod_homework\external\delete_homework_material',
+        'methodname'  => 'execute',
+        'classpath'   => 'mod/homework/classes/external/delete_homework_material.php',
+        'description' => 'Deletes the homework materials',
+        'type'        => 'write',
+        'ajax'        => true,
+    ],
     'mod_homework_get_homework_chooser' => [
         'classname'   => 'mod_homework\external\get_homework_chooser',
         'methodname'  => 'execute',
@@ -64,6 +72,7 @@ $services = [
         'functions' => [
             'mod_homework_save_homework_material',
             'mod_homework_edit_homework_material',
+            'mod_homework_delete_homework_material',
             'mod_homework_get_homework_chooser',
             'mod_homework_delete_file',
         ],

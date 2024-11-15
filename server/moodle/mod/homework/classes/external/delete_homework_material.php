@@ -29,6 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir . '/externallib.php');
 
+use core\exception\moodle_exception;
 use core_external\external_api;
 use external_function_parameters;
 use external_value;
@@ -37,22 +38,15 @@ use external_single_structure;
 /**
  * Class for editing homework materials.
  */
-class edit_homework_material extends \external_api {
+class delete_homework_material extends \external_api {
     /**
-     * Returns parameters id, inputfield, link, startpage, endpage, starttime, endtime, homeworkid and fileid
+     * Returns parameters id and fileid
      *
      * @return external_function_parameters Define the parameters expected by this function.
      */
-    public static function execute_parameters() {
+    public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
             'id' => new external_value(PARAM_INT, 'homework id value'),
-            'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
-            'homeworkid' => new external_value(PARAM_INT, 'homeworkId field value'),
-            'link' => new external_value(PARAM_TEXT, 'link field value', VALUE_OPTIONAL),
-            'startpage' => new external_value(PARAM_INT, 'startPage field value', VALUE_OPTIONAL),
-            'endpage' => new external_value(PARAM_INT, 'endPage field value', VALUE_OPTIONAL),
-            'starttime' => new external_value(PARAM_INT, 'startTime field value', VALUE_OPTIONAL),
-            'endtime' => new external_value(PARAM_INT, 'endTime field value', VALUE_OPTIONAL),
             'fileid' => new external_value(PARAM_INT, 'Uploaded file ID', VALUE_OPTIONAL),
         ]);
     }
@@ -61,51 +55,28 @@ class edit_homework_material extends \external_api {
      * The main function to handle the request.
      *
      * @param $id
-     * @param $inputfield
-     * @param $homeworkid
-     * @param $link
-     * @param $startpage
-     * @param $endpage
-     * @param $starttime
-     * @param $endtime
      * @param $fileid
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($id, $inputfield, $homeworkid, $link = null, $startpage = null, $endpage = null, $starttime = null, $endtime = null, $fileid = null) {
+    public static function execute($id, $fileid = null): array {
         global $DB, $USER;
 
-        $record = new \stdClass();
-
-        $record->id = $id;
-        $record->homework_id = $homeworkid;
-        $record->description = $inputfield;
-
-        $record->timecreated = time();
-        $record->timemodified = time();
-        $record->usermodified = $USER->id;
-
-        $record->introformat = 0;
-
-        $record->link = $link;
-
-        $record->startpage = $startpage;
-        $record->endpage = $endpage;
-
-        $record->starttime = $starttime;
-        $record->endtime = $endtime;
-
-        $record->file_id = $fileid;
-
         try {
-            $DB->update_record('homework_materials', $record);
-        } catch (\dml_exception $e) {
-            debugging("Error editing record in homework_materials: " . $e->getMessage(), DEBUG_DEVELOPER);
-            return ['status' => 'error', 'message' => 'Failed to edit homework materials record'];
+            // Delete the record from homework_materials.
+            $DB->delete_records('homework_materials', ['id' => $id]);
+
+            // Check if fileid is not null and delete from files.
+            if (!empty($fileid)) {
+                \mod_homework\external\delete_file::execute($id, $fileid);
+            }
+        } catch (\dml_exception | moodle_exception $e) {
+            debugging("Error deleting record in homework_materials: " . $e->getMessage(), DEBUG_DEVELOPER);
+            return ['status' => 'error', 'message' => 'Failed to delete homework materials record'];
         }
 
         // Return a success response.
-        return ['status' => 'success', 'message' => 'Data edited successfully'];
+        return ['status' => 'success', 'message' => 'Data deleted successfully'];
     }
 
     /**
@@ -113,7 +84,7 @@ class edit_homework_material extends \external_api {
      *
      * @return external_single_structure Define the return values.
      */
-    public static function execute_returns() {
+    public static function execute_returns(): external_single_structure {
         return new external_single_structure([
             'status' => new external_value(PARAM_TEXT, 'Status of the request'),
             'message' => new external_value(PARAM_TEXT, 'Message with details about the request status'),

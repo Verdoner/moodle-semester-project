@@ -85,14 +85,13 @@ $homeworkmaterials = $DB->get_records_sql(
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 foreach ($homeworkmaterials as $materials) :
-
     // Generate the preview URL for the file if it exists
     if ($materials->file_id !== null) {
         // Retrieve additional metadata for generating the URL
         $file = $DB->get_record('files', ['id' => $materials->file_id]);
         if ($file) {
             // Generate the preview URL using Moodle's pluginfile.php
-            $preview_url = moodle_url::make_pluginfile_url(
+            $previewurl = moodle_url::make_pluginfile_url(
                 $file->contextid,
                 $file->component,
                 $file->filearea,
@@ -106,34 +105,45 @@ foreach ($homeworkmaterials as $materials) :
 
     <div class="material" style="border: 1px solid #ccc;padding: 16px;border-radius: 8px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);background-color: #f9f9f9;">
         <p><?= htmlspecialchars($materials->description) ?></p>
-        <?php if ($materials->startpage !== null && $materials->endpage !== null): ?>
+        <?php if ($materials->startpage !== null && $materials->endpage !== null) : ?>
             <p><?= "Page: " . htmlspecialchars($materials->startpage) . " - " . htmlspecialchars($materials->endpage) ?></p>
         <?php endif; ?>
-        <?php if ($materials->link !== null): ?>
+        <?php if ($materials->link !== null) : ?>
             <p><?= "Link: " ?><a href="<?= htmlspecialchars($materials->link) ?>"><?= htmlspecialchars($materials->link) ?></a></p>
         <?php endif; ?>
-        <?php if ($materials->starttime !== null && $materials->endtime !== null): ?>
+        <?php if ($materials->starttime !== null && $materials->endtime !== null) : ?>
             <p><?= "Time (seconds): " . htmlspecialchars($materials->starttime) . " - " . htmlspecialchars($materials->endtime) ?></p>
         <?php endif; ?>
 
-        <?php if ($materials->file_id !== null && isset($preview_url)): ?>
-            <?php if (strtolower(pathinfo($file->filename, PATHINFO_EXTENSION)) === 'mp4'): ?>
+        <?php if ($materials->file_id !== null && isset($previewurl)) : ?>
+            <?php if (strtolower(pathinfo($file->filename, PATHINFO_EXTENSION)) === 'mp4') : ?>
                 <!-- Display the video inline if it's an mp4 file -->
-                <video controls width="100%">
-                    <source src="<?= $preview_url ?>" type="video/mp4">
+                <video controls width="800" height="360">
+                    <source src="<?= $previewurl ?>" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
-            <?php else: ?>
+            <?php else : ?>
                 <!-- Provide a link for non-video files -->
-                <p><?= "File: " ?><a href="<?= $preview_url ?>" target="_blank"><?= htmlspecialchars($file->filename) ?></a> (Preview)</p>
+                <p><?= "File: " ?><a href="<?= $previewurl ?>" target="_blank"><?= htmlspecialchars($file->filename) ?></a> (Preview)</p>
             <?php endif; ?>
         <?php endif; ?>
 
-        <?= html_writer::tag('button', get_string('openhomeworkchooser', 'mod_homework'), [
-            'type' => 'button',
-            'id' => 'open-homework-chooser-' . $materials->id,
-            'class' => 'btn btn-primary'
-        ]); ?>
+        <?= html_writer::tag(
+            'div',
+            html_writer::tag('button', get_string('edithomeworkchooser', 'mod_homework'), [
+                'type' => 'button',
+                'id' => 'edit-homework-chooser-' . $materials->id,
+                'class' => 'btn btn-primary',
+            ]) .
+            html_writer::tag('button', get_string('deletehomeworkchooser', 'mod_homework'), [
+                'type' => 'button',
+                'id' => 'delete-homework-chooser-' . $materials->id,
+                'class' => 'btn btn-primary',
+            ]),
+            [
+                'class' => 'homework-action-buttons',
+            ]
+        ); ?>
     </div>
 <?php endforeach; ?>
 <?php
@@ -144,7 +154,7 @@ foreach ($homeworkmaterials as $materials) :
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$homeworkmaterialids = array_map(function($material) {
+$homeworkmaterialids = array_map(function ($material) {
     return [
         'id' => $material->id,
         'description' => $material->description,
@@ -154,12 +164,14 @@ $homeworkmaterialids = array_map(function($material) {
         'starttime' => $material->starttime,
         'endtime' => $material->endtime,
         'file_id' => $material->file_id,
-        'filename' => $material->filename
+        'filename' => $material->filename,
     ];
 }, $homeworkmaterials);
 
 $PAGE->requires->js_call_amd('mod_homework/homeworkchooseredit', 'init', [$cm->id,
     get_string('homeworkchooser', 'mod_homework'), $instance->id, $homeworkmaterialids]);
+
+$PAGE->requires->js_call_amd('mod_homework/homeworkchooserdelete', 'init', [$cm->id, $homeworkmaterialids]);
 
 // Output the footer - REQUIRED.
 echo $OUTPUT->footer();

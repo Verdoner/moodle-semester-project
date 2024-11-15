@@ -20,7 +20,7 @@ let uploadedFileIds = []; // Store file IDs after successful upload
  */
 export const init = async(cmid, title, currentHomework, homeworkids) => {
     Object.values(homeworkids).forEach(homeworkid => {
-        $('#open-homework-chooser-' + homeworkid.id).on('click', () => {
+        $('#edit-homework-chooser-' + homeworkid.id).on('click', () => {
             Ajax.call([{
                 methodname: 'mod_homework_get_homework_chooser',
                 args: {cmid: cmid},
