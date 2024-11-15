@@ -153,18 +153,18 @@ function mod_homework_pluginfile(
  * @param int $file_id The file ID to delete.
  * @return bool True if deletion was successful, false otherwise.
  */
-function mod_homework_delete_file($id, $file_id) {
+function mod_homework_delete_file($id, $fileid) {
     global $DB;
     $fs = get_file_storage();
 
-    // Get the file record
-    $file = $DB->get_record('files', ['id' => $file_id]);
+    // Get the file record.
+    $file = $DB->get_record('files', ['id' => $fileid]);
     if (!$file) {
         return false;
     }
 
-    // Load the file from file storage and delete it
-    $stored_file = $fs->get_file(
+    // Load the file from file storage and delete it.
+    $storedfile = $fs->get_file(
         $file->contextid,
         $file->component,
         $file->filearea,
@@ -173,20 +173,18 @@ function mod_homework_delete_file($id, $file_id) {
         $file->filename
     );
 
-    if ($stored_file) {
-        // Delete the file record from the database
-        $stored_file->delete();
+    if ($storedfile) {
+        // Delete the file record from the database.
+        $storedfile->delete();
 
         $record = new \stdClass();
 
         $record->id = $id;
         $record->file_id = null;
 
-        // Update the record from the database
+        // Update the record from the database.
         $DB->update_record('homework_materials', $record);
     }
 
     return true;
 }
-
-

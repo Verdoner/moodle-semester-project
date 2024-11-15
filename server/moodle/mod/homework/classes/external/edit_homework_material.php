@@ -72,7 +72,17 @@ class edit_homework_material extends \external_api {
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($id, $inputfield, $homeworkid, $link = null, $startpage = null, $endpage = null, $starttime = null, $endtime = null, $fileid = null) {
+    public static function execute(
+        $id,
+        $inputfield,
+        $homeworkid,
+        $link = null,
+        $startpage = null,
+        $endpage = null,
+        $starttime = null,
+        $endtime = null,
+        $fileid = null
+    ) {
         global $DB, $USER;
 
         $record = new \stdClass();

@@ -1,4 +1,27 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * homework/classes/external/delete_file.php
+ *
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace mod_homework\external;
 
 defined('MOODLE_INTERNAL') || die();
@@ -15,7 +38,6 @@ use context_system;
  * Class to handle file deletion for mod_homework.
  */
 class delete_file extends external_api {
-
     /**
      * Define the parameters for delete_file.
      *
@@ -23,10 +45,10 @@ class delete_file extends external_api {
      */
     public static function execute_parameters() {
         return new external_function_parameters(
-            array(
+            [
                 'id' => new external_value(PARAM_INT, 'The ID of the homework to update'),
-                'file_id' => new external_value(PARAM_INT, 'The ID of the file to delete'),
-            )
+                'fileid' => new external_value(PARAM_INT, 'The ID of the file to delete'),
+            ]
         );
     }
 
@@ -34,17 +56,17 @@ class delete_file extends external_api {
      * Deletes the specified file.
      *
      * @param int $id The ID of the homework to update.
-     * @param int $file_id The ID of the file to delete.
+     * @param int $fileid The ID of the file to delete.
      * @return bool True if the file was successfully deleted, false otherwise.
      */
-    public static function execute($id, $file_id) {
+    public static function execute($id, $fileid) {
         global $DB;
 
         // Validate parameters.
-        $params = self::validate_parameters(self::execute_parameters(), array(
+        $params = self::validate_parameters(self::execute_parameters(), [
             'id' => $id,
-            'file_id' => $file_id,
-        ));
+            'file_id' => $fileid,
+        ]);
 
         // Ensure the user is logged in and validate context.
         require_login();

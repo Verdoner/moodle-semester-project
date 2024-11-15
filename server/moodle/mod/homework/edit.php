@@ -85,12 +85,12 @@ $homeworkmaterials = $DB->get_records_sql(
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 foreach ($homeworkmaterials as $materials) :
-    // Generate the preview URL for the file if it exists
+    // Generate the preview URL for the file if it exists.
     if ($materials->file_id !== null) {
-        // Retrieve additional metadata for generating the URL
+        // Retrieve additional metadata for generating the URL.
         $file = $DB->get_record('files', ['id' => $materials->file_id]);
         if ($file) {
-            // Generate the preview URL using Moodle's pluginfile.php
+            // Generate the preview URL using Moodle's pluginfile.php.
             $previewurl = moodle_url::make_pluginfile_url(
                 $file->contextid,
                 $file->component,
@@ -103,16 +103,35 @@ foreach ($homeworkmaterials as $materials) :
     }
     ?>
 
-    <div class="material" style="border: 1px solid #ccc;padding: 16px;border-radius: 8px;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);background-color: #f9f9f9;">
+    <div
+        class="material"
+        style="
+            border: 1px solid #ccc;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+        "
+    >
         <p><?= htmlspecialchars($materials->description) ?></p>
         <?php if ($materials->startpage !== null && $materials->endpage !== null) : ?>
-            <p><?= "Page: " . htmlspecialchars($materials->startpage) . " - " . htmlspecialchars($materials->endpage) ?></p>
+            <p><?= "Page: " .
+                htmlspecialchars($materials->startpage) . " - " .
+                htmlspecialchars($materials->endpage) ?>
+            </p>
         <?php endif; ?>
         <?php if ($materials->link !== null) : ?>
-            <p><?= "Link: " ?><a href="<?= htmlspecialchars($materials->link) ?>"><?= htmlspecialchars($materials->link) ?></a></p>
+            <p><?= "Link: " ?><a href="<?=
+                htmlspecialchars($materials->link) ?>">
+                    <?= htmlspecialchars($materials->link) ?>
+                </a>
+            </p>
         <?php endif; ?>
         <?php if ($materials->starttime !== null && $materials->endtime !== null) : ?>
-            <p><?= "Time (seconds): " . htmlspecialchars($materials->starttime) . " - " . htmlspecialchars($materials->endtime) ?></p>
+            <p><?= "Time (seconds): " .
+                htmlspecialchars($materials->starttime) . " - " .
+                htmlspecialchars($materials->endtime) ?>
+            </p>
         <?php endif; ?>
 
         <?php if ($materials->file_id !== null && isset($previewurl)) : ?>
@@ -124,7 +143,13 @@ foreach ($homeworkmaterials as $materials) :
                 </video>
             <?php else : ?>
                 <!-- Provide a link for non-video files -->
-                <p><?= "File: " ?><a href="<?= $previewurl ?>" target="_blank"><?= htmlspecialchars($file->filename) ?></a> (Preview)</p>
+                <p><?= "File: " ?>
+                    <a
+                            href="<?= $previewurl ?>"
+                            target="_blank">
+                        <?= htmlspecialchars($file->filename) ?>
+                    </a> (Preview)
+                </p>
             <?php endif; ?>
         <?php endif; ?>
 
@@ -168,10 +193,16 @@ $homeworkmaterialids = array_map(function ($material) {
     ];
 }, $homeworkmaterials);
 
-$PAGE->requires->js_call_amd('mod_homework/homeworkchooseredit', 'init', [$cm->id,
-    get_string('homeworkchooser', 'mod_homework'), $instance->id, $homeworkmaterialids]);
+$PAGE->requires->js_call_amd('mod_homework/homeworkchooseredit', 'init', [
+        $cm->id,
+        get_string('homeworkchooser', 'mod_homework'),
+        $instance->id, $homeworkmaterialids,
+]);
 
-$PAGE->requires->js_call_amd('mod_homework/homeworkchooserdelete', 'init', [$cm->id, $homeworkmaterialids]);
+$PAGE->requires->js_call_amd('mod_homework/homeworkchooserdelete', 'init', [
+        $cm->id,
+        $homeworkmaterialids,
+]);
 
 // Output the footer - REQUIRED.
 echo $OUTPUT->footer();
