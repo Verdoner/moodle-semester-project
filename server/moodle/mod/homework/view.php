@@ -106,62 +106,115 @@ foreach ($homeworkmaterials as $material) : ?>
         <p><?php echo htmlspecialchars($material->description) ?></p>
         <?php if ($material->startpage != null) : ?>
         <p><?php echo "Pages: " . htmlspecialchars($material->startpage) . " - " . htmlspecialchars($material->endpage) ?></p>
-        <?php elseif ($material->link != null):
-            // Checks to see if a link starts with "http" if not, then add it to the string,
-            // this makes sure its is completely new site that is opened.
-            $link = !str_starts_with($material->link, 'http') ? "https://" . $material->link : $material->link;
-        ?>
+            <?php
+        else :
+            if ($material->link != null) :
+                    // Checks to see if a link starts with "http" if not, then add it to the string,
+                    // this makes sure its is completely new site that is opened.
+                    $link = !str_starts_with($material->link, 'http') ? "https://" . $material->link : $material->link;
+                ?>
         <p><?php echo 'Link: <a href="' . $link . '" target="_blank">Click here</a>';?></p>
-
-        <?php endif; if ($material->starttime != null): ?>
+            <?php endif; ?>
+        <?php endif;
+        if ($material->starttime != null) :
+            ?>
         <p><?php
-            // Create strings showing the times as HH:MM:SS or MM:SS if no hours.
-            $starttime = converttime($material->starttime);
-            $endtime = converttime($material->endtime);
-            echo "Watch: " . htmlspecialchars($starttime) . " - " . htmlspecialchars($endtime) ?></p>
-            <?php if ($material->file_id != null):
-                $fs = get_file_storage();
-                $url = null;
-                $haspermission = has_capability('mod/homework:managefiles', $context);
+        // Create strings showing the times as HH:MM:SS or MM:SS if no hours.
+        $starttime = converttime($material->starttime);
+        $endtime = converttime($material->endtime);
+        echo "Watch: " . htmlspecialchars($starttime) . " - " . htmlspecialchars($endtime) ?></p>
+                <?php
+                if ($material->file_id != null) :
+                    $fs = get_file_storage();
+                    $url = null;
+                    $haspermission = has_capability('mod/homework:managefiles', $context);
+
+                    if ($haspermission) {
+                        // Debugging: Check file details.
+                        $filerecord = $DB->get_record('files', ['id' => $material->file_id]);
+
+                        if ($filerecord) {
+                            // Fetch file using get_file_storage.
+                            $video = $fs->get_file(
+                                $filerecord->contextid,
+                                $filerecord->component,
+                                $filerecord->filearea,
+                                $filerecord->itemid,
+                                $filerecord->filepath,
+                                $filerecord->filename
+                            );
+
+                            if ($video && !$video->is_directory()) {
+                                // Generate a URL for the file.
+                                $url = moodle_url::make_pluginfile_url(
+                                    $video->get_contextid(),
+                                    $video->get_component(),
+                                    $video->get_filearea(),
+                                    $video->get_itemid(),
+                                    $video->get_filepath(),
+                                    $video->get_filename(),
+                                    false
+                                );
+                                // Output video player.
+                                if ($url) {
+                                            echo '<video controls width="640" height="360">';
+                                            echo '<source src="' . $url->out() . '" type="video/mp4">';
+                                            echo 'Your browser does not support the video tag.';
+                                            echo '</video>';
+                                } else {
+                                    echo 'Error: URL not generated.<br>';
+                                }
+                            } else {
+                                echo 'Error: Video file not found or is a directory.<br>';
+                            }
+                        } else {
+                            echo 'File not found in DB.<br>';
+                        }
+                    } else {
+                        echo 'You do not have permission to manage files in this homework activity.<br>';
+                    }
+                    ?>
+                <?php endif; ?>
+        <?php else :
+            if ($material->file_id != null) :
+                    $fs = get_file_storage();
+                    $url = null;
+                    $haspermission = has_capability('mod/homework:managefiles', $context);
 
                 if ($haspermission) {
                     // Debugging: Check file details.
                     $filerecord = $DB->get_record('files', ['id' => $material->file_id]);
 
                     if ($filerecord) {
-
                         // Fetch file using get_file_storage.
-                        $video = $fs->get_file(
-                        $filerecord->contextid,
-                        $filerecord->component,
-                        $filerecord->filearea,
-                        $filerecord->itemid,
-                        $filerecord->filepath,
-                        $filerecord->filename
+                        $file = $fs->get_file(
+                            $filerecord->contextid,
+                            $filerecord->component,
+                            $filerecord->filearea,
+                            $filerecord->itemid,
+                            $filerecord->filepath,
+                            $filerecord->filename
                         );
 
-                        if ($video && !$video->is_directory()) {
+                        if ($file && !$file->is_directory()) {
                             // Generate a URL for the file.
                             $url = moodle_url::make_pluginfile_url(
-                                $video->get_contextid(),
-                                $video->get_component(),
-                                $video->get_filearea(),
-                                $video->get_itemid(),
-                                $video->get_filepath(),
-                                $video->get_filename(),
+                                $file->get_contextid(),
+                                $file->get_component(),
+                                $file->get_filearea(),
+                                $file->get_itemid(),
+                                $file->get_filepath(),
+                                $file->get_filename(),
                                 false
                             );
-                            // Output video player.
+                            // Output the hyperlink for the user.
                             if ($url) {
-                                    echo '<video controls width="640" height="360">';
-                                    echo '<source src="' . $url->out() . '" type="video/mp4">';
-                                    echo 'Your browser does not support the video tag.';
-                                    echo '</video>';
+                                        echo '<a href="' . $url . '" download>Click here to download the file </a>';
                             } else {
                                 echo 'Error: URL not generated.<br>';
                             }
                         } else {
-                            echo 'Error: Video file not found or is a directory.<br>';
+                            echo 'Error: File not found or is a directory.<br>';
                         }
                     } else {
                         echo 'File not found in DB.<br>';
@@ -170,60 +223,10 @@ foreach ($homeworkmaterials as $material) : ?>
                     echo 'You do not have permission to manage files in this homework activity.<br>';
                 }
                 ?>
-
             <?php endif; ?>
-        <?php elseif ($material->file_id != null) :
-            $fs = get_file_storage();
-            $url = null;
-            $haspermission = has_capability('mod/homework:managefiles', $context);
-
-            if ($haspermission) {
-                // Debugging: Check file details.
-                $filerecord = $DB->get_record('files', ['id' => $material->file_id]);
-
-                if ($filerecord) {
-
-                    // Fetch file using get_file_storage.
-                    $file = $fs->get_file(
-                    $filerecord->contextid,
-                    $filerecord->component,
-                    $filerecord->filearea,
-                    $filerecord->itemid,
-                    $filerecord->filepath,
-                    $filerecord->filename
-                    );
-
-                    if ($file && !$file->is_directory()) {
-                        // Generate a URL for the file.
-                        $url = moodle_url::make_pluginfile_url(
-                            $file->get_contextid(),
-                            $file->get_component(),
-                            $file->get_filearea(),
-                            $file->get_itemid(),
-                            $file->get_filepath(),
-                            $file->get_filename(),
-                            false
-                        );
-                        // Output the hyperlink for the user.
-                        if ($url) {
-                                echo '<a href="' . $url . '" download>Click here to download the file: </a>';
-                        } else {
-                            echo 'Error: URL not generated.<br>';
-                        }
-                    } else {
-                        echo 'Error: File not found or is a directory.<br>';
-                    }
-                } else {
-                    echo 'File not found in DB.<br>';
-                }
-            } else {
-                echo 'You do not have permission to manage files in this homework activity.<br>';
-            }
-        ?>
-
         <?php endif; ?>
     </div>
-        <?php endforeach; ?>
+<?php endforeach; ?>
 <?php
 /**
  *
