@@ -21,18 +21,18 @@ Before setting up the Moodle Docker environment, ensure the following prerequisi
 ### Without the Default Moodle Folder:
 This command clones only the repository without the default Moodle folder submodule:
 ```bash
-git clone -b Docker-Setup-Unix https://github.com/AAU-P5-Moodle/moodle-2.git && cd ./moodle-2 && chmod -R 0777 ./server/moodledata && ( rm -rf .git || true )
+git clone -b Docker-Setup-Unix https://github.com/AAU-P5-Moodle/moodle-2.git && cd ./moodle-2 && chmod -R 0777 ./server/moodledata && ( rm -rf .git .gitignore || true )
 ```
 ### With the Default Moodle Folder:
 This command clones the repository along with the default Moodle folder submodule:
 ```bash
-git clone -b Docker-Setup-Unix --recursive https://github.com/AAU-P5-Moodle/moodle-2.git && cd ./moodle-2 && chmod -R 0777 ./server/moodledata && ( rm -rf .git || true )
+git clone -b Docker-Setup-Unix --recursive https://github.com/AAU-P5-Moodle/moodle-2.git && cd ./moodle-2 && chmod -R 0777 ./server/moodledata && ( rm -rf .git .gitignore || true )
 ```
 
 ## Set Up Sparse Checkout
 1. Initialize the sparse checkout configuration by running:
    ```bash
-   git init && git config core.sparseCheckout true && git remote add -f origin https://github.com/AAU-P5-Moodle/moodle-2.git && echo server/moodle > .git/info/sparse-checkout
+   git init && git config core.sparseCheckout true && git remote add -f origin https://github.com/AAU-P5-Moodle/moodle-2.git && echo -e "server/moodle\n.gitignore" > .git/info/sparse-checkout
    ```
 2. Now, check out the branch you were working on:
    ```bash
