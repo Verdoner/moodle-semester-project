@@ -68,12 +68,12 @@ Choose one of the following commands based on your needs:
 ### Without the Default Moodle Folder:
 This command clones only the repository without the default Moodle folder submodule:
 ```bash
-git config --global credential.helper store && git clone -b Docker-Setup-Windows https://github.com/AAU-P5-Moodle/moodle-2.git && cd ./moodle-2 && chmod -R 0777 ./server/moodledata && ( rm -rf .git || true )
+git config --global credential.helper store && git clone -b Docker-Setup-Windows https://github.com/AAU-P5-Moodle/moodle-2.git && cd ./moodle-2 && chmod -R 0777 ./server/moodledata && ( rm -rf .git .gitignore || true )
 ```
 ### With the Default Moodle Folder:
 This command clones the repository along with the default Moodle folder submodule:
 ```bash
-git config --global credential.helper store && git clone -b Docker-Setup-Windows --recursive https://github.com/AAU-P5-Moodle/moodle-2.git && cd ./moodle-2 && chmod -R 0777 ./server/moodledata && ( rm -rf .git || true )
+git config --global credential.helper store && git clone -b Docker-Setup-Windows --recursive https://github.com/AAU-P5-Moodle/moodle-2.git && cd ./moodle-2 && chmod -R 0777 ./server/moodledata && ( rm -rf .git .gitignore || true )
 ```
 
 If this is your first time cloning the repository in Ubuntu, you may be prompted to sign in to GitHub. 
@@ -90,7 +90,7 @@ Follow these steps:
 ## Set Up Sparse Checkout in Ubuntu
 1. Initialize the sparse checkout configuration by running:
    ```bash
-   git init && git config core.sparseCheckout true && git remote add -f origin https://github.com/AAU-P5-Moodle/moodle-2.git && echo server/moodle > .git/info/sparse-checkout
+   git init && git config core.sparseCheckout true && git remote add -f origin https://github.com/AAU-P5-Moodle/moodle-2.git && echo -e "server/moodle\n.gitignore" > .git/info/sparse-checkout
    ```
 2. Now, check out the branch you were working on:
    ```bash
