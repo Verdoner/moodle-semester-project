@@ -151,6 +151,7 @@ class block_homework extends block_base {
         $this->page->requires->js_call_amd('block_homework/sort', 'init');
         $this->page->requires->js_call_amd('block_homework/homework_injector', 'init',[$homeworks]);
         $this->page->requires->js_call_amd('block_homework/clickInfo', 'init', [$USER->id]);
+        $this->page->requires->js_call_amd('block_homework/massdownload', 'init',[$homeworks]);
         return $this->content;
     }
 

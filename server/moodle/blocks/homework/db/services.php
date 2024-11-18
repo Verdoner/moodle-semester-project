@@ -51,6 +51,14 @@ $functions = [
         'type'        => 'read',
         'ajax'        => true,
     ],
+    'block_homework_get_files' => [
+        'classname'   => 'block_homework\external\get_files',
+        'methodname'  => 'execute',
+        'classpath'   => 'blocks/homework/classes/external/get_files.php',
+        'description' => 'Get files for the activity module',
+        'type'        => 'read',
+        'ajax'        => true,
+    ],
 ];
 
 $services = [
@@ -59,6 +67,7 @@ $services = [
             'block_homework_get_infohomework_modal',
             'block_homework_save_homeworktime',
             'block_homework_get_homework',
+            'block_homework_get_files'
         ],
         'restrictedusers' => 0,
         'enabled' => 1,
