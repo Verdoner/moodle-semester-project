@@ -35,6 +35,7 @@ function homework_add_instance($homeworkdata) {
 
     $homeworkdata->timecreated = time();
     $homeworkdata->timemodified = time();
+    $homeworkdata->course_id = $homeworkdata->course;
 
     // Save the due date if it's not empty.
     if (!empty($homeworkdata->duedateselector)) {
