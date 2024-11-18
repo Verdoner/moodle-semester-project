@@ -18,7 +18,33 @@ export const init = async() => {
                 button.style.padding = "5px 10px";
                 button.style.cursor = "pointer";
 
+                button.addEventListener("click", function () {
+                    const section = header.closest(".section");
+                    const sectionId = section ? section.getAttribute("data-id") : null;
+                    const courseId = M.cfg.courseid; // Assuming course ID is globally available.
 
+                    if (sectionId && courseId) {
+                        Ajax.call([{
+                            methodname: 'block_homework_get_files',
+                            args: {
+                                sectionid: parseInt(sectionId, 10),
+                                courseid: parseInt(courseId, 10),
+                            },
+                            done: function (response) {
+                                let homework = JSON.parse(response.homework);
+                                console.log(homework);
+                            },
+                            fail: function (error) {
+                                console.error(error);
+                                throw new Error(`ERROR: ${error.message}`);
+                            }
+                        }]);
+                    } else {
+                        console.error("Missing sectionId or courseId");
+                    }
+                });
+
+                /*
                 // Add click event to the button
                 button.addEventListener("click", function () {
                     console.log("hello");
@@ -36,7 +62,7 @@ export const init = async() => {
                             throw new Error(`ERROR: ${error}`);
                         }
                     }]);
-
+                */
 
 
                 /*
