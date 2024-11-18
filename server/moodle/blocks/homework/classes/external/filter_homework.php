@@ -65,8 +65,9 @@ class filter_homework extends \external_api {
                 $homeworkarray[] = [
                     'id' => $homework->id,
                     'name' => $homework->name,
-                    'intro' => $homework->intro,
+                    'intro' => strip_tags($homework->intro),
                     'duedate' => date('d-m-y',$homework->duedate),
+                    'time' => $homework->duedate,
                     'course' => $course->fullname,
                 ];
             }
@@ -88,14 +89,14 @@ class filter_homework extends \external_api {
                 return $homeworkarray;
             case ("current"):
                 foreach ($homeworkarray as $homework) {
-                    if ($homework["duedate"] > time()) {
+                    if ($homework["time"] > time()) {
                         $returnarray[] = $homework;
                     }
                 }
                 break;
             case ("previous"):
                 foreach ($homeworkarray as $homework) {
-                    if ($homework["duedate"] < time()) {
+                    if ($homework["time"] < time()) {
                         $returnarray[] = $homework;
                     }
                 }

@@ -32,6 +32,7 @@ export const init = async() => {
                 let homeworks = JSON.parse(response.homework);
                 document.getElementById("outer-box").innerHTML = "";
                 homeworks.forEach((homework) => {
+                    console.log(homework);
                     let box = document.createElement("div");
                     box.classList.add("infobox");
 
@@ -60,6 +61,7 @@ export const init = async() => {
                 });
             },
             fail: (error) => {
+                console.log(error);
                 throw new Error(`Failed to find filtered homework: ${error}`);
             }
         }]);
