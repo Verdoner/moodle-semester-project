@@ -61,7 +61,7 @@ class delete_file extends external_api {
         // Validate parameters.
         $params = self::validate_parameters(self::execute_parameters(), [
             'id' => $id,
-            'file_id' => $fileid,
+            'fileid' => $fileid,
         ]);
 
         // Ensure the user is logged in and validate context.
@@ -73,7 +73,7 @@ class delete_file extends external_api {
         require_once(__DIR__ . '/../../lib.php');
         $success = mod_homework_delete_file(
             $params['id'],
-            $params['file_id']
+            $params['fileid']
         );
 
         if (!$success) {
