@@ -36,7 +36,7 @@ use external_single_structure;
 /**
  * Class for saving homework literature.
  */
-class save_homework_literature extends \external_api {
+class save_homework_literature extends external_api {
     /**
      * Returns parameters inputfield, startpage and endpage
      *
