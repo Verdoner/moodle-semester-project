@@ -47,7 +47,7 @@ class save_homework_link extends \external_api {
         return new external_function_parameters([
             'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
             'link' => new external_value(PARAM_TEXT, 'link field value'),
-            'homework' => new external_value(PARAM_INT, 'homework field value'),
+            'homeworkid' => new external_value(PARAM_INT, 'homeworkId field value'),
         ]);
     }
 
@@ -56,29 +56,33 @@ class save_homework_link extends \external_api {
      *
      * @param $inputfield
      * @param $link
-     * @param $homework
+     * @param $homeworkid
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($inputfield, $link, $homework) {
+    public static function execute($inputfield, $link, $homeworkid) {
         global $DB, $USER;
 
         // Handle the input field value here.
-        // For example, save to a database.
         $record = new \stdClass();
+
+        $record->homework_id = $homeworkid;
         $record->description = $inputfield;
-        $record->link = $link;
-        $record->usermodified = $USER->id;
+
         $record->timecreated = time();
         $record->timemodified = time();
-        $record->homework = $homework;
+        $record->usermodified = $USER->id;
+
+        $record->introformat = 0;
+
+        $record->link = $link;
 
         // Save to database.
         try {
-            $DB->insert_record('homework_links', $record);
+            $DB->insert_record('homework_materials', $record);
         } catch (\dml_exception $e) {
-            debugging("Error inserting into homework_links: " . $e->getMessage(), DEBUG_DEVELOPER);
-            return ['status' => 'error', 'message' => 'Failed to save homework record'];
+            debugging("Error inserting into homework_materials: " . $e->getMessage(), DEBUG_DEVELOPER);
+            return ['status' => 'error', 'message' => 'Failed to save homework materials record'];
         }
 
         // Return a success response.
@@ -86,6 +90,7 @@ class save_homework_link extends \external_api {
     }
 
     /**
+     * Returns single structure of status and message.
      *
      * @return external_single_structure Define the return values.
      */

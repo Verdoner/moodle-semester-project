@@ -20,11 +20,14 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once("$CFG->libdir/externallib.php");
 
+use coding_exception;
 use core_external\external_api;
+use dml_exception;
 use external_function_parameters;
-use external_multiple_structure;
 use external_value;
 use external_single_structure;
+use JsonException;
+use Mustache_Engine;
 
 /**
  * The external function for requesting the modal for plugin.
@@ -37,75 +40,144 @@ class get_infohomework_modal extends external_api {
      * Returns the parameters for the execute function.
      * @return external_function_parameters
      */
-    public static function execute_parameters() {
+    public static function execute_parameters(): external_function_parameters{
         return new external_function_parameters([
-            'homework_id' => new external_value(PARAM_INT, 'The ID of the homework item'),
-            'data1' => new external_multiple_structure(new external_single_structure([
-                'description' => new external_value(PARAM_TEXT, 'Description of the homework'),
-                'endpage' => new external_value(PARAM_INT, 'End page number'),
-                'homework_id' => new external_value(PARAM_INT, 'The homework ID'),
-                'id' => new external_value(PARAM_INT, 'Unique ID'),
-                'introformat' => new external_value(PARAM_INT, 'Format of the introduction'),
-                'startpage' => new external_value(PARAM_INT, 'Start page number'),
-                'timecreated' => new external_value(PARAM_INT, 'Timestamp when created'),
-                'timemodified' => new external_value(PARAM_INT, 'Timestamp when last modified'),
-            ])),
-            'data2' => new external_multiple_structure(new external_single_structure([
-                'description' => new external_value(PARAM_TEXT, 'Description of the homework'),
-                'link' => new external_value(PARAM_TEXT, 'The link'),
-                'homework_id' => new external_value(PARAM_INT, 'The homework ID'),
-                'id' => new external_value(PARAM_INT, 'Unique ID'),
-                'timecreated' => new external_value(PARAM_INT, 'Timestamp when created'),
-                'timemodified' => new external_value(PARAM_INT, 'Timestamp when last modified'),
-                'usermodified' => new external_value(PARAM_INT, 'User who last modified'),
-            ])),
-            'data3' => new external_multiple_structure(new external_single_structure([
-                'description' => new external_value(PARAM_TEXT, 'Description of the homework'),
-                'homework_id' => new external_value(PARAM_INT, 'The homework ID'),
-                'fileid' => new external_value(PARAM_INT, 'The id of the file'),
-                'id' => new external_value(PARAM_INT, 'Unique ID'),
-                'introformat' => new external_value(PARAM_INT, 'Format of the introduction'),
-                'timecreated' => new external_value(PARAM_INT, 'Timestamp when created'),
-                'timemodified' => new external_value(PARAM_INT, 'Timestamp when last modified'),
-            ])),
+            'homeworkID' => new external_value(PARAM_INT, 'The ID of the homework item'),
         ]);
     }
 
     /**
      * Generates the custom HTML for the homework chooser modal.
-     * @param int $homework_id The ID of the homework item
+     *
+     * @param int $homeworkID The ID of the homework item
      * @return string[] - The HTML to be shown client-side
+     * @throws dml_exception|JsonException
      */
-    public static function execute($homeworkid, $data1, $data2, $data3) {
-        global $DB;
-
-        // Assuming you have the Mustache engine set up.
-        $mustache = new \Mustache_Engine();
-        $nohomework = "";
-        if (!$data1 && !$data2 && !$data3) {
-            $nohomework = "All completed";
+    public static function execute(int $homeworkID): array
+    {
+        global $DB, $USER;
+        $homework = $DB->get_record('homework', ['id' => $homeworkID]);
+        $course = $DB->get_record('course', ['id' => $homework->course_id]);
+        $materials = $DB->get_records('homework_materials', ['homework_id' => $homework->id]);
+        $completedmaterials = $DB->get_records('completions', ['usermodified' => $USER->id]);
+        $literaturearray = [];
+        $linksarray = [];
+        $videosarray = [];
+        foreach ($materials as $material) {
+            $completed = false;
+            foreach ($completedmaterials as $completedmaterial) {
+                if ($completedmaterial->material_id === $material->id) {
+                    $completed = true;
+                    break;
+                }
+            }
+            if ($completed) {
+                continue;
+            }
+            if ($material->startpage !== null && $material->endpage !== null) {
+                if($material->file_id !== null){
+                    $material->fileurl = self::get_file_link_by_id($material->file_id);
+                }
+                $literaturearray[] = $material;
+            }
+            else if($material->link !== null) {
+                $linksarray[] = $material;
+            }
+            else if($material->starttime !== null && $material->endtime !== null) {
+                if($material->file_id !== null){
+                    $material->fileurl = self::get_file_link_by_id($material->file_id);
+                }
+                $videosarray[] = $material;
+            }
         }
-        // Prepare data for the template.
-        $content = [
-            'nohomework' => $nohomework,
-            'literature' => $data1,
-            'links' => $data2,
-            'videos' => $data3,
-        ];
 
-        // Render the template.
-        $html = $mustache->render(file_get_contents(__DIR__ . "/../../templates/timeinfotemplate.mustache"), $content);
-
-        return ['html' => $html];
+        return self::get_info($homework, $course, $literaturearray, $linksarray, $videosarray);
     }
 
     /**
      * Returns the structure of the function's response.
      * @return external_single_structure - Definition of the function's return type and description
      */
-    public static function execute_returns() {
+    public static function execute_returns(): external_single_structure{
         return new external_single_structure([
             'html' => new external_value(PARAM_RAW, 'HTML for the homework chooser modal'),
+            'title' => new external_value(PARAM_TEXT, 'Title of the homework'),
+            'course' => new external_value(PARAM_TEXT, 'Course name'),
+            'duedate' => new external_value(PARAM_TEXT, 'Due date of the homework'),
+            'courseurl' => new external_value(PARAM_TEXT, 'The URL for the course'),
+            'homeworkurl' => new external_value(PARAM_TEXT, 'The URl for the homework'),
         ]);
     }
+
+    /**
+     * @throws JsonException
+     */
+    public static function get_info($homework, $course, $literaturearray, $linksarray, $videosarray): array
+    {
+        // Assuming you have the Mustache engine set up.
+        $mustache = new Mustache_Engine();
+        $nohomework = "";
+
+        if (count($literaturearray) === 0 && count($linksarray) === 0 && count($videosarray) === 0) {
+            $nohomework = "All completed";
+        }
+        // Prepare data for the template.
+        $content = [
+            'nohomework' => $nohomework,
+            'homeworkdescription' => strip_tags($homework->intro),
+            'literature' => $literaturearray,
+            'links' => $linksarray,
+            'videos' => $videosarray,
+        ];
+
+        // Render the template
+        $html = $mustache->render(file_get_contents(__DIR__ . "/../../templates/timeinfotemplate.mustache"), $content);
+
+        $duedate = date('H:i d-m-Y', $homework->duedate);
+        $courseurl = "/course/view.php?id=".$course->id;
+        $homeworkurl = "/mod/homework/view.php?id=".$homework->id;
+
+        return ['html' => $html, 'title' => $homework->name, 'course' => $course->fullname,
+            'duedate' => $duedate, 'courseurl' => $courseurl, 'homeworkurl' => $homeworkurl];
+    }
+
+    /**
+     * Get a direct link to a file by its file ID.
+     *
+     * @param int $fileID The ID of the file in Moodle's file storage.
+     * @return string|null The URL to the file or null if the file is not found.
+     * @throws dml_exception|coding_exception
+     */
+    public static function get_file_link_by_id(int $fileID) :null|string{
+        global $DB;
+
+        // Retrieve the file record from the database.
+        $file = $DB->get_record('files', ['id' => $fileID]);
+
+        // Check if the file exists and is valid.
+        if (!$file || $file->filename === '.' || $file->filename === '') {
+            return null;
+        }
+
+        // Generate the file URL.
+        $context = \context::instance_by_id($file->contextid);
+        $fs = get_file_storage();
+        $stored_file = $fs->get_file($file->contextid, $file->component, $file->filearea, $file->itemid, $file->filepath, $file->filename);
+
+        if ($stored_file) {
+            // Moodle's file plugin serves the files through pluginfile.php.
+            $file_url = \moodle_url::make_pluginfile_url(
+                $stored_file->get_contextid(),
+                $stored_file->get_component(),
+                $stored_file->get_filearea(),
+                $stored_file->get_itemid(),
+                $stored_file->get_filepath(),
+                $stored_file->get_filename()
+            );
+            return $file_url->out();
+        }
+
+        return null;
+    }
+
 }

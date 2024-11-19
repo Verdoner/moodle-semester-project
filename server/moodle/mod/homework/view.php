@@ -25,6 +25,7 @@
 require_once('../../config.php');
 global $OUTPUT, $PAGE, $DB, $CFG;
 
+use block_homework\external\get_infohomework_modal;
 use mod_homework\view_page;
 
 $id = required_param('id', PARAM_INT);// Course module ID.
@@ -90,8 +91,28 @@ echo $record->name . '<br>';
 echo $record->duedate . '<br>';
 echo $record->description . '<br>';
 
-$homeworkliterature = $DB->get_records('homework_literature', ['homework' => $cm->instance]);
-$homeworklinks = $DB->get_records('homework_links', ['homework' => $cm->instance]);
+$materials = $DB->get_records('homework_materials', ['homework_id' => $cm->instance]);
+$literaturearray = [];
+$linksarray = [];
+$videosarray = [];
+foreach ($materials as $material) {
+    if ($material->startpage !== null && $material->endpage !== null) {
+        if($material->file_id !== null){
+            $material->fileurl =
+            $material->fileurl = get_infohomework_modal::get_file_link_by_id($material->file_id);
+        }
+        $literaturearray[] = $material;
+    }
+    else if($material->link !== null) {
+        $linksarray[] = $material;
+    }
+    else if($material->starttime !== null && $material->endtime !== null) {
+        if($material->file_id !== null){
+            $material->fileurl = get_infohomework_modal::get_file_link_by_id($material->file_id);
+        }
+        $videosarray[] = $material;
+    }
+}
 ?>
 <?php
 /**
@@ -102,7 +123,8 @@ $homeworklinks = $DB->get_records('homework_links', ['homework' => $cm->instance
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-foreach ($homeworkliterature as $literature) : ?>
+
+foreach ($literaturearray as $literature) : ?>
     <div class="literature">
         <p><?= htmlspecialchars($literature->description) ?></p>
         <p><?= htmlspecialchars($literature->startpage) . " - " . htmlspecialchars($literature->endpage) ?></p>
@@ -117,20 +139,16 @@ foreach ($homeworkliterature as $literature) : ?>
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-foreach ($homeworklinks as $link) : ?>
+
+foreach ($linksarray as $link) : ?>
     <div class="literature">
         <p><?= htmlspecialchars($link->description) ?></p>
         <a href="<?= htmlspecialchars($link->link) ?>"><?= htmlspecialchars($link->link) ?></a>
     </div>
     <?php
-/**
- *
- * @package   mod_homework
- * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 endforeach; ?>
 <?php
+
 /**
  *
  * @package   mod_homework
