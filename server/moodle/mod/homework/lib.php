@@ -133,3 +133,46 @@ function mod_homework_pluginfile(
     send_stored_file($file, 86400, 0, $forcedownload, $options);
     return true;
 }
+
+/**
+ * Deletes a file from the Moodle file storage and custom table.
+ *
+ * @param int $id The homework ID to update.
+ * @param int $file_id The file ID to delete.
+ * @return bool True if deletion was successful, false otherwise.
+ */
+function mod_homework_delete_file($id, $fileid) {
+    global $DB;
+    $fs = get_file_storage();
+
+    // Get the file record.
+    $file = $DB->get_record('files', ['id' => $fileid]);
+    if (!$file) {
+        return false;
+    }
+
+    // Load the file from file storage and delete it.
+    $storedfile = $fs->get_file(
+        $file->contextid,
+        $file->component,
+        $file->filearea,
+        $file->itemid,
+        $file->filepath,
+        $file->filename
+    );
+
+    if ($storedfile) {
+        // Delete the file record from the database.
+        $storedfile->delete();
+
+        $record = new \stdClass();
+
+        $record->id = $id;
+        $record->file_id = null;
+
+        // Update the record from the database.
+        $DB->update_record('homework_materials', $record);
+    }
+
+    return true;
+}

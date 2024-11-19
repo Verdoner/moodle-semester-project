@@ -62,13 +62,12 @@ class get_homework_chooser extends external_api {
                 <form>
                     <label for="inputField">Input Field:</label><br>
                     <textarea type="text" id="inputField" name="inputField"></textarea><br><br>
-                    <label>Choose one:</label><br>
-                    <input checked type="radio" id="option1" name="option" value="option1">
-                    <label for="option1">Literature</label><br>
-                    <input type="radio" id="option2" name="option" value="option2">
-                    <label for="option2">Link</label><br>
-                    <input type="radio" id="option3" name="option" value="option3">
-                    <label for="option3">Video</label><br><br>
+                    <br>
+                    <div id="linkDiv">
+                        <label for="link">Link:</label><br>
+                        <input name="link" id="link" type="url" placeholder="Enter URL">
+                    </div>
+                    <br>
                      <div id="page-range-input">
                         <label for="startPage">Page Range:</label><br>
                         <input type="number" id="startPage" name="startPage" min="1" placeholder="Start Page" style="width: 50px;">
@@ -76,20 +75,16 @@ class get_homework_chooser extends external_api {
                         <label for="endPage"></label>
                         <input type="number" id="endPage" name="endPage" min="1" placeholder="End Page" style="width: 50px;">
                     </div>
-                    <div id="video-time-input" style="display:none">
+                    <div id="video-time-input">
                         <label for="startTime">Time Range (seconds):</label><br>
                         <input type="number" id="startTime" name="startTime" min="1" placeholder="Start Time" style="width: 50px;">
                         <span>-</span>
                         <label for="endTime"></label>
                         <input type="number" id="endTime" name="endTime" min="1" placeholder="End Time" style="width: 50px;">
                     </div>
-                    <div id="linkDiv" style="display:none">
-                        <label for="link">Link:</label><br>
-                        <input name="link" id="link" type="url" placeholder="Enter URL">
-                    </div>
-                    <div id="dropzone-pdf-container">
-                    </div>
-                    <div id="dropzone-video-container" style="display:none;">
+                    <br>
+                    <div id="file-content"></div>
+                    <div id="dropzone-container">
                     </div>
                 </form>
             </div>

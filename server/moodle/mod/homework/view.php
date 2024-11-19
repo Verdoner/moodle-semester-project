@@ -23,6 +23,7 @@
  */
 
 require_once('../../config.php');
+
 global $OUTPUT, $PAGE, $DB, $CFG;
 
 use block_homework\external\get_infohomework_modal;
@@ -91,7 +92,13 @@ echo $record->name . '<br>';
 echo $record->duedate . '<br>';
 echo $record->description . '<br>';
 
-$homeworkmaterials = $DB->get_records('homework_materials', ['homework_id' => $cm->instance]);
+$homeworkmaterials = $DB->get_records_sql(
+    "SELECT hm.*, f.filename
+        FROM {homework_materials} hm
+        LEFT JOIN {files} f ON hm.file_id = f.id
+        WHERE hm.homework_id = :homework_id",
+    ['homework_id' => $cm->instance]
+);
 ?>
 <?php
 /**
@@ -236,7 +243,16 @@ foreach ($homeworkmaterials as $material) : ?>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 if ($viewobj->canedit && !$viewobj->hashomework) {
-    echo html_writer::link($viewobj->editurl, get_string('addhomework', 'homework'), ['class' => 'btn btn-secondary']);
+    // Add the button for opening the homework chooser modal.
+    echo html_writer::tag('button', get_string('openhomeworkchooser', 'mod_homework'), [
+        'type' => 'button',
+        'id' => 'open-homework-chooser',
+        'class' => 'btn btn-primary',
+    ]);
+
+    // Include the AMD module.
+    $PAGE->requires->js_call_amd('mod_homework/homeworkchooser', 'init', [$cm->id,
+        get_string('homeworkchooser', 'mod_homework'), $instance->id]);
 }
 
 // Output the footer - REQUIRED.
