@@ -39,7 +39,7 @@ class get_infohomework_modal extends external_api {
      * Returns the parameters for the execute function.
      * @return external_function_parameters
      */
-    public static function execute_parameters(): external_function_parameters{
+    public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
             'homeworkID' => new external_value(PARAM_INT, 'The ID of the homework item'),
         ]);
@@ -52,10 +52,9 @@ class get_infohomework_modal extends external_api {
      * @return string[] - The HTML to be shown client-side
      * @throws dml_exception|JsonException
      */
-    public static function execute(int $homeworkID): array
-    {
+    public static function execute(int $homeworkid): array {
         global $DB, $USER;
-        $homework = $DB->get_record('homework', ['id' => $homeworkID]);
+        $homework = $DB->get_record('homework', ['id' => $homeworkid]);
         $course = $DB->get_record('course', ['id' => $homework->course_id]);
         $materials = $DB->get_records('homework_materials', ['homework_id' => $homework->id]);
         $completedmaterials = $DB->get_records('completions', ['usermodified' => $USER->id]);
@@ -74,16 +73,14 @@ class get_infohomework_modal extends external_api {
                 continue;
             }
             if ($material->startpage !== null && $material->endpage !== null) {
-                if($material->file_id !== null){
+                if ($material->file_id !== null) {
                     $material->fileurl = self::get_file_link_by_id($material->file_id);
                 }
                 $literaturearray[] = $material;
-            }
-            else if($material->link !== null) {
+            } else if ($material->link !== null) {
                 $linksarray[] = $material;
-            }
-            else if($material->starttime !== null && $material->endtime !== null) {
-                if($material->file_id !== null){
+            } else if ($material->starttime !== null && $material->endtime !== null) {
+                if ($material->file_id !== null) {
                     $material->fileurl = self::get_file_link_by_id($material->file_id);
                 }
                 $videosarray[] = $material;
@@ -97,7 +94,7 @@ class get_infohomework_modal extends external_api {
      * Returns the structure of the function's response.
      * @return external_single_structure - Definition of the function's return type and description
      */
-    public static function execute_returns(): external_single_structure{
+    public static function execute_returns(): external_single_structure {
         return new external_single_structure([
             'html' => new external_value(PARAM_RAW, 'HTML for the homework chooser modal'),
             'title' => new external_value(PARAM_TEXT, 'Title of the homework'),
@@ -109,10 +106,10 @@ class get_infohomework_modal extends external_api {
     }
 
     /**
+     *
      * @throws JsonException
      */
-    public static function get_info($homework, $course, $literaturearray, $linksarray, $videosarray): array
-    {
+    public static function get_info($homework, $course, $literaturearray, $linksarray, $videosarray): array {
         // Assuming you have the Mustache engine set up.
         $mustache = new Mustache_Engine();
         $nohomework = "";
@@ -129,12 +126,12 @@ class get_infohomework_modal extends external_api {
             'videos' => $videosarray,
         ];
 
-        // Render the template
+        // Render the template.
         $html = $mustache->render(file_get_contents(__DIR__ . "/../../templates/timeinfotemplate.mustache"), $content);
 
         $duedate = date('H:i d-m-Y', $homework->duedate);
-        $courseurl = "/course/view.php?id=".$course->id;
-        $homeworkurl = "/mod/homework/view.php?id=".$homework->id;
+        $courseurl = "/course/view.php?id=" . $course->id;
+        $homeworkurl = "/mod/homework/view.php?id=" . $homework->id;
 
         return ['html' => $html, 'title' => $homework->name, 'course' => $course->fullname,
             'duedate' => $duedate, 'courseurl' => $courseurl, 'homeworkurl' => $homeworkurl];
@@ -147,11 +144,11 @@ class get_infohomework_modal extends external_api {
      * @return string|null The URL to the file or null if the file is not found.
      * @throws dml_exception|coding_exception
      */
-    public static function get_file_link_by_id(int $fileID) :null|string{
+    public static function get_file_link_by_id(int $fileid): null|string {
         global $DB;
 
         // Retrieve the file record from the database.
-        $file = $DB->get_record('files', ['id' => $fileID]);
+        $file = $DB->get_record('files', ['id' => $fileid]);
 
         // Check if the file exists and is valid.
         if (!$file || $file->filename === '.' || $file->filename === '') {
@@ -161,22 +158,28 @@ class get_infohomework_modal extends external_api {
         // Generate the file URL.
         $context = \context::instance_by_id($file->contextid);
         $fs = get_file_storage();
-        $stored_file = $fs->get_file($file->contextid, $file->component, $file->filearea, $file->itemid, $file->filepath, $file->filename);
+        $storedfile = $fs->get_file(
+            $file->contextid,
+            $file->component,
+            $file->filearea,
+            $file->itemid,
+            $file->filepath,
+            $file->filename
+        );
 
-        if ($stored_file) {
+        if ($storedfile) {
             // Moodle's file plugin serves the files through pluginfile.php.
-            $file_url = \moodle_url::make_pluginfile_url(
-                $stored_file->get_contextid(),
-                $stored_file->get_component(),
-                $stored_file->get_filearea(),
-                $stored_file->get_itemid(),
-                $stored_file->get_filepath(),
-                $stored_file->get_filename()
+            $fileurl = \moodle_url::make_pluginfile_url(
+                $storedfile->get_contextid(),
+                $storedfile->get_component(),
+                $storedfile->get_filearea(),
+                $storedfile->get_itemid(),
+                $storedfile->get_filepath(),
+                $storedfile->get_filename()
             );
-            return $file_url->out();
+            return $fileurl->out();
         }
 
         return null;
     }
-
 }
