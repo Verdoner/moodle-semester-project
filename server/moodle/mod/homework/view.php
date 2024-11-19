@@ -25,6 +25,7 @@
 require_once('../../config.php');
 global $OUTPUT, $PAGE, $DB, $CFG;
 
+use block_homework\external\get_infohomework_modal;
 use mod_homework\view_page;
 
 $id = required_param('id', PARAM_INT);// Course module ID.
