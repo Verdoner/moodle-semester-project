@@ -88,19 +88,18 @@ function homework_delete_instance($id) {
 }
 
 /**
- * Inspiration taken from https://moodledev.io/docs/4.5/apis/subsystems/files
- * Serve the files from the myplugin file areas.
+ * Serve the files from the homework file areas.
  *
- * @param stdClass $course the course object
- * @param stdClass $cm the course module object
- * @param stdClass $context the context
- * @param string $filearea the name of the file area
- * @param array $args extra arguments (itemid, path)
- * @param bool $forcedownload whether or not force download
- * @param array $options additional options affecting the file serving
- * @return bool false if the file not found, just send the file otherwise and do not return anything
+ * @param stdClass $course The course object.
+ * @param stdClass $cm The course module object.
+ * @param stdClass $context The context.
+ * @param string $filearea The name of the file area.
+ * @param array $args Extra arguments (itemid, path).
+ * @param bool $forcedownload Whether or not force download.
+ * @param array $options Additional options affecting the file serving.
+ * @return bool False if the file is not found, true if it is served.
  */
-function homework_pluginfile(
+function mod_homework_pluginfile(
     $course,
     $cm,
     $context,
@@ -109,33 +108,28 @@ function homework_pluginfile(
     bool $forcedownload,
     array $options = []
 ): bool {
-    // Make sure the user is logged in and has access to the module.
-    require_login($course, true);
+    require_login($course, true, $cm);
 
-    // Extract the filename / filepath from the $args array.
-    $filename = array_pop($args); // The last item in the $args array.
-    if (empty($args)) {
-        // ... $args is empty => the path is '/'.
-        $filepath = '/';
-    } else {
-        // ... $args contains the remaining elements of the filepath.
-        $filepath = '/' . implode('/', $args) . '/';
-    }
-
-    $itemid = null;
-
-    // Retrieve the file from the Files API.
-    $fs = get_file_storage();
-    $file = $fs->get_file($context->id, 'homework', $filearea, $itemid, $filepath, $filename);
-    if (!$file) {
-        // The file does not exist.
-        // error_log() is forbidden, changed to debugging.
-        debugging("File not found: Context ID - $context->id, File area - $filearea, Item ID - $itemid,
-            Path - $filepath, Filename - $filename");
+    // Only allow specific file areas, e.g., 'content'. Adjust as necessary.
+    if ($filearea !== 'content') {
         return false;
     }
 
-    // Send file to browser with a cache lifetime of 1 day and no filtering.
+    // Extract itemid and filename from the $args array.
+    $itemid = array_shift($args); // The first argument in $args array, often used for item ID.
+    $filename = array_pop($args); // The last item in $args array, the filename.
+    $filepath = empty($args) ? '/' : '/' . implode('/', $args) . '/'; // Construct the filepath from the remaining args.
+
+    // Retrieve the file from Moodle's file storage.
+    $fs = get_file_storage();
+    $file = $fs->get_file($context->id, 'mod_homework', $filearea, $itemid, $filepath, $filename);
+
+    // If the file is not found or is a directory, return false.
+    if (!$file || $file->is_directory()) {
+        return false;
+    }
+
+    // Serve the file with caching (1 day) and without forcing download (for inline preview).
     send_stored_file($file, 86400, 0, $forcedownload, $options);
     return true;
 }

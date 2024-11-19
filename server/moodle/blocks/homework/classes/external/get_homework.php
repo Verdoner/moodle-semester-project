@@ -28,7 +28,6 @@ namespace block_homework\external;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once("$CFG->libdir/externallib.php");
 
 use coding_exception;
 use dml_exception;
