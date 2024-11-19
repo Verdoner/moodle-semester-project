@@ -19,10 +19,10 @@
 
 <div class="container">
 
-    <div class="btn-container">
-        <button class="nav-btn" id="todaybtn">today</button>
-        <button class="nav-btn" id="prevbtn"><-</button>
-        <button class="nav-btn" id="nextbtn">-></button>
+    <div class="btn-container float-end">
+        <button class="nav-btn" id="todaybtn">Today</button>
+        <button class="nav-btn" id="prevbtn"><</button>
+        <button class="nav-btn" id="nextbtn">></button>
         <label for="sort">Sort by:</label>
         <select name="sort" id="sort">
             <option value="all">All</option>
@@ -35,10 +35,12 @@
         {{#data}}
             <div class="infobox">
                 <h2>{{courseTitle}}</h2>
-                <h2>{{name}}</h2>
-                <h3>{{duedate}}</h3>
+                <div class="inline-container">
+                    <h2 class="name">{{name}}</h2>
+                    <h3 class="duedate">{{duedate}}</h3>
+                </div>
                 <p>{{intro}}</p>
-                <button class="timebutton" data-homework-id={{id}} id="{{id}}"">Time</button>
+                <button class="timebutton" data-homework-id={{id}} id="{{id}}">Time</button>
                 {{#files}}
                     <img src="{{iconurl}}" alt="File icon">
                     <a href="{{fileurl}}" download="{{filename}}">{{filename}}</a>
