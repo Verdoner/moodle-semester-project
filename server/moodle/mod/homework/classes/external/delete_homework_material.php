@@ -27,18 +27,17 @@ namespace mod_homework\external;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/externallib.php');
 
 use core\exception\moodle_exception;
 use core_external\external_api;
-use external_function_parameters;
-use external_value;
-use external_single_structure;
+use core_external\external_function_parameters;
+use core_external\external_value;
+use core_external\external_single_structure;
 
 /**
  * Class for editing homework materials.
  */
-class delete_homework_material extends \external_api {
+class delete_homework_material extends external_api {
     /**
      * Returns parameters id and fileid
      *
