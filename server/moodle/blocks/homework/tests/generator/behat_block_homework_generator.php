@@ -24,12 +24,11 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class behat_block_homework_generator extends behat_generator_base {
-    protected function get_creatable_entities(): array
-    {
+    protected function get_creatable_entities(): array {
         return [
             'homework' => [
                 'datagenerator' => 'homework',
-                'required' => ['id', 'course', 'intro', 'duedate'] //switch to appropiate keys when db has been updated
+                'required' => ['id', 'course', 'intro', 'duedate', 'name'] //switch to appropiate keys when db has been updated
             ],
         ];
     }

@@ -22,7 +22,7 @@
  * @package block_homework
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class local_homework_generator extends component_generator_base {
+class block_homework_generator extends component_generator_base {
     public function create_homework($homework) {
         global $DB;
         $DB->insert_record('homework', $homework);
