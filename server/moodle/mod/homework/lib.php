@@ -35,6 +35,7 @@ function homework_add_instance($homeworkdata) {
 
     $homeworkdata->timecreated = time();
     $homeworkdata->timemodified = time();
+    $homeworkdata->course_id = $homeworkdata->course;
 
     // Save the due date if it's not empty.
     if (!empty($homeworkdata->duedateselector)) {
@@ -82,6 +83,96 @@ function homework_delete_instance($id) {
     }
 
     $DB->delete_records('homework', ['id' => $id]);
+
+    return true;
+}
+
+/**
+ * Serve the files from the homework file areas.
+ *
+ * @param stdClass $course The course object.
+ * @param stdClass $cm The course module object.
+ * @param stdClass $context The context.
+ * @param string $filearea The name of the file area.
+ * @param array $args Extra arguments (itemid, path).
+ * @param bool $forcedownload Whether or not force download.
+ * @param array $options Additional options affecting the file serving.
+ * @return bool False if the file is not found, true if it is served.
+ */
+function mod_homework_pluginfile(
+    $course,
+    $cm,
+    $context,
+    string $filearea,
+    array $args,
+    bool $forcedownload,
+    array $options = []
+): bool {
+    require_login($course, true, $cm);
+
+    // Only allow specific file areas, e.g., 'content'. Adjust as necessary.
+    if ($filearea !== 'content') {
+        return false;
+    }
+
+    // Extract itemid and filename from the $args array.
+    $itemid = array_shift($args); // The first argument in $args array, often used for item ID.
+    $filename = array_pop($args); // The last item in $args array, the filename.
+    $filepath = empty($args) ? '/' : '/' . implode('/', $args) . '/'; // Construct the filepath from the remaining args.
+
+    // Retrieve the file from Moodle's file storage.
+    $fs = get_file_storage();
+    $file = $fs->get_file($context->id, 'mod_homework', $filearea, $itemid, $filepath, $filename);
+
+    // If the file is not found or is a directory, return false.
+    if (!$file || $file->is_directory()) {
+        return false;
+    }
+
+    // Serve the file with caching (1 day) and without forcing download (for inline preview).
+    send_stored_file($file, 86400, 0, $forcedownload, $options);
+    return true;
+}
+
+/**
+ * Deletes a file from the Moodle file storage and custom table.
+ *
+ * @param int $id The homework ID to update.
+ * @param int $file_id The file ID to delete.
+ * @return bool True if deletion was successful, false otherwise.
+ */
+function mod_homework_delete_file($id, $fileid) {
+    global $DB;
+    $fs = get_file_storage();
+
+    // Get the file record.
+    $file = $DB->get_record('files', ['id' => $fileid]);
+    if (!$file) {
+        return false;
+    }
+
+    // Load the file from file storage and delete it.
+    $storedfile = $fs->get_file(
+        $file->contextid,
+        $file->component,
+        $file->filearea,
+        $file->itemid,
+        $file->filepath,
+        $file->filename
+    );
+
+    if ($storedfile) {
+        // Delete the file record from the database.
+        $storedfile->delete();
+
+        $record = new \stdClass();
+
+        $record->id = $id;
+        $record->file_id = null;
+
+        // Update the record from the database.
+        $DB->update_record('homework_materials', $record);
+    }
 
     return true;
 }

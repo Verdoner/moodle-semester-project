@@ -1,95 +1,57 @@
+// homeworkchooseredit.js (Updated Version)
+
 import $ from 'jquery';
 import Ajax from 'core/ajax';
 import MyModal from 'mod_homework/modal_homework';
 import ModalEvents from 'core/modal_events';
+import Dropzone from 'core/dropzone';
+
+let dropZoneFiles = []; // Store files to upload later
+let uploadedFileIds = []; // Store file IDs after successful upload
 
 /**
- * Homework/amd/src/modal_homework.js
+ * Initializes the Homework Edit Modal.
  *
- * @package
- * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *
- */
-
-/**
- * Initializes the Homework Chooser Modal.
  * @param {int} cmid
  * @param {string} title
+ * @param {int} currentHomework
  * @returns {Promise<void>}
  */
-export const init = async(cmid, title) => {
+export const init = async(cmid, title, currentHomework) => {
     $('#open-homework-chooser').on('click', () => {
         Ajax.call([{
             methodname: 'mod_homework_get_homework_chooser',
             args: {cmid: cmid},
-            done: async function(response) {
+            done: async function (response) {
                 const modal = await MyModal.create({
                     title: title,
                     body: `${response.html}`,
+                    // footer: 'An example footer content',
                     large: true,
-                    removeOnClose: true,
+                    removeOnClose: true
                 });
 
-                // Show the modal.
-                await modal.show();
+                // Show the modal
+                modal.show();
 
-                // Initialize elements once the modal content is rendered.
+                // Initialize elements once the modal content is rendered
                 modal.getRoot().on(ModalEvents.shown, () => {
-                    // Initialize the elements after modal is displayed.
-                    const startPageInput = modal.getRoot().find('#startPage')[0];
-                    const endPageInput = modal.getRoot().find('#endPage')[0];
-                    const radioButtons = modal.getRoot().find('input[name="option"]');
-                    const testTextarea = modal.getRoot().find('#page-range-input')[0];
-                    const testLink = modal.getRoot().find('#linkDiv')[0];
+                    // Initialize the elements after modal is displayed
+                    const dropzoneContainer = modal.getRoot().find('#dropzone-container')[0];
 
-                    // Attach event listeners for page input validation.
-                    startPageInput.addEventListener('input', validatePageRange);
-                    endPageInput.addEventListener('input', validatePageRange);
+                    initializeDropzone(dropzoneContainer);
+                });
 
-                    // Attach event listeners for radio buttons.
-                    radioButtons.each((_, radio) => {
-                        radio.addEventListener('change', toggleInputs);
-                    });
-
-                    // Function to validate page range.
-                    /**
-                     *
-                     */
-                    function validatePageRange() {
-                        const startPage = parseInt(startPageInput.value, 10);
-                        const endPage = parseInt(endPageInput.value, 10);
-
-                        if (endPageInput.value !== "" && startPageInput.value !== "") {
-                            if (endPage < startPage) {
-                                endPageInput.setCustomValidity("End Page must be greater than or equal to Start Page");
-                            } else {
-                                endPageInput.setCustomValidity(""); // Clear error message if valid
-                            }
-                        } else {
-                            endPageInput.setCustomValidity(""); // Clear error if either field is empty
-                        }
-                    }
-
-                    // Function to toggle between text and link inputs.
-                    /**
-                     *
-                     */
-                    function toggleInputs() {
-                        if (document.getElementById("option1").checked) {
-                            testTextarea.style.display = "block";
-                            testLink.style.display = "none";
-                        } else if (document.getElementById("option2").checked) {
-                            testTextarea.style.display = "none";
-                            testLink.style.display = "block";
-                        }
-                    }
+                // Attach an event listener to handle the modal hidden event
+                modal.getRoot().on(ModalEvents.hidden, () => {
+                    console.log('Modal closed!');
                 });
 
                 // Attach event listeners for buttons
                 modal.getRoot().on('click', '[data-action="submit"]', (e) => {
                     e.preventDefault();
-                    handleFormSubmit(modal);
+
+                    handleFormSubmit(modal, currentHomework);
                 });
 
                 modal.getRoot().on('click', '[data-action="cancel"]', (e) => {
@@ -98,65 +60,190 @@ export const init = async(cmid, title) => {
                 });
             },
             fail: (error) => {
-                throw new Error(`Failed to load homework chooser content: ${error}`);
+                console.error("Failed to load homework chooser content:", error);
             }
         }]);
     });
 };
 
+const initializeDropzone = (container) => {
+    const dropZone = new Dropzone(container, "*/*", (files) => {
+        dropZoneFiles.push(files[0]); // Store file for later upload
+
+        displayUploadedFile(files[0]);
+    });
+
+    dropZone.setLabel("Drop file here (Optional)");
+    dropZone.init();
+};
+
+// Function to display the uploaded file with a delete button
+const displayUploadedFile = (file) => {
+    const previewContainer = document.getElementById("file-content"); // Container for preview
+
+    // Clear previous preview
+    previewContainer.innerHTML = "";
+
+    if (file.name || file.filename) {
+        // Create wrapper div for the preview and delete button
+        const fileWrapper = document.createElement("div");
+        fileWrapper.style.position = "relative";
+        fileWrapper.style.display = "ruby";
+
+        // Add the file preview
+        const paragraph = document.createElement("p");
+        if (file.name) {
+            paragraph.textContent = `${file.name}`;
+        } else if (file.filename) {
+            paragraph.textContent = `${file.filename}`;
+        }
+        fileWrapper.appendChild(paragraph);
+
+        // Create the delete "X" button
+        const deleteButton = document.createElement("span");
+        deleteButton.textContent = "X";
+        deleteButton.style.cursor = "pointer";
+        deleteButton.style.background = "red";
+        deleteButton.style.color = "white";
+        deleteButton.style.padding = "2px 5px";
+        deleteButton.style.fontWeight = "bold";
+        deleteButton.style.marginLeft = "5px";
+
+        // Delete the file preview and reset dropZoneFiles when "X" is clicked
+        deleteButton.addEventListener("click", () => {
+            dropZoneFiles = []; // Clear the files array
+            previewContainer.innerHTML = ""; // Remove the preview
+        });
+
+        fileWrapper.appendChild(deleteButton);
+
+        previewContainer.appendChild(fileWrapper);
+    }
+};
+
+const uploadDropzoneFile = async () => {
+    for (let file of dropZoneFiles) {
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const response = await fetch("/mod/homework/upload_file.php", {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.status === 'success') {
+                console.log("File uploaded successfully:", file.name);
+                console.log(result);
+                uploadedFileIds.push(result.fileid); // Store the file ID
+            } else {
+                console.error("Failed to upload file:", file.name);
+            }
+        } catch (error) {
+            console.error("Error uploading file:", file.name, error);
+        }
+    }
+    dropZoneFiles = []; // Clear stored file after upload
+};
+
 /**
  * Handles form submission inside the modal.
- *
  * @param {Modal} modal - The instance of the modal containing the form.
+ * @param currentHomework - The id of the homework which is being edited.
  */
-const handleFormSubmit = (modal) => {
-    let inputField = modal.getRoot().find('#inputField').val();
+const handleFormSubmit = async (modal, currentHomework) => {
+    let inputField = modal.getRoot().find('#inputField')[0];
+    let linkField = modal.getRoot().find('#link')[0];
+    let startPageInput = modal.getRoot().find('#startPage')[0];
+    let endPageInput = modal.getRoot().find('#endPage')[0];
+    let startTimeInput = modal.getRoot().find('#startTime')[0];
+    let endTimeInput = modal.getRoot().find('#endTime')[0];
 
-    if (inputField.value === "") {
-        inputField.setCustomValidity("Please fill in the input field.");
-        inputField.reportValidity(); // Shows the custom message
-        event.preventDefault(); // Prevents form submission
+    // Set up a custom validity message if the field is empty
+    if (inputField.value.trim() === "") {
+        inputField.setCustomValidity("Input field must not be empty");
     } else {
-        inputField.setCustomValidity(""); // Clear the custom message
+        inputField.setCustomValidity(""); // Clear the custom message when input is valid
     }
 
-    if (modal.getRoot().find('#option1').is(':checked')) {
-        let startPage = modal.getRoot().find('#startPage').val();
-        let endPage = modal.getRoot().find('#endPage').val();
+    // Manually check the validity of the input field
+    inputField.reportValidity();
 
-        // AJAX call to send data to the server.
-        Ajax.call([{
-            methodname: 'mod_homework_save_homework_literature',
-            args: {
-                inputfield: inputField,
-                startpage: startPage,
-                endpage: endPage,
-            },
-            done: function() {
-                // Close the modal after successful submission.
-                modal.hide();
-            },
-            fail: function(error) {
-                throw new Error(`Failed to save data: ${error}`);
-            }
-        }]);
-    } else if (modal.getRoot().find('#option2').is(':checked')) {
-        let link = modal.getRoot().find('#link').val();
+    // If the field is invalid, stop the function execution
+    if (!inputField.checkValidity()) {
+        return; // Exit if input field is invalid
+    }
 
-        // AJAX call to send data to the server.
-        Ajax.call([{
-            methodname: 'mod_homework_save_homework_link',
-            args: {
-                inputfield: inputField,
-                link: link,
-            },
-            done: function() {
-                // Close the modal after successful submission.
-                modal.hide();
-            },
-            fail: function(error) {
-                throw new Error(`Failed to save data: ${error}`);
+    if (!validatePageRange(startPageInput, endPageInput)) {
+        return;
+    }
+
+    if (!validateTimeRange(startTimeInput, endTimeInput)) {
+        return;
+    }
+
+    await uploadDropzoneFile();
+
+    Ajax.call([{
+        methodname: 'mod_homework_save_homework_material',
+        args: {
+            inputfield: inputField.value,
+            link: linkField.value.trim() !== "" ? linkField.value.trim() : null,
+            startpage: startPageInput.value.trim() !== "" ? startPageInput.value.trim() : null,
+            endpage: endPageInput.value.trim() !== "" ? endPageInput.value.trim() : null,
+            starttime: startTimeInput.value.trim() !== "" ? startTimeInput.value.trim() : null,
+            endtime: endTimeInput.value.trim() !== "" ? endTimeInput.value.trim() : null,
+            homeworkid: currentHomework,
+            fileid: uploadedFileIds.length ? uploadedFileIds[0] : null
+        },
+        done: function(response) {
+            console.log("Data saved successfully:", response);
+            modal.destroy();
+        },
+        fail: function(error) {
+            console.error("Failed to save data:", error);
+        }
+    }]);
+
+    function validatePageRange(startPageInput, endPageInput) {
+        const startPage = parseInt(startPageInput.value, 10);
+        const endPage = parseInt(endPageInput.value, 10);
+
+        if (endPageInput.value !== "" && startPageInput.value !== "") {
+            if (endPage < startPage) {
+                endPageInput.setCustomValidity("End Page must be greater than or equal to Start Page");
+                endPageInput.reportValidity();
+                return false;
+            } else {
+                endPageInput.setCustomValidity(""); // Clear error message if valid
             }
-        }]);
+        } else {
+            endPageInput.setCustomValidity(""); // Clear error if either field is empty
+        }
+
+        endPageInput.reportValidity();
+        return endPageInput.checkValidity(); // Return true if valid
+    }
+
+    function validateTimeRange(startTimeInput, endTimeInput) {
+        const startTime = parseInt(startTimeInput.value, 10);
+        const endTime = parseInt(endTimeInput.value, 10);
+
+        if (endTimeInput.value !== "" && startTimeInput.value !== "") {
+            if (endTime < startTime) {
+                endTimeInput.setCustomValidity("End Time must be greater than or equal to Start Time");
+                endTimeInput.reportValidity();
+                return false;
+            } else {
+                endTimeInput.setCustomValidity(""); // Clear error message if valid
+            }
+        } else {
+            endTimeInput.setCustomValidity(""); // Clear error if either field is empty
+        }
+
+        endTimeInput.reportValidity();
+        return endTimeInput.checkValidity(); // Return true if valid
     }
 };

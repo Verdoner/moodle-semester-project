@@ -2,8 +2,6 @@
 <module type="WEB_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/admin/tool/pluginskel/classes" isTestSource="false" packagePrefix="tool_pluginskel" />
-      <sourceFolder url="file://$MODULE_DIR$/admin/tool/pluginskel/tests" isTestSource="true" packagePrefix="tool_pluginskel" />
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/admin/classes" isTestSource="false" packagePrefix="core_admin" />
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/admin/presets/classes" isTestSource="false" packagePrefix="core_adminpresets" />
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/admin/presets/tests" isTestSource="true" packagePrefix="core_adminpresets" />
@@ -185,6 +183,7 @@
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/blocks/globalsearch/tests" isTestSource="true" packagePrefix="block_globalsearch" />
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/blocks/glossary_random/classes" isTestSource="false" packagePrefix="block_glossary_random" />
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/blocks/glossary_random/tests" isTestSource="true" packagePrefix="block_glossary_random" />
+      <sourceFolder url="file://$MODULE_DIR$/server/moodle/blocks/homework" isTestSource="false" packagePrefix="block_homework" />
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/blocks/html/classes" isTestSource="false" packagePrefix="block_html" />
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/blocks/html/tests" isTestSource="true" packagePrefix="block_html" />
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/blocks/login/classes" isTestSource="false" packagePrefix="block_login" />
@@ -586,6 +585,8 @@
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/mod/glossary/tests" isTestSource="true" packagePrefix="mod_glossary" />
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/mod/h5pactivity/classes" isTestSource="false" packagePrefix="mod_h5pactivity" />
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/mod/h5pactivity/tests" isTestSource="true" packagePrefix="mod_h5pactivity" />
+      <sourceFolder url="file://$MODULE_DIR$/server/moodle/mod/homework/classes" isTestSource="false" packagePrefix="mod_homework" />
+      <sourceFolder url="file://$MODULE_DIR$/server/moodle/mod/homework/tests" isTestSource="true" packagePrefix="mod_homework" />
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/mod/imscp/classes" isTestSource="false" packagePrefix="mod_imscp" />
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/mod/imscp/tests" isTestSource="true" packagePrefix="mod_imscp" />
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/mod/label/classes" isTestSource="false" packagePrefix="mod_label" />
@@ -893,6 +894,7 @@
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/webservice/rest/tests" isTestSource="true" packagePrefix="webservice_rest" />
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/webservice/soap/classes" isTestSource="false" packagePrefix="webservice_soap" />
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/webservice/soap/tests" isTestSource="true" packagePrefix="webservice_soap" />
+      <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/server/moodle/webservice/tests" isTestSource="true" packagePrefix="core_webservice" />
       <excludeFolder url="file://$MODULE_DIR$/server/apache/logs" />
       <excludeFolder url="file://$MODULE_DIR$/server/moodle/admin/tool/pluginskel" />

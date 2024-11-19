@@ -28,16 +28,16 @@ namespace mod_homework\external;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once("$CFG->libdir/externallib.php");
 
-use external_function_parameters;
-use external_value;
-use external_single_structure;
+use core_external\external_api;
+use core_external\external_function_parameters;
+use core_external\external_value;
+use core_external\external_single_structure;
 
 /**
  *
  */
-class get_homework_chooser extends \external_api {
+class get_homework_chooser extends external_api {
     /**
      *
      * @return external_function_parameters Is a definition of the functions parameter type and a description of it.
@@ -62,11 +62,12 @@ class get_homework_chooser extends \external_api {
                 <form>
                     <label for="inputField">Input Field:</label><br>
                     <textarea type="text" id="inputField" name="inputField"></textarea><br><br>
-                    <label>Choose one:</label><br>
-                    <input checked type="radio" id="option1" name="option" value="option1">
-                    <label for="option1">Literature</label><br>
-                    <input type="radio" id="option2" name="option" value="option2">
-                    <label for="option2">Link</label><br><br>
+                    <br>
+                    <div id="linkDiv">
+                        <label for="link">Link:</label><br>
+                        <input name="link" id="link" type="url" placeholder="Enter URL">
+                    </div>
+                    <br>
                      <div id="page-range-input">
                         <label for="startPage">Page Range:</label><br>
                         <input type="number" id="startPage" name="startPage" min="1" placeholder="Start Page" style="width: 50px;">
@@ -74,9 +75,16 @@ class get_homework_chooser extends \external_api {
                         <label for="endPage"></label>
                         <input type="number" id="endPage" name="endPage" min="1" placeholder="End Page" style="width: 50px;">
                     </div>
-                    <div id="linkDiv" style="display:none">
-                        <label for="link">Link:</label><br>
-                        <input name="link" id="link" type="url" placeholder="Enter URL">
+                    <div id="video-time-input">
+                        <label for="startTime">Time Range (seconds):</label><br>
+                        <input type="number" id="startTime" name="startTime" min="1" placeholder="Start Time" style="width: 50px;">
+                        <span>-</span>
+                        <label for="endTime"></label>
+                        <input type="number" id="endTime" name="endTime" min="1" placeholder="End Time" style="width: 50px;">
+                    </div>
+                    <br>
+                    <div id="file-content"></div>
+                    <div id="dropzone-container">
                     </div>
                 </form>
             </div>

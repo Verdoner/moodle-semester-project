@@ -40,3 +40,40 @@
     gap: 10px;
     padding: 10px;
 }
+/* CSS for the time taking modal */
+#info-homework-modal .homeworkmaterialcontainer{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+#info-homework-modal .homeworkmaterialcontainer > div{
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid black;
+    padding: 10px;
+}
+
+#info-homework-modal .homeworkmaterialcontainer > div:last-child{
+    border-bottom: 0;
+}
+
+#info-homework-modal .homeworkmaterialcontainer > div i{
+    font-size: 24px;
+    margin-right: 20px;
+    width: 30px;
+    height: 30px;
+}
+
+#info-homework-modal .homeworkmaterialcontainer > div h3, #info-homework-modal .homeworkmaterialcontainer > div a{
+    margin: 0;
+    flex: 1;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+#info-homework-modal .homeworkmaterialcontainer > div input{
+
+}
