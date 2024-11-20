@@ -1,7 +1,6 @@
 define(function() {
     return {
         init: function(homework) {
-
             //Check that the current page contains a calendar to stop the code on other pages with homework block.
             if (document.querySelector('[data-region="calendar"]') && JSON.stringify(homework).length > 1) {
 
