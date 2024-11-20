@@ -53,7 +53,7 @@ final class filter_homework_test extends \advanced_testcase {
             'description' => '',
             'eventid' => 0,
             'duedate' => time() + 86400000 * 2,
-            'time' => 10000,
+            'time' => time() + 86400000 * 2,
         ];
         $homeworksarray[] = [
             'id' => 2,
@@ -66,7 +66,7 @@ final class filter_homework_test extends \advanced_testcase {
             'description' => '',
             'eventid' => 0,
             'duedate' => time() - 86400000,
-            'time' => 10000,
+            'time' => time() - 86400000,
         ];
 
         $tmparray = filter_homework::filter("previous", $homeworksarray);
