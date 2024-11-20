@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Block definition class for the block_homework plugin.
@@ -21,16 +21,6 @@
  * @copyright Year, You Name <your@email.address>
  * @author    group 11
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-// Checks for Moodle environment.
-defined('MOODLE_INTERNAL') || die();
-
-/**
- * Class that creates the homework block
- * @copyright group 1
- * @package block_homework
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_homework extends block_base {
     /**
@@ -79,7 +69,7 @@ class block_homework extends block_base {
 
 
         // Retrieving all of the user's completions.
-        $homeworkcompletionrecords = $DB->get_records('completions', ['user_id' => $USER->id]);
+        $homeworkcompletionrecords = $DB->get_records('completions', ['usermodified' => $USER->id]);
 
         // Adding the details of each homework module to an associative array that will be pushed to the data array.
         foreach ($homeworks as $homework) {
@@ -88,24 +78,22 @@ class block_homework extends block_base {
             $tmp['name'] = $homework->name;
             $tmp['duedate'] = date('d-m-Y', $homework->duedate);
             $tmp['intro'] = strip_tags($homework->intro);
-            $tmp['courseTitle'] = $DB->get_field('course', 'fullname', ['id' => $homework->course]);
-
+            $tmp['description'] = ($homework->description);
+            $tmp['courseTitle'] = $DB->get_field('course', 'fullname', ['id' => $homework->course_id]);
 
             // Retrieving the records of all material of the current homework module.
-            $literaturerecords = $DB->get_records('homework_literature', ['homework' => $homework->id]);
-            $linkrecords = $DB->get_records('homework_links', ['homework' => $homework->id]);
-            $videorecords = $DB->get_records('homework_video', ['homework' => $homework->id]);
-
-
+            $materialrecords = $DB->get_records('homework_materials', ['homework_id' => $homework->id]);
 
             $files = [];
 
             // Get ids of homeworkfiles.
             $fileids = [];
-            $homeworkfiles = $DB->get_records('files_homework', ['homework_id' => $homework->id]);
-            foreach ($homeworkfiles as $homeworkfile) {
-                array_push($fileids, $homeworkfile->files_id);
-            }
+            // Code commented out because it is unsure if the files are necessary.
+
+            // ...$homeworkfiles = $DB->get_records('files_homework', ['homework_id' => $homework->id]);
+            // foreach ($homeworkfiles as $homeworkfile) {
+              // array_push($fileids, $homeworkfile->files_id);
+            // }
 
             // Get file records.
             if (!empty($fileids)) {
@@ -141,27 +129,26 @@ class block_homework extends block_base {
             }
 
             $tmp['files'] = $files;
-            $tmp['literature'] = $literaturerecords;
-            $tmp['links'] = $linkrecords;
-            $tmp['videos'] = $videorecords;
+            $tmp['materials'] = $materialrecords;
             $tmp['completions'] = $homeworkcompletionrecords;
 
             array_push($data, $tmp);
         }
-
 
         // Render the content using a template and pass the homework data to it.
         $this->content->text = $OUTPUT->render_from_template('block_homework/data', ['data' => $data]);
         // Include JavaScript functionality for scrolling behavior in the block.
         $this->page->requires->js_call_amd('block_homework/scroll', 'init');
         $this->page->requires->js_call_amd('block_homework/sort', 'init');
-        $this->page->requires->js_call_amd('block_homework/homework_injector', 'init',[$homeworks]);
+        $this->page->requires->js_call_amd('block_homework/homework_injector', 'init', [$homeworks]);
+        $this->page->requires->js_call_amd('block_homework/map_link_injector', 'init');
         $this->page->requires->js_call_amd(
             'block_homework/clickInfo',
             'init',
             ["homework", $data, $USER->id, $homeworkcompletionrecords]
         );
         $this->page->requires->js_call_amd('block_homework/filter', 'init');
+        $this->page->requires->js_call_amd('block_homework/clickInfo', 'init', [$USER->id]);
 
         return $this->content;
     }

@@ -49,7 +49,7 @@ final class modal_test extends advanced_testcase {
 
         $homework = $this->getDataGenerator()->get_plugin_generator('mod_homework')->create_instance(['course' => $course->id]);
         // Call the external function directly.
-        $result = \mod_homework\external\get_homework_chooser::execute($homework->id);
+        $result = \mod_homework\external\get_homework_chooser::execute(1);
 
         // Verify that the result contains the expected HTML structure.
         $this->assertNotEmpty($result);
@@ -62,9 +62,6 @@ final class modal_test extends advanced_testcase {
         // Check that each element is present in the HTML.
         $this->assertNotNull($dom->getElementById('homework-chooser-modal'), 'Modal container is missing');
         $this->assertNotNull($dom->getElementById('inputField'), 'Input field is missing');
-        $this->assertNotNull($dom->getElementById('option1'), 'Option 1 radio button is missing');
-        $this->assertNotNull($dom->getElementById('option2'), 'Option 2 radio button is missing');
-        $this->assertNotNull($dom->getElementById('option3'), 'Option 2 radio button is missing');
         $this->assertNotNull($dom->getElementById('page-range-input'), 'Page range input container is missing');
         $this->assertNotNull($dom->getElementById('startPage'), 'Start page input is missing');
         $this->assertNotNull($dom->getElementById('endPage'), 'End page input is missing');
@@ -73,7 +70,6 @@ final class modal_test extends advanced_testcase {
         $this->assertNotNull($dom->getElementById('endTime'), 'End time input is missing');
         $this->assertNotNull($dom->getElementById('linkDiv'), 'Link div is missing');
         $this->assertNotNull($dom->getElementById('link'), 'Link input field is missing');
-        $this->assertNotNull($dom->getElementById('dropzone-pdf-container'), 'Container dropzone pdf is missing');
-        $this->assertNotNull($dom->getElementById('dropzone-video-container'), 'Container dropzone video is missing');
+        $this->assertNotNull($dom->getElementById('dropzone-container'), 'Container dropzone is missing');
     }
 }

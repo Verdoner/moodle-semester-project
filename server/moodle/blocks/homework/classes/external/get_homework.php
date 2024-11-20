@@ -28,19 +28,20 @@ namespace block_homework\external;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once("$CFG->libdir/externallib.php");
 
 use coding_exception;
 use dml_exception;
-use external_function_parameters;
-use external_value;
-use external_single_structure;
 use JsonException;
+
+use core_external\external_api;
+use core_external\external_function_parameters;
+use core_external\external_value;
+use core_external\external_single_structure;
 
 /**
  *
  */
-class get_homework extends \external_api {
+class get_homework extends external_api {
     /**
      *
      * @return external_function_parameters Is a definition of the functions parameter type and a description of it.
@@ -62,7 +63,7 @@ class get_homework extends \external_api {
         $usercourses = enrol_get_users_courses($USER->id, true);
         $homeworkarray = [];
         foreach ($usercourses as $course) {
-            $homeworkrecords = $DB->get_records('homework', ['course' => $course->id]);
+            $homeworkrecords = $DB->get_records('homework', ['course_id' => $course->id]);
             foreach ($homeworkrecords as $homework) {
                 $homeworkarray[] = [
                     'id' => $homework->id,
@@ -76,7 +77,7 @@ class get_homework extends \external_api {
         if ($sort === 'due') {
             $homeworkarray = self::sortDueDate($homeworkarray);
         }
-        /*else if($sort === 'time'){
+        /* else if($sort === 'time') {
             $homeworkArray = self::sortTime($homeworkArray);
         }
         Implement when time task is done

@@ -1,34 +1,38 @@
 <div id="info-homework-modal">
-    <h1>Mark homework completed</h1>
-    <p>{{nohomework}}</p>
+    <p class="homeworkcompleted">{{nohomework}}</p>
+    {{#homeworkdescription}}
+    <p class="homeworkdescription">{{homeworkdescription}}</p>
+    {{/homeworkdescription}}
     <!-- Add additional content or buttons here -->
+    <div class="homeworkmaterialcontainer">
         {{#literature}}
             <div id="literature-{{id}}">
-            <h3>{{description}}</h3>
-            <form>
-                    <label for="homework-time">Time for Homework (in minutes):</label>
-                    <input type="number" class="homework-time-literature" id="{{id}}" name="homework-time" min="1">
-            </form>
+                <i class="fa-solid fa-file-text"></i>
+                <a href="{{fileurl}}">{{description}}</a>
+                <form>
+                    <input type="number" class="homework-time-literature" id="{{id}}" name="homework-time" min="1" placeholder="Completion time (min)">
+                </form>
             </div>
         {{/literature}}
 
         {{#links}}
-                    <div id="links-{{id}}">
-                    <h3>{{description}}</h3>
-                    <form>
-                            <label for="homework-time">Time for Homework (in minutes):</label>
-                            <input type="number" class="homework-time-links" id="{{id}}" name="homework-time" min="1">
-                    </form>
-                    </div>
+            <div id="links-{{id}}">
+                <i class="fa-solid fa-link"></i>
+                <a href="{{link}}">{{description}}</a>
+                <form>
+                    <input type="number" class="homework-time-links" id="{{id}}" name="homework-time" min="1" placeholder="Completion time (min)">
+                </form>
+            </div>
         {{/links}}
 
         {{#videos}}
-                    <div id="videos-{{id}}">
-                    <h3>{{description}}</h3>
-                    <form>
-                            <label for="homework-time">Time for Homework (in minutes):</label>
-                            <input type="number" class="homework-time-videos" id="{{id}}" name="homework-time" min="1">
-                    </form>
-                    </div>
+            <div id="videos-{{id}}">
+                <i class="fa-solid fa-file-video-o"></i>
+                <a href="{{fileurl}}">{{description}}</a>
+                <form>
+                    <input type="number" class="homework-time-videos" id="{{id}}" name="homework-time" min="1" placeholder="Completion time (min)">
+                </form>
+            </div>
          {{/videos}}
+        </div>
 </div>

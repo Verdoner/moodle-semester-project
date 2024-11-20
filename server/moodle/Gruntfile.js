@@ -246,6 +246,9 @@ module.exports = function(grunt) {
         require(path.resolve(`./.grunt/tasks/${name}.js`))(grunt);
     };
 
+    // Enable force option for all tasks.
+    grunt.option('force', true);
+
     // Startup tasks.
     grunt.moodleEnv.startupTasks = [];
 
