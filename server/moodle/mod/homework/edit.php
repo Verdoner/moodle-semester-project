@@ -66,25 +66,143 @@ if ($PAGE->has_secondary_navigation()) {
 echo $OUTPUT->header();
 
 echo html_writer::tag('div', 'This is the homework edit page', ['class' => 'content']);
-$records = $DB->get_records('homework');
 
-// Add the button for opening the homework chooser modal.
-echo html_writer::tag('button', get_string('openhomeworkchooser', 'mod_homework'), [
-    'type' => 'button',
-    'id' => 'open-homework-chooser',
-    'class' => 'btn btn-primary',
+$homeworkmaterials = $DB->get_records_sql(
+    "SELECT hm.*, f.filename
+            FROM {homework_materials} hm
+            LEFT JOIN {files} f ON hm.file_id = f.id
+            WHERE hm.homework_id = :homework_id",
+    ['homework_id' => $cm->instance]
+);
+?>
+<?php
+/**
+ * Loop through each item in the homework literature and display it.
+ *
+ * @var object $literature Literature item with description, startpage, and endpage properties.
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+foreach ($homeworkmaterials as $materials) :
+    // Generate the preview URL for the file if it exists.
+    if ($materials->file_id !== null) {
+        // Retrieve additional metadata for generating the URL.
+        $file = $DB->get_record('files', ['id' => $materials->file_id]);
+        if ($file) {
+            // Generate the preview URL using Moodle's pluginfile.php.
+            $previewurl = moodle_url::make_pluginfile_url(
+                $file->contextid,
+                $file->component,
+                $file->filearea,
+                $file->itemid,
+                $file->filepath,
+                $file->filename
+            );
+        }
+    }
+    ?>
+
+    <div
+        class="material"
+        style="
+            border: 1px solid #ccc;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+        "
+    >
+        <p><?= htmlspecialchars($materials->description) ?></p>
+        <?php if ($materials->startpage !== null && $materials->endpage !== null) : ?>
+            <p><?= "Page: " .
+                htmlspecialchars($materials->startpage) . " - " .
+                htmlspecialchars($materials->endpage) ?>
+            </p>
+        <?php endif; ?>
+        <?php if ($materials->link !== null) : ?>
+            <p><?= "Link: " ?><a href="<?=
+                htmlspecialchars($materials->link) ?>">
+                    <?= htmlspecialchars($materials->link) ?>
+                </a>
+            </p>
+        <?php endif; ?>
+        <?php if ($materials->starttime !== null && $materials->endtime !== null) : ?>
+            <p><?= "Time (seconds): " .
+                htmlspecialchars($materials->starttime) . " - " .
+                htmlspecialchars($materials->endtime) ?>
+            </p>
+        <?php endif; ?>
+
+        <?php if ($materials->file_id !== null && isset($previewurl)) : ?>
+            <?php if (strtolower(pathinfo($file->filename, PATHINFO_EXTENSION)) === 'mp4') : ?>
+                <!-- Display the video inline if it's an mp4 file -->
+                <video controls width="800" height="360">
+                    <source src="<?= $previewurl ?>" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            <?php else : ?>
+                <!-- Provide a link for non-video files -->
+                <p><?= "File: " ?>
+                    <a
+                            href="<?= $previewurl ?>"
+                            target="_blank">
+                        <?= htmlspecialchars($file->filename) ?>
+                    </a> (Preview)
+                </p>
+            <?php endif; ?>
+        <?php endif; ?>
+
+        <?= html_writer::tag(
+            'div',
+            html_writer::tag('button', get_string('edithomeworkchooser', 'mod_homework'), [
+                'type' => 'button',
+                'id' => 'edit-homework-chooser-' . $materials->id,
+                'class' => 'btn btn-primary',
+            ]) .
+            html_writer::tag('button', get_string('deletehomeworkchooser', 'mod_homework'), [
+                'type' => 'button',
+                'id' => 'delete-homework-chooser-' . $materials->id,
+                'class' => 'btn btn-primary',
+            ]),
+            [
+                'class' => 'homework-action-buttons',
+            ]
+        ); ?>
+    </div>
+<?php endforeach; ?>
+<?php
+/**
+ *
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+$homeworkmaterialids = array_map(function ($material) {
+    return [
+        'id' => $material->id,
+        'description' => $material->description,
+        'startpage' => $material->startpage,
+        'endpage' => $material->endpage,
+        'link' => $material->link,
+        'starttime' => $material->starttime,
+        'endtime' => $material->endtime,
+        'file_id' => $material->file_id,
+        'filename' => $material->filename,
+    ];
+}, $homeworkmaterials);
+
+$PAGE->requires->js_call_amd('mod_homework/homeworkchooseredit', 'init', [
+        $cm->id,
+        get_string('homeworkchooser', 'mod_homework'),
+        $instance->id, $homeworkmaterialids,
 ]);
 
-// Add a container for the modal if needed.
-echo html_writer::tag('div', '', ['id' => 'homework-chooser-container']);
-
-$records = $DB->get_records('homework');
-
-echo html_writer::start_tag('div', ['class' => 'mod-quiz-edit-content']);
-
-// Include the AMD module.
-$PAGE->requires->js_call_amd('mod_homework/homeworkchooser', 'init', [$cm->id,
-get_string('homeworkchooser', 'mod_homework'), $instance->id]);
+$PAGE->requires->js_call_amd('mod_homework/homeworkchooserdelete', 'init', [
+        $cm->id,
+        $homeworkmaterialids,
+]);
 
 // Output the footer - REQUIRED.
 echo $OUTPUT->footer();

@@ -41,28 +41,17 @@ class block_homework extends block_base {
 
         global $OUTPUT, $DB, $USER;
 
-        // Get current time.
-        $currenttime = time();
-
         // Fetch courses user is enrolled in.
-        $usercourses = enrol_get_users_courses($USER->id);
+        $usercourses = enrol_get_users_courses($USER->id,true);
 
-        // Extract course IDs.
-        $courseids = array_map(function ($course) {
-            return $course->id;
-        }, $usercourses);
-
-        // Create a string of ? placeholders for each found course_id, seperated by commas.
-        $placeholders = implode(',', array_fill(0, count($courseids), '?'));
-
-        // Merge parameters.
-        $parameters = array_merge([$currenttime], $courseids);
-
-        // Construct WHERE condition for select.
-        // $select = "duedate > ? AND course_id IN ($placeholders)";
-
-        // Fetch homeworks using get_records_select.
-        $homeworks = $DB->get_records_select('homework', $select, $parameters);
+        $homeworks = [];
+        foreach ($usercourses as $course) {
+            // Fetch homeworks using get_records_select.
+            $tmp = $DB->get_records('homework', ['course'=>$course->id]);
+            foreach ($tmp as $tm) {
+                $homeworks[] = $tm;
+            }
+        }
 
         $data = [];
 
@@ -72,10 +61,12 @@ class block_homework extends block_base {
 
         $this->content = new stdClass();
 
+
         // If the current page is a course then remove unrelated homework.
         if ($this->page->pagetype == 'course-view-topics') {
             $homeworks = $this->filter_homework_content($this->page->url, $homeworks);
         }
+
 
         // Retrieving all of the user's completions.
         $homeworkcompletionrecords = $DB->get_records('completions', ['usermodified' => $USER->id]);
@@ -150,11 +141,14 @@ class block_homework extends block_base {
         $this->page->requires->js_call_amd('block_homework/scroll', 'init');
         $this->page->requires->js_call_amd('block_homework/sort', 'init');
         $this->page->requires->js_call_amd('block_homework/homework_injector', 'init', [$homeworks]);
+        $this->page->requires->js_call_amd('block_homework/map_link_injector', 'init');
         $this->page->requires->js_call_amd(
             'block_homework/clickInfo',
             'init',
             ["homework", $data, $USER->id, $homeworkcompletionrecords]
         );
+        $this->page->requires->js_call_amd('block_homework/filter', 'init');
+        $this->page->requires->js_call_amd('block_homework/clickInfo', 'init', [$USER->id]);
 
         return $this->content;
     }

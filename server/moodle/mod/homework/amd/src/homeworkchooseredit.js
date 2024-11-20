@@ -15,55 +15,72 @@ let uploadedFileIds = []; // Store file IDs after successful upload
  * @param {int} cmid
  * @param {string} title
  * @param {int} currentHomework
+ * @param {array} homeworkids
  * @returns {Promise<void>}
  */
-export const init = async(cmid, title, currentHomework) => {
-    $('#open-homework-chooser').on('click', () => {
-        Ajax.call([{
-            methodname: 'mod_homework_get_homework_chooser',
-            args: {cmid: cmid},
-            done: async function (response) {
-                const modal = await MyModal.create({
-                    title: title,
-                    body: `${response.html}`,
-                    // footer: 'An example footer content',
-                    large: true,
-                    removeOnClose: true
-                });
+export const init = async(cmid, title, currentHomework, homeworkids) => {
+    Object.values(homeworkids).forEach(homeworkid => {
+        $('#edit-homework-chooser-' + homeworkid.id).on('click', () => {
+            Ajax.call([{
+                methodname: 'mod_homework_get_homework_chooser',
+                args: {cmid: cmid},
+                done: async function (response) {
+                    const modal = await MyModal.create({
+                        title: title,
+                        body: `${response.html}`,
+                        // footer: 'An example footer content',
+                        large: true,
+                        removeOnClose: true
+                    });
 
-                // Show the modal
-                modal.show();
+                    // Show the modal
+                    modal.show();
 
-                // Initialize elements once the modal content is rendered
-                modal.getRoot().on(ModalEvents.shown, () => {
-                    // Initialize the elements after modal is displayed
-                    const dropzoneContainer = modal.getRoot().find('#dropzone-container')[0];
+                    // Initialize elements once the modal content is rendered
+                    modal.getRoot().on(ModalEvents.shown, () => {
+                        // Initialize the elements after modal is displayed
+                        const dropzoneContainer = modal.getRoot().find('#dropzone-container')[0];
 
-                    initializeDropzone(dropzoneContainer);
-                });
+                        modal.getRoot().find('#inputField')[0].value = homeworkid.description;
+                        modal.getRoot().find('#link')[0].value = homeworkid.link;
+                        modal.getRoot().find('#startPage')[0].value = homeworkid.startpage;
+                        modal.getRoot().find('#endPage')[0].value = homeworkid.endpage;
+                        modal.getRoot().find('#startTime')[0].value = homeworkid.starttime;
+                        modal.getRoot().find('#endTime')[0].value = homeworkid.endtime;
 
-                // Attach an event listener to handle the modal hidden event
-                modal.getRoot().on(ModalEvents.hidden, () => {
-                    console.log('Modal closed!');
-                });
+                        if (homeworkid.file_id) {
+                            uploadedFileIds.push(homeworkid.file_id);
+                        }
 
-                // Attach event listeners for buttons
-                modal.getRoot().on('click', '[data-action="submit"]', (e) => {
-                    e.preventDefault();
+                        initializeDropzone(dropzoneContainer);
+                        displayUploadedFile(homeworkid);
+                    });
 
-                    handleFormSubmit(modal, currentHomework);
-                });
+                    // Attach an event listener to handle the modal hidden event.
+                    modal.getRoot().on(ModalEvents.hidden, () => {
+                        console.log('Modal closed!');
+                    });
 
-                modal.getRoot().on('click', '[data-action="cancel"]', (e) => {
-                    e.preventDefault();
-                    modal.destroy();
-                });
-            },
-            fail: (error) => {
-                console.error("Failed to load homework chooser content:", error);
-            }
-        }]);
-    });
+                    // Attach event listeners for buttons
+                    modal.getRoot().on('click', '[data-action="submit"]', (e) => {
+                        e.preventDefault();
+
+                        handleFormSubmit(modal, currentHomework, homeworkid["id"]);
+                    });
+
+                    modal.getRoot().on('click', '[data-action="cancel"]', (e) => {
+                        e.preventDefault();
+                        modal.destroy();
+
+                        location.reload();
+                    });
+                },
+                fail: (error) => {
+                    console.error("Failed to load homework chooser content:", error);
+                }
+            }]);
+        });
+    })
 };
 
 const initializeDropzone = (container) => {
@@ -109,17 +126,34 @@ const displayUploadedFile = (file) => {
         deleteButton.style.fontWeight = "bold";
         deleteButton.style.marginLeft = "5px";
 
-        // Delete the file preview and reset dropZoneFiles when "X" is clicked
+        // Handle file deletion when "X" is clicked
         deleteButton.addEventListener("click", () => {
-            dropZoneFiles = []; // Clear the files array
-            previewContainer.innerHTML = ""; // Remove the preview
+            if (confirm("Are you sure you want to delete this file?")) {
+                // AJAX call to delete the file on the server
+                Ajax.call([{
+                    methodname: 'mod_homework_delete_file',
+                    args: {
+                        id: file.id,
+                        file_id: file.file_id
+                    }, // Pass the correct file ID
+                    done: function(response) {
+                        console.log("File deleted successfully");
+                        dropZoneFiles = []; // Clear the files array
+                        previewContainer.innerHTML = ""; // Remove the preview
+                        uploadedFileIds = []; // Clear the files array
+                    },
+                    fail: function(error) {
+                        console.error("Failed to delete file:", error);
+                    }
+                }]);
+            }
         });
 
         fileWrapper.appendChild(deleteButton);
-
         previewContainer.appendChild(fileWrapper);
     }
 };
+
 
 const uploadDropzoneFile = async () => {
     for (let file of dropZoneFiles) {
@@ -153,7 +187,7 @@ const uploadDropzoneFile = async () => {
  * @param {Modal} modal - The instance of the modal containing the form.
  * @param currentHomework - The id of the homework which is being edited.
  */
-const handleFormSubmit = async (modal, currentHomework) => {
+const handleFormSubmit = async (modal, currentHomework, homeworkid) => {
     let inputField = modal.getRoot().find('#inputField')[0];
     let linkField = modal.getRoot().find('#link')[0];
     let startPageInput = modal.getRoot().find('#startPage')[0];
@@ -187,8 +221,9 @@ const handleFormSubmit = async (modal, currentHomework) => {
     await uploadDropzoneFile();
 
     Ajax.call([{
-        methodname: 'mod_homework_save_homework_material',
+        methodname: 'mod_homework_edit_homework_material',
         args: {
+            id: homeworkid,
             inputfield: inputField.value,
             link: linkField.value.trim() !== "" ? linkField.value.trim() : null,
             startpage: startPageInput.value.trim() !== "" ? startPageInput.value.trim() : null,
@@ -201,6 +236,8 @@ const handleFormSubmit = async (modal, currentHomework) => {
         done: function(response) {
             console.log("Data saved successfully:", response);
             modal.destroy();
+
+            location.reload();
         },
         fail: function(error) {
             console.error("Failed to save data:", error);

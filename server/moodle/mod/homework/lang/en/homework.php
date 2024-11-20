@@ -23,9 +23,11 @@
  */
 
 $string['addhomework'] = 'Add homework material';
+$string['deletehomeworkchooser'] = 'Delete Homework';
 $string['duedate'] = 'Due Date';
 $string['duedate_in_past'] = 'The date you are trying to set is in the past! Choose a new one.';
 $string['dueto'] = 'Due at';
+$string['edithomeworkchooser'] = 'Edit Homework';
 $string['homework:addinstance'] = 'Add a new homework';
 $string['homework:submit'] = 'Submit homework';
 $string['homework:view'] = 'View homework';
