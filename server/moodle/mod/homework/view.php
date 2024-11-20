@@ -23,6 +23,7 @@
  */
 
 require_once('../../config.php');
+
 global $OUTPUT, $PAGE, $DB, $CFG;
 
 use block_homework\external\get_infohomework_modal;
@@ -91,64 +92,150 @@ echo $record->name . '<br>';
 echo $record->duedate . '<br>';
 echo $record->description . '<br>';
 
-$materials = $DB->get_records('homework_materials', ['homework_id' => $cm->instance]);
-$literaturearray = [];
-$linksarray = [];
-$videosarray = [];
-foreach ($materials as $material) {
-    if ($material->startpage !== null && $material->endpage !== null) {
-        if($material->file_id !== null){
-            $material->fileurl =
-            $material->fileurl = get_infohomework_modal::get_file_link_by_id($material->file_id);
-        }
-        $literaturearray[] = $material;
-    }
-    else if($material->link !== null) {
-        $linksarray[] = $material;
-    }
-    else if($material->starttime !== null && $material->endtime !== null) {
-        if($material->file_id !== null){
-            $material->fileurl = get_infohomework_modal::get_file_link_by_id($material->file_id);
-        }
-        $videosarray[] = $material;
-    }
-}
+$homeworkmaterials = $DB->get_records_sql(
+    "SELECT hm.*, f.filename
+        FROM {homework_materials} hm
+        LEFT JOIN {files} f ON hm.file_id = f.id
+        WHERE hm.homework_id = :homework_id",
+    ['homework_id' => $cm->instance]
+);
 ?>
 <?php
 /**
- * Loop through each item in the homework literature and display it.
+ * Loop through each item in the homework material and display it.
  *
- * @var object $literature Literature item with description, startpage, and endpage properties.
+ * @var object $material Literature item with description, startpage, and endpage properties.
  * @package   mod_homework
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+foreach ($homeworkmaterials as $material) : ?>
+    <div class="material"">
+        <p><?php echo htmlspecialchars($material->description) ?></p>
+        <?php if ($material->startpage != null) : ?>
+        <p><?php echo "Pages: " . htmlspecialchars($material->startpage) . " - " . htmlspecialchars($material->endpage) ?></p>
+            <?php
+        else :
+            if ($material->link != null) :
+                    // Checks to see if a link starts with "http" if not, then add it to the string,
+                    // this makes sure its is completely new site that is opened.
+                    $link = !str_starts_with($material->link, 'http') ? "https://" . $material->link : $material->link;
+                ?>
+        <p><?php echo 'Link: <a href="' . $link . '" target="_blank">Click here</a>';?></p>
+            <?php endif; ?>
+        <?php endif;
+        if ($material->starttime != null) :
+            ?>
+        <p><?php
+        // Create strings showing the times as HH:MM:SS or MM:SS if no hours.
+        $starttime = converttime($material->starttime);
+        $endtime = converttime($material->endtime);
+        echo "Watch: " . htmlspecialchars($starttime) . " - " . htmlspecialchars($endtime) ?></p>
+                <?php
+                if ($material->file_id != null) :
+                    $fs = get_file_storage();
+                    $url = null;
+                    $haspermission = has_capability('mod/homework:managefiles', $context);
 
-foreach ($literaturearray as $literature) : ?>
-    <div class="literature">
-        <p><?= htmlspecialchars($literature->description) ?></p>
-        <p><?= htmlspecialchars($literature->startpage) . " - " . htmlspecialchars($literature->endpage) ?></p>
+                    if ($haspermission) {
+                        // Debugging: Check file details.
+                        $filerecord = $DB->get_record('files', ['id' => $material->file_id]);
+
+                        if ($filerecord) {
+                            // Fetch file using get_file_storage.
+                            $video = $fs->get_file(
+                                $filerecord->contextid,
+                                $filerecord->component,
+                                $filerecord->filearea,
+                                $filerecord->itemid,
+                                $filerecord->filepath,
+                                $filerecord->filename
+                            );
+
+                            if ($video && !$video->is_directory()) {
+                                // Generate a URL for the file.
+                                $url = moodle_url::make_pluginfile_url(
+                                    $video->get_contextid(),
+                                    $video->get_component(),
+                                    $video->get_filearea(),
+                                    $video->get_itemid(),
+                                    $video->get_filepath(),
+                                    $video->get_filename(),
+                                    false
+                                );
+                                // Output video player.
+                                if ($url) {
+                                            echo '<video controls width="640" height="360">';
+                                            echo '<source src="' . $url->out() . '" type="video/mp4">';
+                                            echo 'Your browser does not support the video tag.';
+                                            echo '</video>';
+                                } else {
+                                    echo 'Error: URL not generated.<br>';
+                                }
+                            } else {
+                                echo 'Error: Video file not found or is a directory.<br>';
+                            }
+                        } else {
+                            echo 'File not found in DB.<br>';
+                        }
+                    } else {
+                        echo 'You do not have permission to manage files in this homework activity.<br>';
+                    }
+                    ?>
+                <?php endif; ?>
+        <?php else :
+            if ($material->file_id != null) :
+                    $fs = get_file_storage();
+                    $url = null;
+                    $haspermission = has_capability('mod/homework:managefiles', $context);
+
+                if ($haspermission) {
+                    // Debugging: Check file details.
+                    $filerecord = $DB->get_record('files', ['id' => $material->file_id]);
+
+                    if ($filerecord) {
+                        // Fetch file using get_file_storage.
+                        $file = $fs->get_file(
+                            $filerecord->contextid,
+                            $filerecord->component,
+                            $filerecord->filearea,
+                            $filerecord->itemid,
+                            $filerecord->filepath,
+                            $filerecord->filename
+                        );
+
+                        if ($file && !$file->is_directory()) {
+                            // Generate a URL for the file.
+                            $url = moodle_url::make_pluginfile_url(
+                                $file->get_contextid(),
+                                $file->get_component(),
+                                $file->get_filearea(),
+                                $file->get_itemid(),
+                                $file->get_filepath(),
+                                $file->get_filename(),
+                                false
+                            );
+                            // Output the hyperlink for the user.
+                            if ($url) {
+                                        echo '<a href="' . $url . '" download>Click here to download the file </a>';
+                            } else {
+                                echo 'Error: URL not generated.<br>';
+                            }
+                        } else {
+                            echo 'Error: File not found or is a directory.<br>';
+                        }
+                    } else {
+                        echo 'File not found in DB.<br>';
+                    }
+                } else {
+                    echo 'You do not have permission to manage files in this homework activity.<br>';
+                }
+                ?>
+            <?php endif; ?>
+        <?php endif; ?>
     </div>
 <?php endforeach; ?>
 <?php
-/**
- * Loop through each item in the homework links and display it.
- *
- * @var object $link Link item with description and link properties.
- * @package   mod_homework
- * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-foreach ($linksarray as $link) : ?>
-    <div class="literature">
-        <p><?= htmlspecialchars($link->description) ?></p>
-        <a href="<?= htmlspecialchars($link->link) ?>"><?= htmlspecialchars($link->link) ?></a>
-    </div>
-    <?php
-endforeach; ?>
-<?php
-
 /**
  *
  * @package   mod_homework
@@ -156,8 +243,33 @@ endforeach; ?>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 if ($viewobj->canedit && !$viewobj->hashomework) {
-    echo html_writer::link($viewobj->editurl, get_string('addhomework', 'homework'), ['class' => 'btn btn-secondary']);
+    // Add the button for opening the homework chooser modal.
+    echo html_writer::tag('button', get_string('openhomeworkchooser', 'mod_homework'), [
+        'type' => 'button',
+        'id' => 'open-homework-chooser',
+        'class' => 'btn btn-primary',
+    ]);
+
+    // Include the AMD module.
+    $PAGE->requires->js_call_amd('mod_homework/homeworkchooser', 'init', [$cm->id,
+        get_string('homeworkchooser', 'mod_homework'), $instance->id]);
 }
 
 // Output the footer - REQUIRED.
 echo $OUTPUT->footer();
+
+/**
+ * Converts a number of seconds into a time in HH:MM:SS format, or MM:SS format if no hours
+ * @param int $seconds number of seconds
+ * @return string The time in HH:MM:SS or MM:SS format
+ */
+function converttime($seconds) {
+    $minutes = floor($seconds / 60);
+    $hours = floor($minutes / 60);
+    $seconds = $seconds % 60;
+    $time =
+        ($hours != 0 ? ($hours < 10 ? "0" . $hours : $hours) . ":" : "")
+        . ($minutes < 10 ? "0" . $minutes : $minutes) . ":"
+        . ($seconds < 10 ? "0" . $seconds : $seconds);
+    return $time;
+}

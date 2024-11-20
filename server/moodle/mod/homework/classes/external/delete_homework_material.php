@@ -15,12 +15,11 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * homework/classes/external/save_homework_video.php
+ * homework/classes/external/delete_homework_literature.php
  *
  * @package   mod_homework
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *
  */
 
 namespace mod_homework\external;
@@ -28,76 +27,63 @@ namespace mod_homework\external;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/externallib.php');
 
-use external_api;
-use external_function_parameters;
-use external_value;
-use external_single_structure;
+use core\exception\moodle_exception;
+use core_external\external_api;
+use core_external\external_function_parameters;
+use core_external\external_value;
+use core_external\external_single_structure;
 
 /**
- *
+ * Class for editing homework materials.
  */
-class save_homework_video extends \external_api {
+class delete_homework_material extends external_api {
     /**
+     * Returns parameters id and fileid
      *
      * @return external_function_parameters Define the parameters expected by this function.
      */
-    public static function execute_parameters() {
+    public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
-            'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
-            'starttime' => new external_value(PARAM_INT, 'startTime field value'),
-            'endtime' => new external_value(PARAM_INT, 'endTime field value'),
-            'homeworkid' => new external_value(PARAM_INT, 'homeworkId field value'),
+            'id' => new external_value(PARAM_INT, 'homework id value'),
             'fileid' => new external_value(PARAM_INT, 'Uploaded file ID', VALUE_OPTIONAL),
         ]);
     }
 
     /**
      * The main function to handle the request.
-     * @param $inputfield
-     * @param $starttime
-     * @param $endtime
-     * @param $homeworkid
+     *
+     * @param $id
      * @param $fileid
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($inputfield, $starttime, $endtime, $homeworkid, $fileid = null) {
+    public static function execute($id, $fileid = null): array {
         global $DB, $USER;
 
-        $record = new \stdClass();
-
-        $record->homework_id = $homeworkid;
-        $record->description = $inputfield;
-
-        $record->timecreated = time();
-        $record->timemodified = time();
-        $record->usermodified = $USER->id;
-
-        $record->introformat = 0;
-
-        $record->starttime = $starttime;
-        $record->endtime = $endtime;
-
-        $record->file_id = $fileid;
-
         try {
-            $DB->insert_record('homework_materials', $record);
-        } catch (\dml_exception $e) {
-            debugging("Error inserting into homework_materials: " . $e->getMessage(), DEBUG_DEVELOPER);
-            return ['status' => 'error', 'message' => 'Failed to save homework materials record'];
+            // Delete the record from homework_materials.
+            $DB->delete_records('homework_materials', ['id' => $id]);
+
+            // Check if fileid is not null and delete from files.
+            if (!empty($fileid)) {
+                \mod_homework\external\delete_file::execute($id, $fileid);
+            }
+        } catch (\dml_exception | moodle_exception $e) {
+            debugging("Error deleting record in homework_materials: " . $e->getMessage(), DEBUG_DEVELOPER);
+            return ['status' => 'error', 'message' => 'Failed to delete homework materials record'];
         }
 
         // Return a success response.
-        return ['status' => 'success', 'message' => 'Data saved successfully'];
+        return ['status' => 'success', 'message' => 'Data deleted successfully'];
     }
 
     /**
+     * Returns status and message as single structure
      *
      * @return external_single_structure Define the return values.
      */
-    public static function execute_returns() {
+    public static function execute_returns(): external_single_structure {
         return new external_single_structure([
             'status' => new external_value(PARAM_TEXT, 'Status of the request'),
             'message' => new external_value(PARAM_TEXT, 'Message with details about the request status'),

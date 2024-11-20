@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * homework/classes/external/save_homework_link.php
+ * homework/classes/external/save_homework_material.php
  *
  * @package   mod_homework
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
@@ -27,27 +27,31 @@ namespace mod_homework\external;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir . '/externallib.php');
 
-use external_api;
-use external_function_parameters;
-use external_value;
-use external_single_structure;
+use core_external\external_api;
+use core_external\external_function_parameters;
+use core_external\external_value;
+use core_external\external_single_structure;
 
 /**
- *
+ * Class for saving homework materials.
  */
-class save_homework_link extends \external_api {
+class save_homework_material extends external_api {
     /**
-     * Define the parameters expected by this function.
+     * Returns parameters inputfield, link, startpage, endpage, starttime, endtime, homeworkid and fileid
      *
-     * @return external_function_parameters
+     * @return external_function_parameters Define the parameters expected by this function.
      */
     public static function execute_parameters() {
         return new external_function_parameters([
             'inputfield' => new external_value(PARAM_TEXT, 'Input field value'),
-            'link' => new external_value(PARAM_TEXT, 'link field value'),
             'homeworkid' => new external_value(PARAM_INT, 'homeworkId field value'),
+            'link' => new external_value(PARAM_TEXT, 'link field value', VALUE_OPTIONAL),
+            'startpage' => new external_value(PARAM_INT, 'startPage field value', VALUE_OPTIONAL),
+            'endpage' => new external_value(PARAM_INT, 'endPage field value', VALUE_OPTIONAL),
+            'starttime' => new external_value(PARAM_INT, 'startTime field value', VALUE_OPTIONAL),
+            'endtime' => new external_value(PARAM_INT, 'endTime field value', VALUE_OPTIONAL),
+            'fileid' => new external_value(PARAM_INT, 'Uploaded file ID', VALUE_OPTIONAL),
         ]);
     }
 
@@ -55,15 +59,28 @@ class save_homework_link extends \external_api {
      * The main function to handle the request.
      *
      * @param $inputfield
-     * @param $link
      * @param $homeworkid
+     * @param $link
+     * @param $startpage
+     * @param $endpage
+     * @param $starttime
+     * @param $endtime
+     * @param $fileid
      * @return string[]
      * @throws \dml_exception
      */
-    public static function execute($inputfield, $link, $homeworkid) {
+    public static function execute(
+        $inputfield,
+        $homeworkid,
+        $link = null,
+        $startpage = null,
+        $endpage = null,
+        $starttime = null,
+        $endtime = null,
+        $fileid = null
+    ) {
         global $DB, $USER;
 
-        // Handle the input field value here.
         $record = new \stdClass();
 
         $record->homework_id = $homeworkid;
@@ -77,7 +94,14 @@ class save_homework_link extends \external_api {
 
         $record->link = $link;
 
-        // Save to database.
+        $record->startpage = $startpage;
+        $record->endpage = $endpage;
+
+        $record->starttime = $starttime;
+        $record->endtime = $endtime;
+
+        $record->file_id = $fileid;
+
         try {
             $DB->insert_record('homework_materials', $record);
         } catch (\dml_exception $e) {
@@ -90,7 +114,7 @@ class save_homework_link extends \external_api {
     }
 
     /**
-     * Returns single structure of status and message.
+     * Returns status and message as single structure
      *
      * @return external_single_structure Define the return values.
      */

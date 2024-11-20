@@ -30,7 +30,7 @@ use dml_exception;
 /**
  *
  */
-final class save_homework_test extends advanced_testcase {
+final class delete_homework_test extends advanced_testcase {
     /**
      * Setup routine before running each test.
      */
@@ -44,9 +44,9 @@ final class save_homework_test extends advanced_testcase {
      *
      * @runInSeparateProcess
      * @throws dml_exception
-     * @covers :: \mod_homework\external\save_homework_material
+     * @covers :: \mod_homework\external\save_homework_literature
      */
-    public function test_save_homework_literature(): void {
+    public function test_edit_homework_literature(): void {
         global $DB, $CFG, $USER;
 
         // Create a test user.
@@ -92,6 +92,18 @@ final class save_homework_test extends advanced_testcase {
         $this->assertEquals($startpage, $record->startpage);
         $this->assertEquals($endpage, $record->endpage);
         $this->assertEquals($homeworkid, $record->homework_id);
+
+        $recordid = $record->id;
+
+        $deleteresult = \mod_homework\external\delete_homework_material::execute($recordid, $fileid);
+
+        // Assert that the status is 'success' for deletion.
+        $this->assertEquals('success', $deleteresult['status']);
+        $this->assertEquals('Data deleted successfully', $deleteresult['message']);
+
+        // Verify that the record no longer exists in the database.
+        $deletedrecord = $DB->get_record('homework_materials', ['id' => $recordid]);
+        $this->assertFalse($deletedrecord);
     }
 
     /**
@@ -99,22 +111,16 @@ final class save_homework_test extends advanced_testcase {
      *
      * @runInSeparateProcess
      * @throws dml_exception
-     * @covers :: \mod_homework\external\save_homework_material
+     * @covers :: \mod_homework\external\save_homework_link
      */
-    public function test_save_homework_link(): void {
-        global $DB, $CFG, $USER;
-
-        // Create a test user.
-        $user = self::getDataGenerator()->create_user();
-
-        // Log in as the test user.
-        self::setUser($user);
+    public function test_edit_homework_link(): void {
+        global $DB;
 
         // Call the external class method.
-        $inputfield = 'Test Link';
+        $inputfield = 'Test Literature';
         $link = 'https://www.test.com';
-        $startpage = null;
-        $endpage = null;
+        $startpage = 1;
+        $endpage = 10;
         $starttime = null;
         $endtime = null;
         $homeworkid = 1;
@@ -146,6 +152,18 @@ final class save_homework_test extends advanced_testcase {
 
         $this->assertEquals($link, $record->link);
         $this->assertEquals($homeworkid, $record->homework_id);
+
+        $recordid = $record->id;
+
+        $deleteresult = \mod_homework\external\delete_homework_material::execute($recordid, $fileid);
+
+        // Assert that the status is 'success' for deletion.
+        $this->assertEquals('success', $deleteresult['status']);
+        $this->assertEquals('Data deleted successfully', $deleteresult['message']);
+
+        // Verify that the record no longer exists in the database.
+        $deletedrecord = $DB->get_record('homework_materials', ['id' => $recordid]);
+        $this->assertFalse($deletedrecord);
     }
 
     /**
@@ -153,16 +171,10 @@ final class save_homework_test extends advanced_testcase {
      *
      * @runInSeparateProcess
      * @throws dml_exception
-     * @covers :: \mod_homework\external\save_homework_material
+     * @covers :: \mod_homework\external\save_homework_video
      */
-    public function test_save_homework_video(): void {
-        global $DB, $CFG, $USER;
-
-        // Create a test user.
-        $user = self::getDataGenerator()->create_user();
-
-        // Log in as the test user.
-        self::setUser($user);
+    public function test_edit_homework_video(): void {
+        global $DB;
 
         // Call the external class method.
         $inputfield = 'Test Video';
@@ -201,47 +213,17 @@ final class save_homework_test extends advanced_testcase {
         $this->assertEquals($starttime, $record->starttime);
         $this->assertEquals($endtime, $record->endtime);
         $this->assertEquals($homeworkid, $record->homework_id);
-    }
 
-    /**
-     * Test saving a homework file.
-     * @runInSeparateProcess
-     * @throws dml_exception
-     * @covers :: \mod_homework\save_homework_file
-     */
-    public function test_file_upload(): void {
-        global $CFG, $USER;
+        $recordid = $record->id;
 
-        // Create a test user.
-        $user = self::getDataGenerator()->create_user();
+        $deleteresult = \mod_homework\external\delete_homework_material::execute($recordid, $fileid);
 
-        // Log in as the test user.
-        self::setUser($user);
+        // Assert that the status is 'success' for deletion.
+        $this->assertEquals('success', $deleteresult['status']);
+        $this->assertEquals('Data deleted successfully', $deleteresult['message']);
 
-        // Mock Moodle's file storage system.
-        $mockfilestorage = $this->createMock(\file_storage::class);
-        $mockfile = $this->createMock(\stored_file::class);
-
-        // Mock context and methods.
-        $context = $this->createMock(\context_user::class);
-        $context->method('instance')->willReturn($context);
-
-        // Mock file options.
-        $_FILES['file'] = [
-            'name' => 'testfile.txt',
-            'tmp_name' => __DIR__ . '/assets/testfile.txt',
-        ];
-
-        // Mock file existence check and file creation.
-        $mockfilestorage->method('file_exists')->willReturn(false);
-        $mockfilestorage->method('create_file_from_pathname')->willReturn($mockfile);
-
-        // Include the script and capture output.
-        ob_start();
-        include(__DIR__ . '/../upload_file.php');
-        $output = ob_get_clean();
-
-        // Assert that the output contains a success message.
-        $this->assertStringContainsString('"status":"success","message":"File uploaded successfully"', $output);
+        // Verify that the record no longer exists in the database.
+        $deletedrecord = $DB->get_record('homework_materials', ['id' => $recordid]);
+        $this->assertFalse($deletedrecord);
     }
 }

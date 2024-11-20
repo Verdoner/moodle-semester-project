@@ -53,4 +53,16 @@ $capabilities = [
             'manager' => CAP_ALLOW,        ],
         'clonepermissionsfrom' => 'moodle/course:manageactivities',
     ],
+    'mod/homework:managefiles' => [
+        'captype' => 'write', // This capability is related to writing files (management).
+        'contextlevel' => CONTEXT_MODULE, // The capability applies within the module context.
+        'archetypes' => [
+            'editingteacher' => CAP_ALLOW, // Editing teachers can manage files.
+            'teacher' => CAP_ALLOW, // Teachers can manage files.
+            'student' => CAP_PREVENT, // Students cannot manage files.
+            'guest' => CAP_PREVENT, // Guests cannot manage files.
+        ],
+    ],
+
+
 ];

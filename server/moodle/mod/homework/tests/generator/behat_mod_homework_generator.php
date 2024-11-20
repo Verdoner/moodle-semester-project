@@ -15,17 +15,22 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
  *
- * @package     mod_homework
- * @copyright   2024 PV
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_homework
+ * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->component = 'mod_homework';
-$plugin->release = '0.1.2';
-$plugin->version = 2024111208;
-$plugin->requires = 2022112800;
-$plugin->maturity = MATURITY_ALPHA;
+class behat_mod_homework_generator extends behat_generator_base {
+    /**
+     * Generator to create entities for plugin specfic tables
+     * @return array[]
+     */
+    protected function get_creatable_entities(): array {
+        return [
+            'materials' => [
+                'datagenerator' => 'material',
+                'required' => ['description', 'homework_id' ],
+            ],
+        ];
+    }
+}

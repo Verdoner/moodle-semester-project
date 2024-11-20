@@ -25,27 +25,27 @@
 defined('MOODLE_INTERNAL') || die();
 
 $functions = [
-    'mod_homework_save_homework_literature' => [
-        'classname'   => 'mod_homework\external\save_homework_literature',
+    'mod_homework_save_homework_material' => [
+        'classname'   => 'mod_homework\external\save_homework_material',
         'methodname'  => 'execute',
-        'classpath'   => 'mod/homework/classes/external/save_homework_literature.php',
-        'description' => 'Saves the homework chooser input field value',
+        'classpath'   => 'mod/homework/classes/external/save_homework_material.php',
+        'description' => 'Saves the homework materials',
         'type'        => 'write',
         'ajax'        => true,
     ],
-    'mod_homework_save_homework_link' => [
-        'classname'   => 'mod_homework\external\save_homework_link',
+    'mod_homework_edit_homework_material' => [
+        'classname'   => 'mod_homework\external\edit_homework_material',
         'methodname'  => 'execute',
-        'classpath'   => 'mod/homework/classes/external/save_homework_link.php',
-        'description' => 'Saves the homework chooser link field value',
+        'classpath'   => 'mod/homework/classes/external/edit_homework_material.php',
+        'description' => 'Edits the homework materials',
         'type'        => 'write',
         'ajax'        => true,
     ],
-    'mod_homework_save_homework_video' => [
-        'classname'   => 'mod_homework\external\save_homework_video',
+    'mod_homework_delete_homework_material' => [
+        'classname'   => 'mod_homework\external\delete_homework_material',
         'methodname'  => 'execute',
-        'classpath'   => 'mod/homework/classes/external/save_homework_video.php',
-        'description' => 'Saves the homework chooser video field value',
+        'classpath'   => 'mod/homework/classes/external/delete_homework_material.php',
+        'description' => 'Deletes the homework materials',
         'type'        => 'write',
         'ajax'        => true,
     ],
@@ -57,15 +57,24 @@ $functions = [
         'type'        => 'read',
         'ajax'        => true,
     ],
+    'mod_homework_delete_file' => [
+        'classname'   => 'mod_homework\external\delete_file',
+        'methodname'  => 'execute',
+        'classpath'   => 'mod/homework/classes/external/delete_file.php',
+        'description' => 'Delete a file associated with a homework entry',
+        'type'        => 'write',
+        'ajax'        => true,
+    ],
 ];
 
 $services = [
     'mod_homework_services' => [
         'functions' => [
-            'mod_homework_save_homework_literature',
-            'mod_homework_save_homework_link',
-            'mod_homework_save_homework_video',
+            'mod_homework_save_homework_material',
+            'mod_homework_edit_homework_material',
+            'mod_homework_delete_homework_material',
             'mod_homework_get_homework_chooser',
+            'mod_homework_delete_file',
         ],
         'restrictedusers' => 0,
         'enabled' => 1,

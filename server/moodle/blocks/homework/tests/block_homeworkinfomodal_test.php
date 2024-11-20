@@ -37,7 +37,6 @@ use stdClass;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class block_homeworkinfomodal_test extends advanced_testcase {
-
     /**
      *
      * @return void
@@ -45,8 +44,7 @@ final class block_homeworkinfomodal_test extends advanced_testcase {
      * @runInSeparateProcess
      * @covers :: \block_homework\external\get_infohomework_modal
      */
-    public function test_get_info()
-    {
+    public function test_get_info(): void {
         global $DB;
 
         // Set up necessary data for the test, such as course and module.
@@ -92,7 +90,7 @@ final class block_homeworkinfomodal_test extends advanced_testcase {
                 'usermodified' => 6,
             ],
         ];
-      
+
         // Data3.
         $videos = [
             (object) [
@@ -108,7 +106,6 @@ final class block_homeworkinfomodal_test extends advanced_testcase {
             ],
         ];
 
-
         // Call the external function directly.
         $result = \block_homework\external\get_infohomework_modal::get_info($homework, $course, $literature, $links, $videos);
 
@@ -123,7 +120,7 @@ final class block_homeworkinfomodal_test extends advanced_testcase {
         $this->assertEquals($homework->description, $homeworkdescription->textContent, 'Homework description is incorrect');
         $this->assertNotNull($xpath->query("//div[@class='homeworkmaterialcontainer']")->item(0));
 
-        //Check for input with specific attributes & their labels for literature.
+        // Check for input with specific attributes & their labels for literature.
         $this->assertNotNull($dom->getElementById('literature-2'));
         // Check for input with specific attributes & their labels.
         $this->assertNotNull($xpath->query("//i[@class='fa-solid fa-file-text']")->item(0));
@@ -132,7 +129,6 @@ final class block_homeworkinfomodal_test extends advanced_testcase {
         $this->assertNotNull($xpath->query("//div[@id='literature-2']//form"));
         $input = $xpath->query("//input[@class='homework-time-literature'][@id='2'][@name='homework-time'][@min='1']");
         $this->assertEquals(1, $input->length, 'Expected input with class \'homework-time-literature\'');
-
 
         // Check for input with specific attributes & their labels for links.
         $this->assertNotNull($dom->getElementById('links-2'));
@@ -144,7 +140,6 @@ final class block_homeworkinfomodal_test extends advanced_testcase {
         $this->assertNotNull($xpath->query("//div[@id='links-2']//form"));
         $input = $xpath->query("//input[@class='homework-time-links'][@id='2'][@name='homework-time'][@min='1']");
         $this->assertEquals(1, $input->length, 'Expected input with class \'homework-time-links\'');
-
 
         // Check for input with specific attributes & their labels, for videos.
         $this->assertNotNull($dom->getElementById('videos-2'));
