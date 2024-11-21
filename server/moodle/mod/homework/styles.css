@@ -1,0 +1,40 @@
+.view-homework-container {
+    border: 1px solid lightgrey;
+    border-radius: 10px;
+    margin-bottom: 18px;
+}
+
+.literature {
+    border-bottom: 1px solid lightgrey;
+    padding: 10px;
+}
+
+.literature>p {
+    margin-left: 60px;
+}
+
+.literature:last-child {
+    border-bottom: 0;
+}
+
+.literature-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.literature-container >i {
+    padding: 10px;
+    font-size: 30px;
+    width: 60px;
+}
+
+.literature-container>p {
+    margin-bottom: 0;
+}
+
+.literature-container>*:nth-child(2) {
+    font-size: 24px;
+    font-weight: bold;
+}
+

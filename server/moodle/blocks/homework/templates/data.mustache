@@ -19,16 +19,25 @@
 
 <div class="container">
 
+
     <div class="btn-container float-end">
         <button class="nav-btn" id="todaybtn">Today</button>
         <button class="nav-btn" id="prevbtn"><</button>
         <button class="nav-btn" id="nextbtn">></button>
         <label for="sort">Sort by:</label>
+
         <select name="sort" id="sort">
             <option value="all">All</option>
             <option value="due">Due Date</option>
             <option value="time">Time</option>
         </select>
+        <label for="filter">Filter By:</label>
+        <select name="filter" id="filter">
+            <option value="all" selected="selected">All</option>
+            <option value="current">Current</option>
+            <option value="previous">Previous</option>
+        </select>
+
     </div>
 
     <div class="outer-box" id="outer-box">
