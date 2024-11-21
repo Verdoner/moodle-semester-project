@@ -60,7 +60,7 @@ class filter_homework extends \external_api {
         $usercourses = enrol_get_users_courses($USER->id, true);
         $homeworkarray = [];
         foreach ($usercourses as $course) {
-            $homeworkrecords = $DB->get_records('homework', ['course' => $course->id]);
+            $homeworkrecords = $DB->get_records('homework', ['course_id' => $course->id]);
             foreach ($homeworkrecords as $homework) {
                 $homeworkarray[] = [
                     'id' => $homework->id,

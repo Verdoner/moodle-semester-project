@@ -47,7 +47,7 @@ class block_homework extends block_base {
         $homeworks = [];
         foreach ($usercourses as $course) {
             // Fetch homeworks using get_records_select.
-            $tmp = $DB->get_records('homework', ['course'=>$course->id]);
+            $tmp = $DB->get_records('homework', ['course_id'=>$course->id]);
             foreach ($tmp as $tm) {
                 $homeworks[] = $tm;
             }
