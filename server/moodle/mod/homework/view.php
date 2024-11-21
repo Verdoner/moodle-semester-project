@@ -85,12 +85,16 @@ $viewobj->canedit = true;
 $viewobj->editurl = new moodle_url('/mod/homework/edit.php', ['id' => $cm->id]);
 
 // Add the actual page content here.
-echo html_writer::tag('div', 'This is the homework view page', ['class' => 'content']);
+/*echo html_writer::tag('div', 'This is the homework view page', ['class' => 'content']);
 $record = $DB->get_record('homework', ['id' => $cm->instance], '*', MUST_EXIST);
 
 echo $record->name . '<br>';
 echo $record->duedate . '<br>';
-echo $record->description . '<br>';
+echo $record->description . '<br>';*/
+
+
+
+
 
 $homeworkmaterials = $DB->get_records_sql(
     "SELECT hm.*, f.filename
@@ -109,6 +113,7 @@ $homeworkmaterials = $DB->get_records_sql(
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+echo '<div class="view-homework-container">';
 foreach ($homeworkmaterials as $material) : ?>
     <div class="material"">
         <p><?php echo htmlspecialchars($material->description) ?></p>
@@ -236,7 +241,10 @@ foreach ($homeworkmaterials as $material) : ?>
     </div>
 <?php endforeach; ?>
 <?php
-/**
+echo '</div>';?>
+
+<?php
+ /**
  *
  * @package   mod_homework
  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
