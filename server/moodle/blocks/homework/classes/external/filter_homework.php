@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -38,6 +37,9 @@ use external_value;
 use external_single_structure;
 use JsonException;
 
+/**
+ * Class used to filter homework on block plugin.
+ */
 class filter_homework extends \external_api {
     /**
      *
@@ -60,29 +62,37 @@ class filter_homework extends \external_api {
         $usercourses = enrol_get_users_courses($USER->id, true);
         $homeworkarray = [];
         foreach ($usercourses as $course) {
-            $homeworkrecords = $DB->get_records('homework', ['course' => $course->id]);
+            $homeworkrecords = $DB->get_records('homework', ['course_id' => $course->id]);
             foreach ($homeworkrecords as $homework) {
                 $homeworkarray[] = [
                     'id' => $homework->id,
                     'name' => $homework->name,
                     'intro' => strip_tags($homework->intro),
-                    'duedate' => date('d-m-y',$homework->duedate),
+                    'duedate' => date('d-m-y', $homework->duedate),
                     'time' => $homework->duedate,
                     'course' => $course->fullname,
                 ];
             }
         }
-        $returnarray = filter_homework::filter($filter, $homeworkarray);
-        return ["homework" => json_encode($returnarray,JSON_THROW_ON_ERROR), JSON_THROW_ON_ERROR];
+        $returnarray = self::filter($filter, $homeworkarray);
+        return ["homework" => json_encode($returnarray, JSON_THROW_ON_ERROR), JSON_THROW_ON_ERROR];
     }
 
-    public static function execute_returns(){
+    /**
+     * @return external_single_structure an array of homework
+     */
+    public static function execute_returns(): external_single_structure {
         return new external_single_structure([
             'homework' => new external_value(PARAM_TEXT, 'Data array of homework'),
         ]);
     }
 
-    public static function filter($filter, $homeworkarray){
+    /**
+     * @param $filter - The current modules id
+     * @param $homeworkarray - Array containing all homework to be filtered
+     * @return array - The html to be shown client-side
+     */
+    public static function filter($filter, $homeworkarray): array {
         $returnarray = [];
         switch ($filter) {
             case ("all"):
@@ -103,7 +113,7 @@ class filter_homework extends \external_api {
                 break;
             default:
                 foreach ($homeworkarray as $homework) {
-                    if ($homework["course"] == $filter){
+                    if ($homework["course"] == $filter) {
                         $returnarray[] = $homework;
                     }
                 }
