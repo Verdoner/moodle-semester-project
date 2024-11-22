@@ -65,11 +65,11 @@ if ($PAGE->has_secondary_navigation()) {
         // Example: Add another node, e.g., 'Edit Homework'.
         try {
             $editnode = navigation_node::create(
-            get_string('edit', 'moodle'),
-            new moodle_url('/mod/homework/edit.php', ['id' => $cm->id]),
-            navigation_node::TYPE_CUSTOM,
-            null,
-            'editnav'
+                get_string('edit', 'moodle'),
+                new moodle_url('/mod/homework/edit.php', ['id' => $cm->id]),
+                navigation_node::TYPE_CUSTOM,
+                null,
+                'editnav'
             );
             $PAGE->secondarynav->add_node($editnode);
         } catch (coding_exception | \core\exception\moodle_exception $e) {
