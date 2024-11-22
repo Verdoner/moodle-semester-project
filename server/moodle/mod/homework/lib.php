@@ -138,7 +138,7 @@ function mod_homework_pluginfile(
  * Deletes a file from the Moodle file storage and custom table.
  *
  * @param int $id The homework ID to update.
- * @param int $file_id The file ID to delete.
+ * @param int $fileid The file ID to delete.
  * @return bool True if deletion was successful, false otherwise.
  */
 function mod_homework_delete_file($id, $fileid) {
