@@ -257,10 +257,16 @@ if ($viewobj->canedit && !$viewobj->hashomework) {
         'id' => 'open-homework-chooser',
         'class' => 'btn btn-primary',
     ]);
+    echo html_writer::tag('button', get_string('openeventlinker', 'mod_homework'), [
+        'type' => 'button',
+        'id' => 'open-event-linker',
+        'class' => 'btn btn-primary',
+    ]);
 
     // Include the AMD module.
     $PAGE->requires->js_call_amd('mod_homework/homeworkchooser', 'init', [$cm->id,
         get_string('homeworkchooser', 'mod_homework'), $instance->id]);
+    $PAGE->requires->js_call_amd('mod_homework/eventlinker','init',[$cm->id, $instance->id]);
 }
 
 // Output the footer - REQUIRED.
