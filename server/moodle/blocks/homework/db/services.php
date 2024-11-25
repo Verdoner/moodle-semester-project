@@ -28,12 +28,20 @@ defined('MOODLE_INTERNAL') || die();
 
 $functions = [
     'block_homework_get_infohomework_modal' => [
-    'classname'   => 'block_homework\external\get_infohomework_modal',
-    'methodname'  => 'execute',
-    'classpath'   => 'blocks/homework/classes/external/get_infohomework_modal.php',
-    'description' => 'Get the homework info content',
-    'type'        => 'read',
-    'ajax'        => true,
+        'classname'   => 'block_homework\external\get_infohomework_modal',
+        'methodname'  => 'execute',
+        'classpath'   => 'blocks/homework/classes/external/get_infohomework_modal.php',
+        'description' => 'Get the homework info content',
+        'type'        => 'read',
+        'ajax'        => true,
+    ],
+    'block_homework_get_stats_modal' => [
+        'classname'   => 'block_homework\external\get_stats_modal',
+        'methodname'  => 'execute',
+        'classpath'   => 'blocks/homework/classes/external/get_stats_modal.php',
+        'description' => 'Get the homework stats content',
+        'type'        => 'read',
+        'ajax'        => true,
     ],
     'block_homework_save_homeworktime' => [
         'classname'   => 'block_homework\external\save_homeworktime',

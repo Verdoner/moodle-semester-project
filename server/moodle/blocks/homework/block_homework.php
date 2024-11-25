@@ -142,6 +142,7 @@ class block_homework extends block_base {
         $this->page->requires->js_call_amd('block_homework/map_link_injector', 'init');
         $this->page->requires->js_call_amd('block_homework/filter', 'init');
         $this->page->requires->js_call_amd('block_homework/clickInfo', 'init', [$USER->id]);
+        $this->page->requires->js_call_amd('block_homework/clickStats', 'init');
 
         return $this->content;
     }

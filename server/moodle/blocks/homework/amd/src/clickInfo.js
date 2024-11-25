@@ -65,13 +65,11 @@ const handleFormSubmit = (userID, modal) => {
     let literatureInputFields = document.querySelectorAll('.homework-time-literature');
     let linksInputFields = document.querySelectorAll('.homework-time-links');
     let videosInputFields = document.querySelectorAll('.homework-time-videos');
-    let timeData1 = [];
-    let timeData2 = [];
-    let timeData3 = [];
+    let timeData = []
     // Finds the data of all input fields, both literature, link and video, and adds the ID and time to an array.
     for (let inputField of literatureInputFields) {
         if (inputField.value !== "") {
-            timeData1.push({
+            timeData.push({
                 id: inputField.id,
                 time: inputField.value,
             });
@@ -79,7 +77,7 @@ const handleFormSubmit = (userID, modal) => {
     }
     for (let inputField of linksInputFields) {
         if (inputField.value !== "") {
-            timeData2.push({
+            timeData.push({
                 id: inputField.id,
                 time: inputField.value,
             });
@@ -87,7 +85,7 @@ const handleFormSubmit = (userID, modal) => {
     }
     for (let inputField of videosInputFields) {
         if (inputField.value !== "") {
-            timeData3.push({
+            timeData.push({
                 id: inputField.id,
                 time: inputField.value,
             });
@@ -95,7 +93,7 @@ const handleFormSubmit = (userID, modal) => {
     }
 
     // If no data has been filled, do nothing.
-    if (!timeData1.length && !timeData2.length && !timeData3.length) {
+    if (!timeData.length) {
         modal.destroy();
         return;
     }
@@ -105,9 +103,7 @@ const handleFormSubmit = (userID, modal) => {
         methodname: 'block_homework_save_homeworktime', // Your PHP function that will handle the data
         args: {
             user: userID,
-            timeCompletedLiterature: timeData1,
-            timeCompletedLinks: timeData2,
-            timeCompletedVideos: timeData3,
+            timeCompleted: timeData,
         },
         done: function() {
             // Close the modal after successful submission

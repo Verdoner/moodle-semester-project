@@ -27,5 +27,5 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'block_homework'; // Plugin name.
-$plugin->version = 2024101401; // Plugin version.
+$plugin->version = 2024101402; // Plugin version.
 $plugin->requires = 2016052300; // Moodle version.
