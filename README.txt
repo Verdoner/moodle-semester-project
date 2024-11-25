@@ -1,3 +1,14 @@
+HOMEWORK PLUGIN
+===============
+
+The homework plugin is implemented as two plugins, one activity module and one block module.
+The plugins can be found respecively in:
+server\moodle\mod\homework
+server\moodle\blocks\homework
+
+
+
+
 MOODLE FOR WINDOWS 
 ==================
 
