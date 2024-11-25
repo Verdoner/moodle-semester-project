@@ -126,7 +126,7 @@ foreach ($homeworkmaterials as $material) : ?>
                     // this makes sure its is completely new site that is opened.
                     $link = !str_starts_with($material->link, 'http') ? "https://" . $material->link : $material->link;
                 ?>
-        <p><?php echo 'Link: <a href="' . $link . '" target="_blank">Click here</a>';?></p>
+            <p><?php echo 'Link: <a href="' . $link . '" target="_blank">Click here</a>';?></p>
             <?php endif; ?>
         <?php endif;
         if ($material->starttime != null) :

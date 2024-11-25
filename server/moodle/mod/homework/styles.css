@@ -4,16 +4,16 @@
     margin-bottom: 18px;
 }
 
-.literature {
+.material {
     border-bottom: 1px solid lightgrey;
     padding: 10px;
 }
 
-.literature>p {
+.material>p {
     margin-left: 60px;
 }
 
-.literature:last-child {
+.material:last-child {
     border-bottom: 0;
 }
 
