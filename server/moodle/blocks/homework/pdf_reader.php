@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 // Require for the pdfparser library
 require_once(__DIR__ . "/../../lib/pdfparser/pdfparser-2.11.0/alt_autoload.php-dist");
 
@@ -25,7 +27,7 @@ require_once(__DIR__ . "/../../lib/pdfparser/pdfparser-2.11.0/alt_autoload.php-d
  * @author    group 11
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class pdf_reader{
+class pdf_reader {
     /**
      * Reads the PDF using smalot/pdfparser library, which is also added to the project under moodle/lib/pdfparser
      * returns word count
