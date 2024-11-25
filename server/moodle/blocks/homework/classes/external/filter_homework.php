@@ -38,7 +38,7 @@ use external_single_structure;
 use JsonException;
 
 /**
- *
+ * Class used to filter homework on block plugin.
  */
 class filter_homework extends \external_api {
     /**
@@ -62,7 +62,7 @@ class filter_homework extends \external_api {
         $usercourses = enrol_get_users_courses($USER->id, true);
         $homeworkarray = [];
         foreach ($usercourses as $course) {
-            $homeworkrecords = $DB->get_records('homework', ['course' => $course->id]);
+            $homeworkrecords = $DB->get_records('homework', ['course_id' => $course->id]);
             foreach ($homeworkrecords as $homework) {
                 $homeworkarray[] = [
                     'id' => $homework->id,
@@ -79,22 +79,20 @@ class filter_homework extends \external_api {
     }
 
     /**
-     *
-     * @return external_single_structure
+     * @return external_single_structure an array of homework
      */
-    public static function execute_returns() {
+    public static function execute_returns(): external_single_structure {
         return new external_single_structure([
             'homework' => new external_value(PARAM_TEXT, 'Data array of homework'),
         ]);
     }
 
     /**
-     *
-     * @param $filter
-     * @param $homeworkarray
-     * @return array
+     * @param $filter - The current modules id
+     * @param $homeworkarray - Array containing all homework to be filtered
+     * @return array - The html to be shown client-side
      */
-    public static function filter($filter, $homeworkarray) {
+    public static function filter($filter, $homeworkarray): array {
         $returnarray = [];
         switch ($filter) {
             case ("all"):

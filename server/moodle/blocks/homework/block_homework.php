@@ -34,7 +34,6 @@ class block_homework extends block_base {
 
     /**
      * Retrieves and prepares the content to be displayed by the block
-     *
      * @return stdClass|null
      */
     public function get_content() {
@@ -47,7 +46,8 @@ class block_homework extends block_base {
         $homeworks = [];
         foreach ($usercourses as $course) {
             // Fetch homeworks using get_records_select.
-            $tmp = $DB->get_records('homework', ['course' => $course->id]);
+
+            $tmp = $DB->get_records('homework', ['course_id' => $course->id]);
             foreach ($tmp as $tm) {
                 $homeworks[] = $tm;
             }
@@ -175,7 +175,7 @@ class block_homework extends block_base {
     /**
      * Specifies where this block can be displayed in Moodle
      */
-    public function applicable_formats() {
+    public function applicable_formats(): array {
         return [
             'admin' => false,
             'site-index' => false,
