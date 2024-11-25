@@ -34,35 +34,24 @@ class block_homework extends block_base {
 
     /**
      * Retrieves and prepares the content to be displayed by the block
-     *
      * @return stdClass|null
      */
     public function get_content() {
 
         global $OUTPUT, $DB, $USER;
 
-        // Get current time.
-        $currenttime = time();
-
         // Fetch courses user is enrolled in.
-        $usercourses = enrol_get_users_courses($USER->id);
+        $usercourses = enrol_get_users_courses($USER->id, true);
 
-        // Extract course IDs.
-        $courseids = array_map(function ($course) {
-            return $course->id;
-        }, $usercourses);
+        $homeworks = [];
+        foreach ($usercourses as $course) {
+            // Fetch homeworks using get_records_select.
 
-        // Create a string of ? placeholders for each found course_id, seperated by commas.
-        $placeholders = implode(',', array_fill(0, count($courseids), '?'));
-
-        // Merge parameters.
-        $parameters = array_merge([$currenttime], $courseids);
-
-        // Construct WHERE condition for select.
-        // $select = "duedate > ? AND course_id IN ($placeholders)";
-
-        // Fetch homeworks using get_records_select.
-        $homeworks = $DB->get_records_select('homework', $select, $parameters);
+            $tmp = $DB->get_records('homework', ['course_id' => $course->id]);
+            foreach ($tmp as $tm) {
+                $homeworks[] = $tm;
+            }
+        }
 
         $data = [];
 
@@ -100,7 +89,7 @@ class block_homework extends block_base {
 
             $homeworkfiles = $DB->get_records('homework_materials', ['homework_id' => $homework->id]);
             foreach ($homeworkfiles as $homeworkfile) {
-                 array_push($fileids, $homeworkfile->file_id);
+                array_push($fileids, $homeworkfile->file_id);
             }
 
             // Get file records.
@@ -150,11 +139,7 @@ class block_homework extends block_base {
         $this->page->requires->js_call_amd('block_homework/sort', 'init');
         $this->page->requires->js_call_amd('block_homework/homework_injector', 'init', [$homeworks]);
         $this->page->requires->js_call_amd('block_homework/map_link_injector', 'init');
-        $this->page->requires->js_call_amd(
-            'block_homework/clickInfo',
-            'init',
-            ["homework", $data, $USER->id, $homeworkcompletionrecords]
-        );
+        $this->page->requires->js_call_amd('block_homework/filter', 'init');
         $this->page->requires->js_call_amd('block_homework/clickInfo', 'init', [$USER->id]);
 
         return $this->content;
@@ -184,7 +169,7 @@ class block_homework extends block_base {
     /**
      * Specifies where this block can be displayed in Moodle
      */
-    public function applicable_formats() {
+    public function applicable_formats(): array {
         return [
             'admin' => false,
             'site-index' => false,
