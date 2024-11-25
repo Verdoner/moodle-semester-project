@@ -14,6 +14,10 @@ define(function() {
                             //Get the inlaying container and determine if it's there.
                             const summaryContainer = modalContent.querySelector('.summary-modal-container');
                             if (summaryContainer) {
+                                //Get the eventid from the container
+                                console.log("here " + summaryContainer.getAttribute("data-event-id"));
+                                eventid = summaryContainer.getAttribute("data-event-id");
+
                                 // Get the container that contains text data
                                 const containerFluid = summaryContainer.querySelector('.container-fluid');
                                 //Loop through all links in the text area to see if one contains a link to a course and if so what is the course id
@@ -32,10 +36,15 @@ define(function() {
                                 });
 
 
-                                //Filter out courses from incorrect course
+                                //Get the correct homework which has the correct eventid otherwise cancel
                                 let filteredHomework = Object.values(homework).filter((work) => {
-                                    return work.course === Courseid;
+                                    return work.eventid === eventid;
                                 })
+                                if(filteredHomework.length === 0){
+                                    return;
+                                }
+
+
                                 // Determine if the modal is in the dashboard, a course link and a there isn't already a homeworkrow
                                 if (foundCourseLink && window.location.href.includes("/my") && !document.getElementById("homeworkRow")) {
                                     //set the div up accoring to the moodle standard
@@ -52,8 +61,10 @@ define(function() {
                                     // Create the new string with all homework info for that course
                                     let newString ='';
                                     Object.values(filteredHomework).forEach((homeworkInfo) => {
-                                        newString += `<p>HomeWork name = ${homeworkInfo.name} Intro = ${homeworkInfo.intro} link = <a href="https://localhost/mod/homework/view.php?id=${homeworkInfo.id}">link to homework</a>` +
-                                            ` dueDate = ${homeworkInfo.duedate ? `Duedate is ${Date(homeworkInfo.duedate)}` : 'No duedate'}</p>`;
+                                        newString += `<p>HomeWork name = ${homeworkInfo.name} <br>
+                                                         Intro = ${homeworkInfo.intro ? homeworkInfo.intro : "No intro"} <br>
+                                                         link = <a href="${window.location.href.replace("my/", "mod/homework/view.php?id=")}${homeworkInfo.cmid}">link to homework</a></p>
+                                                         dueDate = ${homeworkInfo.duedate ? `Duedate is ${Date(homeworkInfo.duedate)}` : 'No duedate'}</p>`;
                                     });
                                     homeworkLinkDiv.innerHTML = newString;
 
