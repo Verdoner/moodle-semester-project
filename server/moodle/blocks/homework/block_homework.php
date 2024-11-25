@@ -89,7 +89,7 @@ class block_homework extends block_base {
 
             $homeworkfiles = $DB->get_records('homework_materials', ['homework_id' => $homework->id]);
             foreach ($homeworkfiles as $homeworkfile) {
-              array_push($fileids, $homeworkfile->file_id);
+                array_push($fileids, $homeworkfile->file_id);
             }
 
             // Get file records.
