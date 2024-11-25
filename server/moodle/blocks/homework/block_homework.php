@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 // require for the pdf reader
-require_once(__DIR__ .'/pdf_reader.php');
+require_once(__DIR__ . '/pdf_reader.php');
 /**
  * Block definition class for the block_homework plugin.
  *
@@ -130,7 +130,7 @@ class block_homework extends block_base {
 
                     // Check file type and get page count if it's a PDF or DOCX
                     if (str_ends_with(strtolower($filename), '.pdf')) {
-                        //  Initialize word count reader
+                        // Initialize word count reader
                         $algorithm = new pdf_reader();
 
                         // Use word reading algorithm and save the value in wordcount
@@ -138,7 +138,6 @@ class block_homework extends block_base {
 
                         // Calculate the time estimate based on word count and average words per minute
                         $timeestimate = $wordcount / $averagewordsperminute;
-
                     }
 
                     $files[] = [

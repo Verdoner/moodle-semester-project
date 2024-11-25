@@ -1,4 +1,21 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+// Require for the pdfparser library
+require_once(__DIR__ . "/../../lib/pdfparser/pdfparser-2.11.0/alt_autoload.php-dist");
 
 /**
  * Class for the block_homework plugin. PDF reader that counts the words in a PDF file
@@ -8,11 +25,7 @@
  * @author    group 11
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-// Require for the pdfparser library
-require_once (__DIR__ . "/../../lib/pdfparser/pdfparser-2.11.0/alt_autoload.php-dist");
-class pdf_reader
-{
+class pdf_reader{
     /**
      * Reads the PDF using smalot/pdfparser library, which is also added to the project under moodle/lib/pdfparser
      * returns word count
@@ -60,7 +73,6 @@ class pdf_reader
             unlink($tempfilepath);
 
             return $wordcount;
-
         } catch (\Exception $e) {
             // Delete the temporary file in case of error
             unlink($tempfilepath);
@@ -69,5 +81,4 @@ class pdf_reader
             return "Error parsing PDF: " . $e->getMessage();
         }
     }
-
 }
