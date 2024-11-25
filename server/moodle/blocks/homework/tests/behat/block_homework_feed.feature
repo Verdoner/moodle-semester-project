@@ -18,7 +18,7 @@
 
 
 
- @javascript
+@javascript
   Scenario: Add the homework feed block on the dashboard and view as an user
     Given I log in as "admin"
     And I navigate to "Appearance > Default Dashboard page" in site administration
