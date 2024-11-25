@@ -79,6 +79,7 @@ class filter_homework extends \external_api {
     }
 
     /**
+     *
      * @return external_single_structure an array of homework
      */
     public static function execute_returns(): external_single_structure {
@@ -88,6 +89,7 @@ class filter_homework extends \external_api {
     }
 
     /**
+     *
      * @param $filter - The current modules id
      * @param $homeworkarray - Array containing all homework to be filtered
      * @return array - The html to be shown client-side
