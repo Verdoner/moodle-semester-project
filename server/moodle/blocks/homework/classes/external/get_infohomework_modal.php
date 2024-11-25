@@ -50,11 +50,11 @@ class get_infohomework_modal extends external_api {
      *
      * @param int $homeworkID The ID of the homework item
      * @return string[] - The HTML to be shown client-side
-     * @throws dml_exception|JsonException
+     * @throws dml_exception|coding_exception
      */
     public static function execute(int $homeworkid): array {
         global $DB, $USER;
-        $homework = $DB->get_record('homework', ['id' => $homeworkid]);
+        $homework = $DB->get_record('homework', ['id' => $homeworkid], '*',  MUST_EXIST);
         $course = $DB->get_record('course', ['id' => $homework->course_id]);
         $materials = $DB->get_records('homework_materials', ['homework_id' => $homework->id]);
         $completedmaterials = $DB->get_records('completions', ['usermodified' => $USER->id]);
@@ -107,7 +107,6 @@ class get_infohomework_modal extends external_api {
 
     /**
      *
-     * @throws JsonException
      */
     public static function get_info($homework, $course, $literaturearray, $linksarray, $videosarray): array {
         // Assuming you have the Mustache engine set up.
@@ -140,7 +139,7 @@ class get_infohomework_modal extends external_api {
     /**
      * Get a direct link to a file by its file ID.
      *
-     * @param int $fileID The ID of the file in Moodle's file storage.
+     * @param int $fileid The ID of the file in Moodle's file storage.
      * @return string|null The URL to the file or null if the file is not found.
      * @throws dml_exception|coding_exception
      */

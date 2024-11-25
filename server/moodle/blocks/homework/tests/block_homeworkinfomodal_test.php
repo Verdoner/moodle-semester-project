@@ -26,8 +26,12 @@
 namespace block_homework;
 
 use advanced_testcase;
+use block_homework\external\get_infohomework_modal;
 use core\exception\coding_exception;
+use dml_exception;
 use DOMDocument;
+use JsonException;
+use moodle_database;
 use stdClass;
 
 /**
@@ -151,4 +155,34 @@ final class block_homeworkinfomodal_test extends advanced_testcase {
         $input = $xpath->query("//input[@class='homework-time-videos'][@id='2'][@name='homework-time'][@min='1']");
         $this->assertEquals(1, $input->length, 'Expected input with class \'homework-time-videos\'');
     }
+
+    /**
+     *
+     * @return void
+     * @covers :: \block_homework\external\get_infohomework_modal
+     */
+    public function test_executethrowsexceptionwhenhomeworknotfound(): void {
+        $this->resetAfterTest();
+
+        $this->expectException(\dml_exception::class);
+        $homeworkid = 99999999999999999;
+        // Call the static method.
+        get_infohomework_modal::execute($homeworkid); // Pass a homework ID.
+    }
+
+    /**
+     *
+     * @return void
+     * @covers :: \block_homework\external\get_infohomework_modal
+     * @throws dml_exception|coding_exception
+     */
+    public function test_get_file_by_id_notfounderror(): void {
+        $this->resetAfterTest();
+        $fileid = 99999999999999999;
+        // Call the static method.
+        $result = get_infohomework_modal::get_file_link_by_id($fileid);
+        self::assertEquals(null, $result);
+    }
+
+
 }
