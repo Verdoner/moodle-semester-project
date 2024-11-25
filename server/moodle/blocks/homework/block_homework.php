@@ -97,6 +97,7 @@ class block_homework extends block_base {
             // Get file records.
             if (!empty($fileids)) {
                 $filerecords = $DB->get_records_list('files', 'id', $fileids);
+                $fs  = get_file_storage();
                 foreach ($filerecords as $file) {
                     $contextid = $file->contextid;
                     $component = $file->component;
@@ -124,6 +125,8 @@ class block_homework extends block_base {
 
                     // Initialize average words read per minute
                     $averagewordsperminute = 220;
+
+                    $file = $fs->get_file($contextid, $component, $filearea, $itemid, $filepath, $filename);
 
                     // Check file type and get page count if it's a PDF or DOCX
                     if (str_ends_with(strtolower($filename), '.pdf')) {

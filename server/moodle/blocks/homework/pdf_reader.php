@@ -21,7 +21,7 @@ class pdf_reader
 
         // Make sure the file object is of type stored_file and contains the correct file path
         if (!$file instanceof \stored_file) {
-            throw new \invalid_argument_exception("Expected a stored_file object.");
+            throw new \Exception("Expected a stored_file object.");
         }
 
         // We need to make a temporary file because moodle stores files in a virtual file system and the library
