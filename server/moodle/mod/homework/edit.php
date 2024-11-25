@@ -36,6 +36,7 @@ require_login($course, true, $cm);
 $PAGE->set_url('/mod/homework/edit.php', ['id' => $id]);
 $PAGE->set_title(get_string('modulename', 'homework'));
 $PAGE->set_heading(get_string('modulename', 'homework'));
+require_capability('mod/homework:edit', $context);
 
 // Adding secondary navigation links.
 if ($PAGE->has_secondary_navigation()) {

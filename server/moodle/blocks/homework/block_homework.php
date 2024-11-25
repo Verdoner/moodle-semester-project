@@ -46,6 +46,7 @@ class block_homework extends block_base {
         $homeworks = [];
         foreach ($usercourses as $course) {
             // Fetch homeworks using get_records_select.
+
             $tmp = $DB->get_records('homework', ['course_id' => $course->id]);
             foreach ($tmp as $tm) {
                 $homeworks[] = $tm;
@@ -60,12 +61,10 @@ class block_homework extends block_base {
 
         $this->content = new stdClass();
 
-
         // If the current page is a course then remove unrelated homework.
         if ($this->page->pagetype == 'course-view-topics') {
             $homeworks = $this->filter_homework_content($this->page->url, $homeworks);
         }
-
 
         // Retrieving all of the user's completions.
         $homeworkcompletionrecords = $DB->get_records('completions', ['usermodified' => $USER->id]);

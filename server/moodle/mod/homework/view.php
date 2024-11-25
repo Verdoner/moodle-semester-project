@@ -61,19 +61,20 @@ if ($PAGE->has_secondary_navigation()) {
 
     // Add the submissions node to the secondary navigation.
     $PAGE->secondarynav->add_node($submissionsnode);
-
-    // Example: Add another node, e.g., 'Edit Homework'.
-    try {
-        $editnode = navigation_node::create(
-            get_string('edit', 'moodle'),
-            new moodle_url('/mod/homework/edit.php', ['id' => $cm->id]),
-            navigation_node::TYPE_CUSTOM,
-            null,
-            'editnav'
-        );
-        $PAGE->secondarynav->add_node($editnode);
-    } catch (coding_exception | \core\exception\moodle_exception $e) {
-        debugging($e->getMessage(), DEBUG_DEVELOPER);
+    if (has_capability('mod/homework:edit', $context)) {
+        // Example: Add another node, e.g., 'Edit Homework'.
+        try {
+            $editnode = navigation_node::create(
+                get_string('edit', 'moodle'),
+                new moodle_url('/mod/homework/edit.php', ['id' => $cm->id]),
+                navigation_node::TYPE_CUSTOM,
+                null,
+                'editnav'
+            );
+            $PAGE->secondarynav->add_node($editnode);
+        } catch (coding_exception | \core\exception\moodle_exception $e) {
+            debugging($e->getMessage(), DEBUG_DEVELOPER);
+        }
     }
 }
 
@@ -245,12 +246,12 @@ echo '</div>';?>
 
 <?php
  /**
- *
- * @package   mod_homework
- * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-if ($viewobj->canedit && !$viewobj->hashomework) {
+  *
+  * @package   mod_homework
+  * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
+  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+  */
+if ($viewobj->canedit && !$viewobj->hashomework && has_capability('mod/homework:edit', $context)) {
     // Add the button for opening the homework chooser modal.
     echo html_writer::tag('button', get_string('openhomeworkchooser', 'mod_homework'), [
         'type' => 'button',
