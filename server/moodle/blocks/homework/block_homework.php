@@ -97,12 +97,11 @@ class block_homework extends block_base {
 
             // Get ids of homeworkfiles.
             $fileids = [];
-            // Code commented out because it is unsure if the files are necessary.
 
-            // ...$homeworkfiles = $DB->get_records('files_homework', ['homework_id' => $homework->id]);
-            // foreach ($homeworkfiles as $homeworkfile) {
-              // array_push($fileids, $homeworkfile->files_id);
-            // }
+            $homeworkfiles = $DB->get_records('homework_materials', ['homework_id' => $homework->id]);
+            foreach ($homeworkfiles as $homeworkfile) {
+                 array_push($fileids, $homeworkfile->file_id);
+            }
 
             // Get file records.
             if (!empty($fileids)) {

@@ -87,12 +87,12 @@ $CFG->behat_dbpass = 'root'; // default: $CFG->behat_dbpass = getenv('MOODLE_DOC
 $CFG->behat_dbname = 'bht_moodle';
 $CFG->behat_dboptions = ['dbcollation' => getenv('MOODLE_DOCKER_DBCOLLATION')];
 $CFG->behat_prefix = 'bht_';
-$CFG->behat_wwwroot = 'http://127.0.0.1:8000';
+$CFG->behat_wwwroot   = 'http://webserver';
 $CFG->behat_dataroot  = __DIR__ . '/../behatdata';
 $CFG->behat_profiles = array(
     'default' => array(
-        'browser' => "chrome", // or "firefox", "edge", or any other locally installed browser supported by Selenium
-        'wd_host' => 'http://host.docker.internal:4444/wd/hub',
+        'browser' => getenv('MOODLE_DOCKER_BROWSER'),
+        'wd_host' => 'http://selenium:4444/wd/hub',
     ),
 );
 $CFG->behat_faildump_path = __DIR__ . '/../behatfaildumps';
