@@ -218,6 +218,11 @@ class block_homework extends block_base {
         ];
     }
 
+    /**
+     * Get data from database and calculate user's reading speed, time spent on homework per day, and percent of homework completed.
+     * @return float[]|int[] An assorted array of the stats that will be used for stat generation
+     * @throws dml_exception
+     */
     public function getstats() {
         global $DB, $USER;
 
@@ -258,6 +263,7 @@ class block_homework extends block_base {
         $totalpages = 0;
         $totaldays = 0;
 
+        // Calculate total time spent both reading and in total.
         foreach ($records as $record) {
             // Timestamps are in seconds, so we get the day difference by dividing by seconds per day.
             // Use the time from the first homework completion as the start time for these stats.
@@ -276,11 +282,13 @@ class block_homework extends block_base {
 
         $weightedreadingspeed = $globalreadingspeed;
 
+        // Calculate time per day.
         $timeperday = 0;
         if ($totaldays != 0) {
             $timeperday = $totalminutes / $totaldays;
         }
 
+        // Calculate weighted reading speed.
         if ($totalpages != 0) {
             $readingspeed = $totalreadingtime / $totalpages;
             // The reading speed is weighted. When no pages have been read, it will be the global average a page per minute.
@@ -289,6 +297,7 @@ class block_homework extends block_base {
                 $totalminutes / ($totalminutes + $weight);
         }
 
+        // Calculate percent completed.
         $percentcompleted = 0;
         if (count($records) && count($availablematerials)) {
             $percentcompleted = count($records) / count($availablematerials) * 100;

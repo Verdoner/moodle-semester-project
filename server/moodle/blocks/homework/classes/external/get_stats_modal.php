@@ -52,7 +52,7 @@ class get_stats_modal extends external_api {
     }
 
     /**
-     * Generates the custom HTML for the homework chooser modal.
+     * Generates the custom HTML for the stats modal.
      *
      * @param array_of_things $stats The stats array
      * @return string[] - The HTML to be shown client-side
