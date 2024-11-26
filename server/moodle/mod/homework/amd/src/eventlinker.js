@@ -1,18 +1,22 @@
 import Modal from 'core/modal';
 import Ajax from "../../../../lib/amd/src/ajax";
 
+/**
+ * Creates the event linker modal.
+ *
+ * @param {int} cmid
+ * @param {int} homeworkid
+ */
 export const init = async(cmid, homeworkid) => {
-
-    console.log("hello");
-    console.log(homeworkid);
-
+    // Add an eventlistner to the open event linker button.
     document.querySelector('#open-event-linker').addEventListener('click', async()=>{
 
-
+        // Call the server to get all avalible events.
         Ajax.call([{
             methodname: 'mod_homework_get_events_for_homework',
             args: {homeworkid: homeworkid},
             done: async function(response) {
+                     // Create a modal for the user to link events and homework.
                     const modal = await Modal.create({
                         title: 'Homework event linker',
                         body: response.events,
@@ -23,8 +27,8 @@ export const init = async(cmid, homeworkid) => {
                     });
 
                     modal.show();
-
-                    if (response.events.includes("There are no available courses to link")){
+                    // If there is nothing to link then hide submit and cancel buttons.
+                    if (response.events.includes("There are no available courses to link")) {
                         modal.hideFooter();
                     }
 
@@ -38,7 +42,6 @@ export const init = async(cmid, homeworkid) => {
                         modal.destroy();
                         location.reload();
                     });
-
             },
             fail: (error) => {
                 console.error("Fail:", error);
@@ -51,7 +54,14 @@ export const init = async(cmid, homeworkid) => {
 
 };
 
-function submitEventLink(modal, homeworkid, cmid){
+/**
+ * Sumbits the event and homework to link.
+ *
+ * @param {modal} modal
+ * @param {int} homeworkid
+ * @param {int} cmid
+ */
+function submitEventLink(modal, homeworkid, cmid) {
 
     // Get the selected event
     let form = document.getElementById("evntlinkerform");
@@ -59,27 +69,22 @@ function submitEventLink(modal, homeworkid, cmid){
 
     // If there are non click then complain
 
-    if(!selectedEvent){
+    if (!selectedEvent) {
         alert("Please select an event!");
-    }else{
-        // submit the event to link
-        console.log("homework id = " + homeworkid + "cmid = " + cmid + "selected eventid = " +selectedEvent.value);
+    } else {
+        // Submit the event to link
         Ajax.call([{
             methodname: 'mod_homework_homework_event_link',
-            args: {homeworkid: homeworkid, cmid: cmid, eventid: selectedEvent.value},
+            args: {homeworkid: homeworkid, course_module_id: cmid, eventid: selectedEvent.value},
             done: async function(response) {
-                console.log(response.status + response.message);
                 modal.destroy();
                 location.reload();
             },
-            fail:(error) =>{
+            fail: (error) =>{
                 console.log("Error: ", error);
             }
         }]);
     }
-
-
-
 
 
 }

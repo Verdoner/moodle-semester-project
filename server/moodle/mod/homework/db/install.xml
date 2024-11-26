@@ -16,7 +16,7 @@
         <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="A description of the homework"/>
         <FIELD NAME="duedate" TYPE="int" LENGTH="15" NOTNULL="false" SEQUENCE="false" COMMENT="Duedate for the homework"/>
         <FIELD NAME="eventid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Event linked to the homework"/>
-        <FIELD NAME="cmid" TYPE="int" LENGTH="10" SEQUENCE="false"  NOTNULL="false"/>
+        <FIELD NAME="course_module_id" TYPE="int" LENGTH="10" SEQUENCE="false"  NOTNULL="false" COMMENT="Course module linked to the homework"/>
         <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
