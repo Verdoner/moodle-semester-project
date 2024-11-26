@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
+// require for the pdf reader
+require_once(__DIR__ . '/pdf_reader.php');
 /**
  * Block definition class for the block_homework plugin.
  *
@@ -46,6 +50,7 @@ class block_homework extends block_base {
         $homeworks = [];
         foreach ($usercourses as $course) {
             // Fetch homeworks using get_records_select.
+
             $tmp = $DB->get_records('homework', ['course_id' => $course->id]);
             foreach ($tmp as $tm) {
                 $homeworks[] = $tm;
@@ -60,12 +65,10 @@ class block_homework extends block_base {
 
         $this->content = new stdClass();
 
-
         // If the current page is a course then remove unrelated homework.
         if ($this->page->pagetype == 'course-view-topics') {
             $homeworks = $this->filter_homework_content($this->page->url, $homeworks);
         }
-
 
         // Retrieving all of the user's completions.
         $homeworkcompletionrecords = $DB->get_records('completions', ['usermodified' => $USER->id]);
@@ -87,16 +90,16 @@ class block_homework extends block_base {
 
             // Get ids of homeworkfiles.
             $fileids = [];
-            // Code commented out because it is unsure if the files are necessary.
 
-            // ...$homeworkfiles = $DB->get_records('files_homework', ['homework_id' => $homework->id]);
-            // foreach ($homeworkfiles as $homeworkfile) {
-              // array_push($fileids, $homeworkfile->files_id);
-            // }
+            $homeworkfiles = $DB->get_records('homework_materials', ['homework_id' => $homework->id]);
+            foreach ($homeworkfiles as $homeworkfile) {
+                array_push($fileids, $homeworkfile->file_id);
+            }
 
             // Get file records.
             if (!empty($fileids)) {
                 $filerecords = $DB->get_records_list('files', 'id', $fileids);
+                $fs  = get_file_storage();
                 foreach ($filerecords as $file) {
                     $contextid = $file->contextid;
                     $component = $file->component;
@@ -119,10 +122,31 @@ class block_homework extends block_base {
                     // Get appropriate icon for file type.
                     $iconurl = $OUTPUT->image_url(file_mimetype_icon($file->mimetype));
 
+                    // Initialize time estimate as null
+                    $timeestimate = null;
+
+                    // Initialize average words read per minute
+                    $averagewordsperminute = 220;
+
+                    $file = $fs->get_file($contextid, $component, $filearea, $itemid, $filepath, $filename);
+
+                    // Check file type and get page count if it's a PDF or DOCX
+                    if (str_ends_with(strtolower($filename), '.pdf')) {
+                        // Initialize word count reader
+                        $algorithm = new pdf_reader();
+
+                        // Use word reading algorithm and save the value in wordcount
+                        $wordcount = $algorithm->countwordsinpdf($file);
+
+                        // Calculate the time estimate based on word count and average words per minute
+                        $timeestimate = $wordcount / $averagewordsperminute;
+                    }
+
                     $files[] = [
                         'fileurl' => $url->out(),
                         'filename' => $filename,
                         'iconurl' => $iconurl,
+                        'timeestimate' => $timeestimate,
                     ];
                 }
             }
@@ -141,11 +165,6 @@ class block_homework extends block_base {
         $this->page->requires->js_call_amd('block_homework/sort', 'init');
         $this->page->requires->js_call_amd('block_homework/homework_injector', 'init', [$homeworks]);
         $this->page->requires->js_call_amd('block_homework/map_link_injector', 'init');
-        $this->page->requires->js_call_amd(
-            'block_homework/clickInfo',
-            'init',
-            ["homework", $data, $USER->id, $homeworkcompletionrecords]
-        );
         $this->page->requires->js_call_amd('block_homework/filter', 'init');
         $this->page->requires->js_call_amd('block_homework/clickInfo', 'init', [$USER->id]);
 

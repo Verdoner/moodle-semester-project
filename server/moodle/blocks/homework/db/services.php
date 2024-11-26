@@ -66,7 +66,7 @@ $functions = [
         'description' => 'Filter the homework',
         'type'        => 'read',
         'ajax'        => true,
-    ]
+    ],
 ];
 
 $services = [
@@ -76,7 +76,7 @@ $services = [
             'block_homework_save_homeworktime',
             'block_homework_get_homework',
             'block_homework_get_courses',
-            'block_homework_filter_homework'
+            'block_homework_filter_homework',
         ],
         'restrictedusers' => 0,
         'enabled' => 1,
