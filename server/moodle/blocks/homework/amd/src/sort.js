@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import Ajax from 'core/ajax';
-
 /**
  * Homework/amd/src/sort.js
  *
@@ -39,7 +38,9 @@ export const init = async() => {
                     box.appendChild(p);
 
                     let button = document.createElement("button");
-                    button.classList.add("Timebutton");
+                    button.classList.add("timebutton");
+                    button.setAttribute("data-homework-id", homework.id);
+                    button.setAttribute("id", homework.id);
                     button.innerHTML = "Time";
                     box.appendChild(button);
 
@@ -53,3 +54,4 @@ export const init = async() => {
         }]);
     });
 };
+
