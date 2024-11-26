@@ -68,8 +68,9 @@ class get_homework extends external_api {
                 $homeworkarray[] = [
                     'id' => $homework->id,
                     'name' => $homework->name,
-                    'intro' => $homework->intro,
-                    'duedate' => $homework->duedate,
+                    'intro' => strip_tags($homework->intro),
+                    'duedate' => date('d-m-y', $homework->duedate),
+                    'time' => $homework->duedate,
                     'course' => $course->fullname,
                 ];
             }
