@@ -14,16 +14,16 @@ import MyModal from 'block_homework/modals';
 
 /**
  * Fetches and initializes the completion modal for the homework module that was clicked on.
- * @param userID ID of currently logged-in user.
+ * @param stats Array of stats info.
  * @returns {Promise<void>} A promise that, when fulfilled, opens the modal
  */
-export const init = async(userID) => {
+export const init = async(stats) => {
     // Create the modal using block_homework_get_stats_modal
     $(document).ready(function() {
-        $('.stats-btn').on('click', (e) => {
+        $('.stats-btn').on('click', () => {
             Ajax.call([{
                 methodname: 'block_homework_get_stats_modal',
-                args: {},
+                args: {'stats': stats},
                 done: async function(response) {
                     const modal = await MyModal.create({
                         // eslint-disable-next-line max-len

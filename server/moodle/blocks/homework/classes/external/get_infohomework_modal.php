@@ -42,6 +42,7 @@ class get_infohomework_modal extends external_api {
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
             'homeworkID' => new external_value(PARAM_INT, 'The ID of the homework item'),
+            'readingspeed' => new external_value(PARAM_FLOAT, "The user's reading speed"),
         ]);
     }
 
@@ -52,7 +53,7 @@ class get_infohomework_modal extends external_api {
      * @return string[] - The HTML to be shown client-side
      * @throws dml_exception|JsonException
      */
-    public static function execute(int $homeworkid): array {
+    public static function execute(int $homeworkid, float $readingspeed): array {
         global $DB, $USER;
         $homework = $DB->get_record('homework', ['id' => $homeworkid]);
         $course = $DB->get_record('course', ['id' => $homework->course_id]);
@@ -76,6 +77,7 @@ class get_infohomework_modal extends external_api {
                 if ($material->file_id !== null) {
                     $material->fileurl = self::get_file_link_by_id($material->file_id);
                 }
+                $material->expectedTime = ceil(($material->endpage - $material->startpage) * $readingspeed);
                 $literaturearray[] = $material;
             } else if ($material->link !== null) {
                 $linksarray[] = $material;
@@ -84,6 +86,9 @@ class get_infohomework_modal extends external_api {
                     $material->fileurl = self::get_file_link_by_id($material->file_id);
                 }
                 $videosarray[] = $material;
+            }
+            if ($material->starttime != null && $material->endtime != null) {
+                $material->expectedTime = ceil(($material->endtime - $material->starttime)/60);
             }
         }
 

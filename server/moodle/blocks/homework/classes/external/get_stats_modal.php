@@ -20,11 +20,13 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
 use coding_exception;
+use core\router\schema\objects\array_of_things;
 use core_external\external_api;
 use dml_exception;
 use core_external\external_function_parameters;
 use core_external\external_value;
 use core_external\external_single_structure;
+use core_external\external_multiple_structure;
 use JsonException;
 use Mustache_Engine;
 
@@ -40,81 +42,30 @@ class get_stats_modal extends external_api {
      * @return external_function_parameters
      */
     public static function execute_parameters(): external_function_parameters {
-        return new external_function_parameters([]);
+        return new external_function_parameters([
+            'stats' => new external_single_structure([
+                'timeperday' => new external_value(PARAM_FLOAT, 'Time spent on homework per day'),
+                'weightedreadingspeed' => new external_value(PARAM_FLOAT, 'Weighted reading speed average'),
+                'percentcompleted' => new external_value(PARAM_FLOAT, 'Percent of homework completed'),
+            ]),
+        ]);
     }
 
     /**
      * Generates the custom HTML for the homework chooser modal.
      *
-     * @param int $homeworkID The ID of the homework item
+     * @param array_of_things $stats The stats array
      * @return string[] - The HTML to be shown client-side
      * @throws dml_exception|JsonException
      */
-    public static function execute(): array {
-        global $DB, $USER;
-
-        // The weight indicates the number of minutes after which the user's reading speed will be prioritized over the average.
-        $weight = 180;
-        // The global reading speed in minutes.
-        $globalreadingspeed = 2;
-
-        $records = $DB->get_records_sql(
-            "
-            SELECT c.*, hm.startpage, hm.endpage
-            FROM {completions} c
-            LEFT JOIN {homework_materials} hm ON c.material_id = hm.id
-            WHERE c.usermodified = :userid",
-            ['userid' => $USER->id]
-        );
-
-        $availablematerials = $DB->get_records('homework_materials');
-
-        $totalminutes = 0;
-        $totalreadingtime = 0;
-        $totalpages = 0;
-        $totaldays = 0;
-
-        foreach ($records as $record) {
-            // Timestamps are in seconds, so we get the day difference by dividing by seconds per day.
-            // Use the time from the first homework completion as the start time for these stats.
-            $totaldays = floor((time() - $record->timecreated) / 86400) + 1;
-
-            $totalminutes += $record->timetaken;
-
-            $startpage = $record->startpage;
-            $endpage = $record->endpage;
-
-            if ($startpage != null && $endpage != null) {
-                $totalpages += $endpage - $startpage;
-                $totalreadingtime += $record->timetaken;
-            }
-        }
-        $weightedreadingspeed = $globalreadingspeed;
-        $timeperday = 0;
-        if ($totaldays != 0) {
-            $timeperday = $totalminutes / $totaldays;
-        }
-
-        if ($totalpages != 0) {
-            $readingspeed = $totalreadingtime / $totalpages;
-            // The reading speed is weighted. When no pages have been read, it will be the global average a page per minute.
-            // Once the number of minutes reaches the weight, the user's speed will be weighted more than the average.
-            $weightedreadingspeed = $globalreadingspeed + ($readingspeed - $globalreadingspeed) *
-                $totalminutes / ($totalminutes + $weight);
-        }
-
-        $percentcompleted = 0;
-        if (count($records) && count($availablematerials)) {
-            $percentcompleted = count($records) / count($availablematerials) * 100;
-        }
-
+    public static function execute($stats): array {
         $mustache = new Mustache_Engine();
 
         // Prepare data for the template.
         $content = [
-            'weightedreadingspeed' => round($weightedreadingspeed, 2),
-            'percentcompleted' => round($percentcompleted, 2),
-            'timeperday' => round($timeperday, 2),
+            'weightedreadingspeed' => round($stats['weightedreadingspeed'], 2),
+            'percentcompleted' => round($stats['percentcompleted'], 2),
+            'timeperday' => round($stats['timeperday'], 2),
         ];
 
         $templatepath = __DIR__ . "/../../templates/stats.mustache";

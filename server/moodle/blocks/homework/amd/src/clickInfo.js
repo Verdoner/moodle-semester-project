@@ -17,7 +17,7 @@ import MyModal from 'block_homework/modals';
  * @param userID ID of currently logged-in user.
  * @returns {Promise<void>} A promise that, when fulfilled, opens the modal
  */
-export const init = async(userID) => {
+export const init = async(userID, readingspeed) => {
     // Create the modal using block_homework_get_infohomework_modal
     $(document).ready(function() {
         $('.timebutton').on('click', (e) => {
@@ -25,6 +25,7 @@ export const init = async(userID) => {
                 methodname: 'block_homework_get_infohomework_modal',
                 args: {
                     homeworkID: e.target.id,
+                    readingspeed: readingspeed
                 },
                 done: async function(response) {
                     const modal = await MyModal.create({
