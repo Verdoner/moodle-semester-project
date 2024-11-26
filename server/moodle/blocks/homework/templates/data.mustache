@@ -49,6 +49,11 @@
                 {{#files}}
                     <img src="{{iconurl}}" alt="File icon">
                     <a href="{{fileurl}}" download="{{filename}}">{{filename}}</a>
+
+                    <!-- Conditionally show a time estimate if it exists -->
+                        {{#timeestimate}}
+                            <p>Estimated time in minutes: {{timeestimate}}</p>
+                        {{/timeestimate}}
                 {{/files}}
             </div>
         {{/data}}

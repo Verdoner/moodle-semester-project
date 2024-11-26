@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
+// require for the pdf reader
+require_once(__DIR__ . '/pdf_reader.php');
 /**
  * Block definition class for the block_homework plugin.
  *
@@ -95,6 +99,7 @@ class block_homework extends block_base {
             // Get file records.
             if (!empty($fileids)) {
                 $filerecords = $DB->get_records_list('files', 'id', $fileids);
+                $fs  = get_file_storage();
                 foreach ($filerecords as $file) {
                     $contextid = $file->contextid;
                     $component = $file->component;
@@ -117,10 +122,31 @@ class block_homework extends block_base {
                     // Get appropriate icon for file type.
                     $iconurl = $OUTPUT->image_url(file_mimetype_icon($file->mimetype));
 
+                    // Initialize time estimate as null
+                    $timeestimate = null;
+
+                    // Initialize average words read per minute
+                    $averagewordsperminute = 220;
+
+                    $file = $fs->get_file($contextid, $component, $filearea, $itemid, $filepath, $filename);
+
+                    // Check file type and get page count if it's a PDF or DOCX
+                    if (str_ends_with(strtolower($filename), '.pdf')) {
+                        // Initialize word count reader
+                        $algorithm = new pdf_reader();
+
+                        // Use word reading algorithm and save the value in wordcount
+                        $wordcount = $algorithm->countwordsinpdf($file);
+
+                        // Calculate the time estimate based on word count and average words per minute
+                        $timeestimate = $wordcount / $averagewordsperminute;
+                    }
+
                     $files[] = [
                         'fileurl' => $url->out(),
                         'filename' => $filename,
                         'iconurl' => $iconurl,
+                        'timeestimate' => $timeestimate,
                     ];
                 }
             }
