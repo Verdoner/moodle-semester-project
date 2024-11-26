@@ -247,6 +247,10 @@ if ($viewobj->canedit && !$viewobj->hashomework) {
         'id' => 'open-homework-chooser',
         'class' => 'btn btn-primary',
     ]);
+
+    echo '<br>';
+    echo '<br>';
+
     echo html_writer::tag('button', get_string('openeventlinker', 'mod_homework'), [
         'type' => 'button',
         'id' => 'open-event-linker',

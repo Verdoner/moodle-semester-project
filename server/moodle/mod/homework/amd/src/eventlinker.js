@@ -28,7 +28,7 @@ export const init = async(cmid, homeworkid) => {
 
                     modal.show();
                     // If there is nothing to link then hide submit and cancel buttons.
-                    if (response.events.includes("There are no available courses to link")) {
+                    if (response.events.includes("There are no available events to link")) {
                         modal.hideFooter();
                     }
 
