@@ -32,7 +32,6 @@ export const init = async() => {
                 let homeworks = JSON.parse(response.homework);
                 document.getElementById("outer-box").innerHTML = "";
                 homeworks.forEach((homework) => {
-                    console.log(homework);
                     let box = document.createElement("div");
                     box.classList.add("infobox");
 
