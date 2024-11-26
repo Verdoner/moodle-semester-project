@@ -56,16 +56,16 @@ class get_stats_modal extends external_api {
         // The weight indicates the number of minutes after which the user's reading speed will be prioritized over the average.
         $weight = 180;
         // The global reading speed in minutes.
-        $globalreadingspeed = 0.5;
+        $globalreadingspeed = 2;
 
-        $sql = "
+        $records = $DB->get_records_sql(
+            "
             SELECT c.*, hm.startpage, hm.endpage
             FROM {completions} c
             LEFT JOIN {homework_materials} hm ON c.material_id = hm.id
-            WHERE c.usermodified = :userid
-        ";
-        $params = ['userid' => $USER->id];
-        $records = $DB->get_records_sql($sql, $params);
+            WHERE c.usermodified = :userid",
+            ['userid' => $USER->id]
+        );
 
         $availablematerials = $DB->get_records('homework_materials');
 
@@ -75,10 +75,9 @@ class get_stats_modal extends external_api {
         $totaldays = 0;
 
         foreach ($records as $record) {
-
             // Timestamps are in seconds, so we get the day difference by dividing by seconds per day.
             // Use the time from the first homework completion as the start time for these stats.
-            $totaldays = floor(time() - ($record->timecreated) / 86400);
+            $totaldays = floor((time() - $record->timecreated) / 86400) + 1;
 
             $totalminutes += $record->timetaken;
 
@@ -100,7 +99,8 @@ class get_stats_modal extends external_api {
             $readingspeed = $totalreadingtime / $totalpages;
             // The reading speed is weighted. When no pages have been read, it will be the global average a page per minute.
             // Once the number of minutes reaches the weight, the user's speed will be weighted more than the average.
-            $weightedreadingspeed = $globalreadingspeed + ($readingspeed - $globalreadingspeed) * $totalminutes / ($totalminutes + $weight);
+            $weightedreadingspeed = $globalreadingspeed + ($readingspeed - $globalreadingspeed) *
+                $totalminutes / ($totalminutes + $weight);
         }
 
         $percentcompleted = 0;
@@ -112,15 +112,26 @@ class get_stats_modal extends external_api {
 
         // Prepare data for the template.
         $content = [
-            'weightedreadingspeed' => strip_tags($weightedreadingspeed),
-            'percentcompleted' => strip_tags($percentcompleted),
-            'timeperday' => strip_tags($timeperday),
-
+            'weightedreadingspeed' => round($weightedreadingspeed, 2),
+            'percentcompleted' => round($percentcompleted, 2),
+            'timeperday' => round($timeperday, 2),
         ];
 
-        $html = $mustache->render(file_get_contents(__DIR__ . "/../../templates/stats.mustache"), $content);
+        $templatepath = __DIR__ . "/../../templates/stats.mustache";
+        if (!file_exists($templatepath)) {
+            throw new coding_exception("Template file does not exist: " . $templatepath);
+        }
 
-        return ['html' => $html];
+        $templatecontent = file_get_contents($templatepath);
+        if (!$templatecontent) {
+            throw new coding_exception("Template file is empty or could not be read: " . $templatepath);
+        }
+
+        $html = $mustache->render($templatecontent, $content);
+
+        return [
+            'html' => $html,
+        ];
     }
 
     /**
@@ -129,7 +140,7 @@ class get_stats_modal extends external_api {
      */
     public static function execute_returns(): external_single_structure {
         return new external_single_structure([
-            'html' => new external_value(PARAM_TEXT, 'modal thml'),
+            'html' => new external_value(PARAM_RAW, 'HTML for the stats modal'),
         ]);
     }
 }
