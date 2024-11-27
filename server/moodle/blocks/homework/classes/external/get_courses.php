@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -39,20 +38,24 @@ use external_value;
 use external_single_structure;
 use JsonException;
 
+/**
+ *
+ */
 class get_courses extends \external_api {
-
     /**
+     *
      * @return external_function_parameters
      */
-    public static function execute_parameters(){
+    public static function execute_parameters() {
         return new external_function_parameters([]);
     }
 
     /**
+     *
      * @return array
      * @throws JsonException
      */
-    public static function execute(){
+    public static function execute() {
         global $USER;
         $usercourses = enrol_get_users_courses($USER->id, true);
 
@@ -60,9 +63,10 @@ class get_courses extends \external_api {
     }
 
     /**
+     *
      * @return external_single_structure
      */
-    public static function execute_returns(){
+    public static function execute_returns() {
         return new external_single_structure([
             'courses' => new external_value(PARAM_TEXT, 'Data array of courses'),
         ]);

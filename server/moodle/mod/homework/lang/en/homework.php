@@ -39,6 +39,7 @@ $string['modulename_help'] = 'Use the homework module to create interactive home
 $string['modulenameplural'] = 'Homework';
 $string['name'] = 'Homework name';
 $string['name_help'] = 'Fill out homework name';
+$string['openeventlinker'] = 'Open event linker';
 $string['openhomeworkchooser'] = 'Open Homework Chooser';
 $string['pluginadministration'] = 'Homework administration';
 $string['pluginname'] = 'Homework';

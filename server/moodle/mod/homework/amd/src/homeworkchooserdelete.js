@@ -1,8 +1,7 @@
-// homeworkchooserdelete.js (Updated Version)
+// homeworkchooserdelete.js
 
 import $ from 'jquery';
 import Ajax from 'core/ajax';
-import home from "../../../../lib/amd/src/key_codes";
 
 /**
  * Initializes the Homework Delete Modal.
@@ -12,7 +11,6 @@ import home from "../../../../lib/amd/src/key_codes";
  * @returns {Promise<void>}
  */
 export const init = async (cmid, homeworkids) => {
-    console.log(homeworkids);
     Object.values(homeworkids).forEach(homeworkid => {
         $('#delete-homework-chooser-' + homeworkid.id).on('click', () => {
             // Show a confirmation alert
@@ -26,8 +24,7 @@ export const init = async (cmid, homeworkids) => {
                         id: homeworkid.id,
                         fileid: (homeworkid.file_id) ? homeworkid.file_id : null,
                     },
-                    done: async function (response) {
-                        // Handle successful deletion here, if needed
+                    done: async function() {
                         console.log("Homework record deleted successfully.");
                         location.reload();
                     },
