@@ -231,16 +231,6 @@ class block_homework extends block_base {
         // The global reading speed in minutes.
         $globalreadingspeed = 2;
 
-        // Get records of all completions with the start page, end page, start time and end time of the material.
-        $records = $DB->get_records_sql(
-            "
-            SELECT c.*, hm.startpage, hm.endpage
-            FROM {completions} c
-            LEFT JOIN {homework_materials} hm ON c.material_id = hm.id
-            WHERE c.usermodified = :userid",
-            ['userid' => $USER->id]
-        );
-
         // Fetch courses user is enrolled in.
         $usercourses = enrol_get_users_courses($USER->id, true);
 
@@ -248,12 +238,22 @@ class block_homework extends block_base {
 
         $placeholders = implode(',', array_fill(0, count($courseids), '?'));
 
+        // Get records of all completions with the start page, end page, start time and end time of the material.
+        $records = $DB->get_records_sql(
+            "
+            SELECT c.*, hm.startpage, hm.endpage
+            FROM {completions} c
+            INNER JOIN {homework_materials} hm ON c.material_id = hm.id
+            WHERE c.usermodified = :userid",
+            ['userid' => $USER->id]
+        );
+
         $sql = "
             SELECT hm.*
             FROM {homework_materials} hm
             INNER JOIN {homework} hw ON hm.homework_id = hw.id
-            INNER JOIN {course} c ON hw.course_id = c.id
-            WHERE c.id IN ($placeholders)
+            INNER JOIN {course} co ON hw.course_id = co.id
+            WHERE co.id IN ($placeholders)
         ";
 
         $availablematerials = $DB->get_records_sql($sql, $courseids);
