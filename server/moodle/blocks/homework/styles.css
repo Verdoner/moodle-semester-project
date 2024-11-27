@@ -10,6 +10,10 @@
     width: 100%;
 }
 
+.outer-box .expectedtime {
+    font-size: 18px;
+}
+
 .infobox {
     position: relative;
     border-radius: 5px;
@@ -22,9 +26,37 @@
     margin-right: 0;
 }
 
-.infobox p {
+.infobox p:not(.eta) {
     padding: 5px 2px;
     border: 1px solid #000;
+    margin-bottom: 10px;
+    white-space: break-spaces;
+}
+
+.infobox .infoboxfiles {
+    display: flex;
+    align-items: flex-start;
+    border: solid 1px #000;
+    margin-bottom: 10px;
+    padding: 5px 2px;
+    overflow: hidden;
+}
+
+.infobox .infoboxfiles .link a {
+    display: block;
+    width: 190px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.infobox .infoboxfiles p.eta {
+    font-size: 0.625rem;
+    margin: 0;
+}
+
+.infobox .infoboxfiles img {
+    max-width: 20px;
 }
 
 .nav-btn {
@@ -47,8 +79,9 @@
 
 .inline-container {
     display: flex;
+    gap: min(20px);
+    justify-content: space-between;
     align-items: center; /* Vertically aligns items */
-    gap: 20px; /* Adds space between name and duedate */
 }
 
 .inline-container .name {
