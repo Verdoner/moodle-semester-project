@@ -1,6 +1,6 @@
-@block_homework
-  Feature: Enable the homework_feed  block on the dashboard and view its contents
-  In order to enable the homework feed block on the dashboard
+@block_homework @homework @mikkel
+Feature: Enable the homework_feed  block on the dashboard and view its contents
+  In order to allow users to view the homework feed
   As an admin
   I can add the homework feed block to the dashboard
 
@@ -17,9 +17,21 @@
     | admin | tc     | teacher     |
 
 
-
-@javascript
+  @javascript
   Scenario: Add the homework feed block on the dashboard and view as an user
+    Given I log in as "admin"
+    And I navigate to "Appearance > Default Dashboard page" in site administration
+    And I turn editing mode on
+    And I add the "Homework" block
+    And I click on "Reset Dashboard for all users" "button"
+    And I click on "Continue" "button"
+    And I log out
+    When I log in as "user1"
+    And I am on homepage
+    Then I should see "Homework" in the "Homework" "block"
+
+  @javascript
+  Scenario: Add the homework feed block on the dashboard, add some homework and view as an user
     Given I log in as "admin"
     And I navigate to "Appearance > Default Dashboard page" in site administration
     And I turn editing mode on
