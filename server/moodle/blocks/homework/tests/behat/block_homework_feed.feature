@@ -30,12 +30,13 @@ Feature: Enable the homework_feed  block on the dashboard and view its contents
     And I am on homepage
     Then I should see "Homework" in the "Homework" "block"
 
-  @javascript
+  @javascript @pik
   Scenario: Add the homework feed block on the dashboard, add some homework and view as an user
     Given I log in as "admin"
     And I navigate to "Appearance > Default Dashboard page" in site administration
     And I turn editing mode on
-    And I add the "Homework" block
+    And I click on ".block-add[data-blockregion='content']" "css_element"
+    And I click on "Homework" "link"
     And I click on "Reset Dashboard for all users" "button"
     And I click on "Continue" "button"
     And I am on the "testingcourse" course page
