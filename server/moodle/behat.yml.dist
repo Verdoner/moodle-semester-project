@@ -3,6 +3,7 @@ default:
     default:
       paths:
         - blocks/homework/tests/behat
+        - mod/homework/tests/behat
       contexts: {  }
   extensions:
     Behat\MinkExtension:
