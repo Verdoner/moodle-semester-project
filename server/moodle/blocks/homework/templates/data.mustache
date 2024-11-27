@@ -35,7 +35,7 @@
             <option value="current">Current</option>
             <option value="previous">Previous</option>
         </select>
-
+        <button id="statsbtn" class="stats-btn">Stats</button>
     </div>
 
     <div class="outer-box" id="outer-box">
@@ -44,6 +44,7 @@
                 <h2>{{courseTitle}}</h2>
                 <h2>{{name}}</h2>
                 <h3>{{duedate}}</h3>
+                <h4>Expected time: {{expectedTime}} minutes</h4>
                 <p>{{intro}}</p>
                 <button class="timebutton" data-homework-id={{id}} id="{{id}}"">Time</button>
                 {{#files}}
