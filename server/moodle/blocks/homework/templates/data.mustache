@@ -19,13 +19,11 @@
 
 <div class="container">
 
-
-    <div class="btn-container float-end">
-        <button class="nav-btn" id="todaybtn">Today</button>
-        <button class="nav-btn" id="prevbtn"><</button>
-        <button class="nav-btn" id="nextbtn">></button>
-        <label for="sort">Sort by:</label>
-
+    <div class="btn-container">
+        <button class="nav-btn" id="todaybtn">today</button>
+        <button class="nav-btn" id="prevbtn"><-</button>
+        <button class="nav-btn" id="nextbtn">-></button>
+        <label for="sort">Sort By:</label>
         <select name="sort" id="sort">
             <option value="all">All</option>
             <option value="due">Due Date</option>
@@ -37,22 +35,26 @@
             <option value="current">Current</option>
             <option value="previous">Previous</option>
         </select>
-
+        <button id="statsbtn" class="stats-btn">Stats</button>
     </div>
 
     <div class="outer-box" id="outer-box">
         {{#data}}
             <div class="infobox">
                 <h2>{{courseTitle}}</h2>
-                <div class="inline-container">
-                    <h2 class="name">{{name}}</h2>
-                    <h3 class="duedate">{{duedate}}</h3>
-                </div>
+                <h2>{{name}}</h2>
+                <h3>{{duedate}}</h3>
+                <h4>Expected time: {{expectedTime}} minutes</h4>
                 <p>{{intro}}</p>
-                <button class="timebutton" data-homework-id={{id}} id="{{id}}">Time</button>
+                <button class="timebutton" data-homework-id={{id}} id="{{id}}"">Time</button>
                 {{#files}}
                     <img src="{{iconurl}}" alt="File icon">
                     <a href="{{fileurl}}" download="{{filename}}">{{filename}}</a>
+
+                    <!-- Conditionally show a time estimate if it exists -->
+                        {{#timeestimate}}
+                            <p>Estimated time in minutes: {{timeestimate}}</p>
+                        {{/timeestimate}}
                 {{/files}}
             </div>
         {{/data}}

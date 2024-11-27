@@ -41,6 +41,17 @@ $capabilities = [
             'manager' => CAP_ALLOW,
         ],
     ],
+    // Add and remove materials.
+    'mod/homework:edit' => [
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => [
+            'student' => CAP_PREVENT,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
+        ],
+    ],
 
     // Functionality to add the activity to course.
     'mod/homework:addinstance' => [

@@ -59,19 +59,19 @@ export const init = async(cmid, title, currentHomework, homeworkids) => {
                     // Attach an event listener to handle the modal hidden event.
                     modal.getRoot().on(ModalEvents.hidden, () => {
                         console.log('Modal closed!');
+                        modal.destroy();
+                        location.reload();
                     });
 
                     // Attach event listeners for buttons
                     modal.getRoot().on('click', '[data-action="submit"]', (e) => {
                         e.preventDefault();
-
                         handleFormSubmit(modal, currentHomework, homeworkid["id"]);
                     });
 
                     modal.getRoot().on('click', '[data-action="cancel"]', (e) => {
                         e.preventDefault();
                         modal.destroy();
-
                         location.reload();
                     });
                 },
@@ -134,12 +134,12 @@ const displayUploadedFile = (file) => {
                     methodname: 'mod_homework_delete_file',
                     args: {
                         id: file.id,
-                        file_id: file.file_id
+                        fileid: file.file_id
                     }, // Pass the correct file ID
                     done: function(response) {
                         console.log("File deleted successfully");
-                        dropZoneFiles = []; // Clear the files array
                         previewContainer.innerHTML = ""; // Remove the preview
+                        dropZoneFiles = []; // Clear the files array
                         uploadedFileIds = []; // Clear the files array
                     },
                     fail: function(error) {
@@ -170,7 +170,7 @@ const uploadDropzoneFile = async () => {
 
             if (response.ok && result.status === 'success') {
                 console.log("File uploaded successfully:", file.name);
-                console.log(result);
+                uploadedFileIds = [];
                 uploadedFileIds.push(result.fileid); // Store the file ID
             } else {
                 console.error("Failed to upload file:", file.name);
@@ -225,18 +225,17 @@ const handleFormSubmit = async (modal, currentHomework, homeworkid) => {
         args: {
             id: homeworkid,
             inputfield: inputField.value,
+            homeworkid: currentHomework,
             link: linkField.value.trim() !== "" ? linkField.value.trim() : null,
             startpage: startPageInput.value.trim() !== "" ? startPageInput.value.trim() : null,
             endpage: endPageInput.value.trim() !== "" ? endPageInput.value.trim() : null,
             starttime: startTimeInput.value.trim() !== "" ? startTimeInput.value.trim() : null,
             endtime: endTimeInput.value.trim() !== "" ? endTimeInput.value.trim() : null,
-            homeworkid: currentHomework,
             fileid: uploadedFileIds.length ? uploadedFileIds[0] : null
         },
         done: function(response) {
             console.log("Data saved successfully:", response);
             modal.destroy();
-
             location.reload();
         },
         fail: function(error) {

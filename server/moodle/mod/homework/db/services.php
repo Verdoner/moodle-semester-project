@@ -65,6 +65,22 @@ $functions = [
         'type'        => 'write',
         'ajax'        => true,
     ],
+    'mod_homework_get_events_for_homework' => [
+        'classname'   => 'mod_homework\external\get_events_for_homework',
+        'methodname'  => 'execute',
+        'classpath'   => 'mod/homework/classes/external/get_events_for_homework.php',
+        'description' => 'Get event data for homework',
+        'type'        => 'read',
+        'ajax'        => true,
+    ],
+    'mod_homework_homework_event_link' => [
+        'classname'   => 'mod_homework\external\homework_event_link',
+        'methodname'  => 'execute',
+        'classpath'   => 'mod/homework/classes/external/homework_event_link.php',
+        'description' => 'Add or edit a link between an event and homework',
+        'type'        => 'write',
+        'ajax'        => true,
+    ],
 ];
 
 $services = [
@@ -75,6 +91,8 @@ $services = [
             'mod_homework_delete_homework_material',
             'mod_homework_get_homework_chooser',
             'mod_homework_delete_file',
+            'mod_homework_get_events_for_homework',
+            'mod_homework_homework_event_link',
         ],
         'restrictedusers' => 0,
         'enabled' => 1,
