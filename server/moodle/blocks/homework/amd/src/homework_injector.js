@@ -62,9 +62,10 @@ define(function() {
                                     Object.values(filteredHomework).forEach((homeworkInfo) => {
                                         let convertedTime = new Date(homeworkInfo.duedate * 1000);
                                         newString += `<p>HomeWork name = ${homeworkInfo.name} <br>
-                                                         Intro = ${homeworkInfo.intro ? homeworkInfo.intro : "No intro"} <br>
-                                                         link = <a href="${window.location.href.replace("my/", "mod/homework/view.php?id=")}${homeworkInfo.cmid}">link to homework</a></p>
-                                                         dueDate = ${homeworkInfo.duedate ? `Duedate is ${convertedTime}` : 'No duedate'}</p>`;
+                                                      Intro = ${homeworkInfo.intro ? homeworkInfo.intro : "No intro"} <br>
+                                                      link = <a href="/mod/homework/view.php?id=${homeworkInfo.course_module_id}">link to homework</a></p>
+                                                      dueDate = ${homeworkInfo.duedate ? `Duedate is ${convertedTime}` : 'No duedate'}</p>`;
+
                                     });
                                     homeworkLinkDiv.innerHTML = newString;
 
