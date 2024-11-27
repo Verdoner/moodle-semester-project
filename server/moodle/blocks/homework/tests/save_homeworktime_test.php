@@ -145,7 +145,6 @@ final class save_homeworktime_test extends advanced_testcase {
         $this->expectException(\dml_write_exception::class);
 
         save_homeworktime::execute($userid, $timecompletedvideos);
-
     }
 
     /**

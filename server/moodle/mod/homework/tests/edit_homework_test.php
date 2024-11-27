@@ -451,5 +451,4 @@ final class edit_homework_test extends advanced_testcase {
         $this->assertEquals('Failed to edit homework materials record', $editresult['message']);
         $this->assertDebuggingCalled(null, DEBUG_DEVELOPER);
     }
-
 }

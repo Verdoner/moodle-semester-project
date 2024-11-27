@@ -449,7 +449,6 @@ final class block_homeworkinfomodal_test extends advanced_testcase {
         $this->assertEmpty($xpath->query("//div[@id='videos-2']//a"));
         $this->assertEmpty($xpath->query("//div[@id='videos-2']//form"));
         $this->assertEmpty($xpath->query("//input[@class='homework-time-videos'][@id='2'][@name='homework-time'][@min='1']"));
-
     }
 
     /**
@@ -479,6 +478,4 @@ final class block_homeworkinfomodal_test extends advanced_testcase {
         $result = get_infohomework_modal::get_file_link_by_id($fileid);
         self::assertEquals(null, $result);
     }
-
-
 }

@@ -48,13 +48,14 @@ class get_infohomework_modal extends external_api {
     /**
      * Generates the custom HTML for the homework chooser modal.
      *
-     * @param int $homeworkID The ID of the homework item
+     * @param int $homeworkid
      * @return string[] - The HTML to be shown client-side
-     * @throws dml_exception|coding_exception
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public static function execute(int $homeworkid): array {
         global $DB, $USER;
-        $homework = $DB->get_record('homework', ['id' => $homeworkid], '*',  MUST_EXIST);
+        $homework = $DB->get_record('homework', ['id' => $homeworkid], '*', MUST_EXIST);
         $course = $DB->get_record('course', ['id' => $homework->course_id]);
         $materials = $DB->get_records('homework_materials', ['homework_id' => $homework->id]);
         $completedmaterials = $DB->get_records('completions', ['usermodified' => $USER->id]);

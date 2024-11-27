@@ -334,5 +334,4 @@ final class delete_homework_test extends advanced_testcase {
         $this->assertEquals('error', $result['status']);
         $this->assertEquals('Failed to delete homework materials record', $result['message']);
     }
-
 }
