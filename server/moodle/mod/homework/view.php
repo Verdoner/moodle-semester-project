@@ -85,16 +85,6 @@ $viewobj = new view_page();
 $viewobj->canedit = true;
 $viewobj->editurl = new moodle_url('/mod/homework/edit.php', ['id' => $cm->id]);
 
-// Add the actual page content here.
-/*echo html_writer::tag('div', 'This is the homework view page', ['class' => 'content']);
-$record = $DB->get_record('homework', ['id' => $cm->instance], '*', MUST_EXIST);
-
-echo $record->name . '<br>';
-echo $record->duedate . '<br>';
-echo $record->description . '<br>';*/
-
-
-
 
 
 $homeworkmaterials = $DB->get_records_sql(
@@ -271,6 +261,7 @@ echo '</div>';?>
   * @copyright 2024, cs-24-sw-5-01 <cs-24-sw-5-01@student.aau.dk>
   * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
   */
+
 if ($viewobj->canedit && !$viewobj->hashomework && has_capability('mod/homework:edit', $context)) {
     // Add the button for opening the homework chooser modal.
     echo html_writer::tag('button', get_string('openhomeworkchooser', 'mod_homework'), [
@@ -279,9 +270,19 @@ if ($viewobj->canedit && !$viewobj->hashomework && has_capability('mod/homework:
         'class' => 'btn btn-primary',
     ]);
 
-    // Include the AMD module.
+    echo '<br>';
+    echo '<br>';
+
+    echo html_writer::tag('button', get_string('openeventlinker', 'mod_homework'), [
+        'type' => 'button',
+        'id' => 'open-event-linker',
+        'class' => 'btn btn-primary',
+    ]);
+
+    // Include the AMD modules.
     $PAGE->requires->js_call_amd('mod_homework/homeworkchooser', 'init', [$cm->id,
         get_string('homeworkchooser', 'mod_homework'), $instance->id]);
+    $PAGE->requires->js_call_amd('mod_homework/eventlinker', 'init', [$cm->id, $instance->id]);
 }
 
 // Output the footer - REQUIRED.
