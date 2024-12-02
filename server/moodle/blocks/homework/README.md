@@ -2,7 +2,7 @@
 
 This plugin adds a homework block to the dashboard, displaying homework assignments for users.
 It also includes a feature to view homework for a given coruse event in the calendar.
-Additionally, it offers a map feature that provides a link to a location of an  within the calendar.
+Additionally, it offers a map feature that provides a link to a location of an event within the calendar.
 
 ## Structure ##
 
