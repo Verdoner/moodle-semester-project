@@ -1,4 +1,4 @@
-@block_homework @homework @mikkel
+@block_homework @homework
 Feature: Enable the homework_feed  block on the dashboard and view its contents
   In order to allow users to view the homework feed
   As an admin
