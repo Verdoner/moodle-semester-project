@@ -73,7 +73,7 @@ After inserting the necessary information click on the 'Submit' button.
 ![Step 3](readme/Materialstep3.png)
 
 ### Linking an event to the Homework ###
-Step 1: Assure that an event has been created in the calendar and is linked to the course,
+Step 1: Ensure that an event has been created in the calendar and is linked to the course,
 afterward click on the 'open event linker' button.
 ![Step 1](readme/Eventlinkstep1.png)
 
