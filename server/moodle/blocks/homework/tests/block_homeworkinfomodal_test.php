@@ -461,8 +461,9 @@ final class block_homeworkinfomodal_test extends advanced_testcase {
 
         $this->expectException(\dml_exception::class);
         $homeworkid = 99999999999999999;
+        $rs = 2.0;
         // Call the static method.
-        get_infohomework_modal::execute($homeworkid); // Pass a homework ID.
+        get_infohomework_modal::execute($homeworkid, $rs); // Pass a homework ID.
     }
 
     /**
