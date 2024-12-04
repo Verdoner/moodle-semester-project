@@ -42,3 +42,95 @@
     font-size: 20px;
     font-weight: bold;
 }
+
+.homework-action-buttons button {
+    margin-right: 10px;
+}
+
+.homework-action-buttons button:last-child {
+    margin-right: 0;
+}
+
+
+/* Below is the styling for the homework chooser modal */
+#homework-chooser-modal {
+    padding: 10px 20px;
+}
+
+#homework-chooser-modal .block {
+    display: block;
+}
+
+#homework-chooser-modal .maxw-100 {
+    max-width: 125px;
+}
+
+#homework-chooser-modal .w-full {
+    width: 100%;
+}
+
+#homework-chooser-modal .inline-flex {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 5px;
+}
+
+#homework-chooser-modal .mb-10 {
+    margin-bottom: 10px;
+}
+
+#homework-chooser-modal .mb-20 {
+    margin-bottom: 20px;
+}
+
+#homework-chooser-modal .flex-grow {
+    flex: 1;
+}
+
+form label {
+    font-weight: bold;
+}
+
+textarea {
+    width: 100%;
+    height: 80px;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 4px;
+}
+
+input[type="text"],
+input[type="url"],
+input[type="number"] {
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 4px;
+}
+
+
+.page-range-input, .video-time-input {
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+#dropzone-container {
+    padding: 20px;
+    margin-top: 10px;
+}
+
+#file-content {
+    min-height: 43px;
+    padding: 10px;
+}
+
+#file-content:empty:before {
+    content:attr(data-placeholder);
+    color: grey;
+}
+
+#file-content p {
+    margin-bottom: 0;
+}

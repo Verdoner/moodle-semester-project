@@ -15,17 +15,16 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace block_homework\external;
-
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
-use coding_exception;
 use core_external\external_api;
-use dml_exception;
 use core_external\external_function_parameters;
 use core_external\external_value;
 use core_external\external_single_structure;
-use JsonException;
+
+use coding_exception;
+use dml_exception;
 use Mustache_Engine;
 
 /**
@@ -49,30 +48,37 @@ class get_infohomework_modal extends external_api {
     /**
      * Generates the custom HTML for the homework chooser modal.
      *
-     * @param int $homeworkID The ID of the homework item
+     * @param int $homeworkid
      * @return string[] - The HTML to be shown client-side
-     * @throws dml_exception|JsonException
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public static function execute(int $homeworkid, float $readingspeed): array {
         global $DB, $USER;
-        $homework = $DB->get_record('homework', ['id' => $homeworkid]);
+
+        $homework = $DB->get_record('homework', ['id' => $homeworkid], '*', MUST_EXIST);
         $course = $DB->get_record('course', ['id' => $homework->course_id]);
         $materials = $DB->get_records('homework_materials', ['homework_id' => $homework->id]);
         $completedmaterials = $DB->get_records('completions', ['usermodified' => $USER->id]);
+
         $literaturearray = [];
         $linksarray = [];
         $videosarray = [];
+
         foreach ($materials as $material) {
             $completed = false;
+
             foreach ($completedmaterials as $completedmaterial) {
                 if ($completedmaterial->material_id === $material->id) {
                     $completed = true;
                     break;
                 }
             }
+
             if ($completed) {
                 continue;
             }
+
             if ($material->startpage !== null && $material->endpage !== null) {
                 if ($material->file_id !== null) {
                     $material->fileurl = self::get_file_link_by_id($material->file_id);
@@ -87,6 +93,7 @@ class get_infohomework_modal extends external_api {
                 }
                 $videosarray[] = $material;
             }
+
             if ($material->starttime != null && $material->endtime != null) {
                 $material->expectedTime = ceil(($material->endtime - $material->starttime)/60);
             }
@@ -112,7 +119,6 @@ class get_infohomework_modal extends external_api {
 
     /**
      *
-     * @throws JsonException
      */
     public static function get_info($homework, $course, $literaturearray, $linksarray, $videosarray): array {
         // Assuming you have the Mustache engine set up.
@@ -145,7 +151,7 @@ class get_infohomework_modal extends external_api {
     /**
      * Get a direct link to a file by its file ID.
      *
-     * @param int $fileID The ID of the file in Moodle's file storage.
+     * @param int $fileid The ID of the file in Moodle's file storage.
      * @return string|null The URL to the file or null if the file is not found.
      * @throws dml_exception|coding_exception
      */

@@ -26,13 +26,15 @@
 
 namespace mod_homework\external;
 defined('MOODLE_INTERNAL') || die();
-
 global $CFG;
 
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
 use core_external\external_single_structure;
+
+use core\exception\coding_exception;
+use core\output\mustache_engine;
 
 /**
  *
@@ -53,51 +55,23 @@ class get_homework_chooser extends external_api {
      * @param $cmid - The current modules id
      * @return string[] - The html to be shown client-side
      */
-    public static function execute($cmid) {
-        global $DB;
+    public static function execute() : array {
+        $mustache = new Mustache_Engine();
 
-        // Custom HTML for the homework chooser modal.
-        $html = '
-            <div id="homework-chooser-modal">
-                <form>
-                    <label for="inputField">Input Field:</label><br>
-                    <textarea type="text" id="inputField" name="inputField"></textarea><br><br>
-                    <br>
-                    <div id="linkDiv">
-                        <label for="link">Link:</label><br>
-                        <input name="link" id="link" type="url" placeholder="Enter URL">
-                    </div>
-                    <br>
-                     <div id="page-range-input">
-                        <label for="startPage">Page Range:</label><br>
-                        <input type="number" id="startPage" name="startPage" min="1" placeholder="Start Page" style="width: 50px;">
-                        <span>-</span>
-                        <label for="endPage"></label>
-                        <input type="number" id="endPage" name="endPage" min="1" placeholder="End Page" style="width: 50px;">
-                    </div>
-                    <div id="video-time-input">
-                        <label for="startTime">Time Range (seconds):</label><br>
-                        <input type="number" id="startTime" name="startTime" min="1" placeholder="Start Time" style="width: 50px;">
-                        <span>-</span>
-                        <label for="endTime"></label>
-                        <input type="number" id="endTime" name="endTime" min="1" placeholder="End Time" style="width: 50px;">
-                    </div>
-                    <br>
-                    <div id="file-content"></div>
-                    <div id="dropzone-container">
-                    </div>
-                </form>
-            </div>
-        ';
+        $templatepath = __DIR__ . "/../../templates/get_homework_chooser.mustache";
+        if (!file_exists($templatepath)) {
+            throw new coding_exception("Template file does not exist: " . $templatepath);
+        }
+        $templatecontent = file_get_contents($templatepath);
 
-        return ['html' => $html];
+        return ['html' => $mustache->render($templatecontent)];
     }
 
     /**
      *
      * @return external_single_structure - Is a definition of the functions return type and a description of it
      */
-    public static function execute_returns() {
+    public static function execute_returns() : external_single_structure {
         return new external_single_structure([
             'html' => new external_value(PARAM_RAW, 'HTML for the homework chooser modal'),
         ]);

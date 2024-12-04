@@ -26,17 +26,15 @@
 
 namespace block_homework\external;
 defined('MOODLE_INTERNAL') || die();
-
 global $CFG;
-
-use coding_exception;
-use dml_exception;
-use JsonException;
 
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
 use core_external\external_single_structure;
+
+use dml_exception;
+use JsonException;
 
 /**
  *
@@ -60,10 +58,13 @@ class get_homework extends external_api {
      */
     public static function execute($sort) {
         global $DB, $USER;
+
         $usercourses = enrol_get_users_courses($USER->id, true);
         $homeworkarray = [];
+
         foreach ($usercourses as $course) {
             $homeworkrecords = $DB->get_records('homework', ['course_id' => $course->id]);
+
             foreach ($homeworkrecords as $homework) {
                 $homeworkarray[] = [
                     'id' => $homework->id,
@@ -75,6 +76,7 @@ class get_homework extends external_api {
                 ];
             }
         }
+
         if ($sort === 'due') {
             $homeworkarray = self::sortDueDate($homeworkarray);
         }

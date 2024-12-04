@@ -38,6 +38,7 @@ Feature: Viewing the homework page
     And I should see "Open Homework Chooser"
     And I should see "testinghomework"
 
+
   @javascript
   Scenario: Student views the homework view page
     Given I log in as "user1"

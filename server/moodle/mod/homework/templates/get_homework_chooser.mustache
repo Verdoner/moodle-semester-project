@@ -1,0 +1,41 @@
+<div id="homework-chooser-modal">
+    <form>
+        <div class="mb-20">
+        <label for="inputField">Input Field:</label>
+        <textarea type="text" id="inputField" name="inputField">
+        </textarea>
+        </div>
+        <div id="linkDiv" class="linkDiv mb-20">
+            <label for="link" class="block">Link:</label>
+            <input name="link" id="link" type="url" placeholder="Enter URL" class="block w-full">
+        </div>
+        <div class="inline-flex mb-20">
+            <div id="page-range-input" class="page-range-input flex-grow">
+                <label for="startPage" class="block">Page Range:</label>
+                <div class="inline-flex">
+                <input type="number" id="startPage" name="startPage" min="1" placeholder="Start Page" class="maxw-100">
+                <span>-</span>
+
+                <input type="number" id="endPage" name="endPage" min="1" placeholder="End Page" class="maxw-100">
+                </div>
+            </div>
+            <div id="video-time-input" class="video-time-input flex-grow">
+                <label for="startTime" class="block">Time Range (seconds):</label>
+                <div class="inline-flex">
+
+                <input type="number" id="startTime" name="startTime" min="1" placeholder="Start Time" class="maxw-100">
+                <span>-</span>
+
+                <input type="number" id="endTime" name="endTime" min="1" placeholder="End Time" class="maxw-100">
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="inline-flex mb-10">
+            <div class="bold">Attached file:</div>
+            <div id="file-content" data-placeholder="No attached file"></div>
+        </div>
+        <div id="dropzone-container">
+        </div>
+    </form>
+</div>
