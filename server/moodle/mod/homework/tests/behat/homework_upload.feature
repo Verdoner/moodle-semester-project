@@ -29,7 +29,7 @@ Feature: Upload homework
     Scenario: Student tries to upload materials
       Given I log in as "user1"
       And I am on the "testingcourse" course page
-      And I click on "testinghomework" "link"
+      When I click on "testinghomework" "link"
       Then I should not see "Open Homework Chooser"
 
 

@@ -1,4 +1,4 @@
-@mod @mod_homework @homework
+@mod @mod_homework @homework @runnow
 Feature: Viewing the homework page
   In order to view homework materials and content
   As a student
@@ -16,7 +16,7 @@ Feature: Viewing the homework page
       | user  | course | role |
       | user1 | tc     | student     |
       | admin | tc     | teacher     |
-      | teacher1 | tc   | teacher     |
+      | teacher1 | tc   | editingteacher     |
     And the following "activities" exists:
       | activity | homework         |
       | course   | tc               |
@@ -26,7 +26,7 @@ Feature: Viewing the homework page
       | section  | 0                |
 
   @javascript
-  Scenario: Teacher views the homework materials
+  Scenario: Teacher views the homework view page
     Given I log in as "teacher1"
     And I am on the "testingcourse" course page
     When I click on "testinghomework" "link"
@@ -39,7 +39,7 @@ Feature: Viewing the homework page
     And I should see "testinghomework"
 
   @javascript
-  Scenario: Student views the homework materials
+  Scenario: Student views the homework view page
     Given I log in as "user1"
     And I am on the "testingcourse" course page
     When I click on "testinghomework" "link"

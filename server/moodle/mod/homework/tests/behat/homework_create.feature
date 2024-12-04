@@ -16,11 +16,12 @@ Feature: Create a homework activity
       | user  | course | role |
       | user1 | tc     | student     |
       | admin | tc     | teacher     |
-      | teacher1 | tc   | teacher     |
+      | teacher1 | tc   | editingteacher     |
 
   @javascript
   Scenario: Create a homework activity
     Given I log in as "teacher1"
+    And I turn editing mode on
     And I am on the "testingcourse" course page
     And I click on "Add an activity or resource" "button"
     And I click on "Add a new Homework" "link"
