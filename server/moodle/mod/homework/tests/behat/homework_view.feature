@@ -1,4 +1,4 @@
-@mod @mod_homework @homework @runnow
+@mod @mod_homework @homework
 Feature: Viewing the homework page
   In order to view homework materials and content
   As a student
