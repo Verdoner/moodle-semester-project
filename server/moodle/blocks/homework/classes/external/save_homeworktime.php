@@ -15,10 +15,8 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace block_homework\external;
-
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-// Comment out line below for test if phpunit does not respond to putting run in separate process.
 
 use core_external\external_api;
 use core_external\external_multiple_structure;

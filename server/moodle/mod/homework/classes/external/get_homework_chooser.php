@@ -26,14 +26,14 @@
 
 namespace mod_homework\external;
 defined('MOODLE_INTERNAL') || die();
-
 global $CFG;
 
-use core\exception\coding_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
 use core_external\external_single_structure;
+
+use core\exception\coding_exception;
 use core\output\mustache_engine;
 
 /**

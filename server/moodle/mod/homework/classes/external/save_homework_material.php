@@ -23,9 +23,7 @@
  */
 
 namespace mod_homework\external;
-
 defined('MOODLE_INTERNAL') || die();
-
 global $CFG;
 
 use core_external\external_api;
