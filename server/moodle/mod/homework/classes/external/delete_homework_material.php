@@ -23,12 +23,9 @@
  */
 
 namespace mod_homework\external;
-
 defined('MOODLE_INTERNAL') || die();
-
 global $CFG;
 
-use core\exception\moodle_exception;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
@@ -69,7 +66,7 @@ class delete_homework_material extends external_api {
             if (!empty($fileid)) {
                 \mod_homework\external\delete_file::execute($id, $fileid);
             }
-        } catch (\dml_exception | moodle_exception $e) {
+        } catch (\Exception $e) {
             debugging("Error deleting record in homework_materials: " . $e->getMessage(), DEBUG_DEVELOPER);
             return ['status' => 'error', 'message' => 'Failed to delete homework materials record'];
         }

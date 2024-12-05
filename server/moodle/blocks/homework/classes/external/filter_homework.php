@@ -26,21 +26,20 @@
 
 namespace block_homework\external;
 defined('MOODLE_INTERNAL') || die();
-
 global $CFG;
-require_once("$CFG->libdir/externallib.php");
 
-use coding_exception;
+use core_external\external_api;
+use core_external\external_function_parameters;
+use core_external\external_value;
+use core_external\external_single_structure;
+
 use dml_exception;
-use external_function_parameters;
-use external_value;
-use external_single_structure;
 use JsonException;
 
 /**
  * Class used to filter homework on block plugin.
  */
-class filter_homework extends \external_api {
+class filter_homework extends external_api {
     /**
      *
      * @return external_function_parameters Is a definition of the functions parameter type and a description of it.

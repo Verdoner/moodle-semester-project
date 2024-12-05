@@ -15,18 +15,16 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace block_homework\external;
-
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
-use coding_exception;
-use core\router\schema\objects\array_of_things;
 use core_external\external_api;
-use dml_exception;
 use core_external\external_function_parameters;
 use core_external\external_value;
 use core_external\external_single_structure;
-use core_external\external_multiple_structure;
+
+use coding_exception;
+use dml_exception;
 use JsonException;
 use Mustache_Engine;
 
@@ -54,7 +52,7 @@ class get_stats_modal extends external_api {
     /**
      * Generates the custom HTML for the stats modal.
      *
-     * @param array_of_things $stats The stats array
+     * @param string[] $stats The stats array
      * @return string[] - The HTML to be shown client-side
      * @throws dml_exception|JsonException
      */
