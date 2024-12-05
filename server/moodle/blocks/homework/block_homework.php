@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
+// require for the pdf reader
+require_once(__DIR__ . '/pdf_reader.php');
 /**
  * Block definition class for the block_homework plugin.
  *
@@ -39,6 +43,8 @@ class block_homework extends block_base {
     public function get_content() {
 
         global $OUTPUT, $DB, $USER;
+
+        $stats = $this->getstats();
 
         // Fetch courses user is enrolled in.
         $usercourses = enrol_get_users_courses($USER->id, true);
@@ -78,9 +84,19 @@ class block_homework extends block_base {
             $tmp['intro'] = strip_tags($homework->intro);
             $tmp['description'] = ($homework->description);
             $tmp['courseTitle'] = $DB->get_field('course', 'fullname', ['id' => $homework->course_id]);
+            $tmp['expectedTime'] = 0;
 
             // Retrieving the records of all material of the current homework module.
             $materialrecords = $DB->get_records('homework_materials', ['homework_id' => $homework->id]);
+
+            foreach ($materialrecords as $material) {
+                if ($material->startime != null && $material->endtime != null) {
+                    $tmp['expectedTime'] += ceil(($material->endtime - $material->starttime)/60);
+                }
+                if ($material->startpage != null && $material->endpage != null) {
+                    $tmp['expectedTime'] += ceil(($material->endpage - $material->startpage) * $stats["weightedreadingspeed"]);
+                }
+            }
 
             $files = [];
 
@@ -95,6 +111,7 @@ class block_homework extends block_base {
             // Get file records.
             if (!empty($fileids)) {
                 $filerecords = $DB->get_records_list('files', 'id', $fileids);
+                $fs  = get_file_storage();
                 foreach ($filerecords as $file) {
                     $contextid = $file->contextid;
                     $component = $file->component;
@@ -117,10 +134,31 @@ class block_homework extends block_base {
                     // Get appropriate icon for file type.
                     $iconurl = $OUTPUT->image_url(file_mimetype_icon($file->mimetype));
 
+                    // Initialize time estimate as null
+                    $timeestimate = null;
+
+                    // Initialize average words read per minute
+                    $averagewordsperminute = 220;
+
+                    $file = $fs->get_file($contextid, $component, $filearea, $itemid, $filepath, $filename);
+
+                    // Check file type and get page count if it's a PDF or DOCX
+                    if (str_ends_with(strtolower($filename), '.pdf')) {
+                        // Initialize word count reader
+                        $algorithm = new pdf_reader();
+
+                        // Use word reading algorithm and save the value in wordcount
+                        $wordcount = $algorithm->countwordsinpdf($file);
+
+                        // Calculate the time estimate based on word count and average words per minute
+                        $timeestimate = $wordcount / $averagewordsperminute;
+                    }
+
                     $files[] = [
                         'fileurl' => $url->out(),
                         'filename' => $filename,
                         'iconurl' => $iconurl,
+                        'timeestimate' => $timeestimate,
                     ];
                 }
             }
@@ -140,7 +178,8 @@ class block_homework extends block_base {
         $this->page->requires->js_call_amd('block_homework/homework_injector', 'init', [$homeworks]);
         $this->page->requires->js_call_amd('block_homework/map_link_injector', 'init');
         $this->page->requires->js_call_amd('block_homework/filter', 'init');
-        $this->page->requires->js_call_amd('block_homework/clickInfo', 'init', [$USER->id]);
+        $this->page->requires->js_call_amd('block_homework/clickInfo', 'init', [$USER->id, $stats['weightedreadingspeed']]);
+        $this->page->requires->js_call_amd('block_homework/clickStats', 'init', [$stats]);
 
         return $this->content;
     }
@@ -178,4 +217,93 @@ class block_homework extends block_base {
             'my' => true,
         ];
     }
+
+    /**
+     * Get data from database and calculate user's reading speed, time spent on homework per day, and percent of homework completed.
+     * @return float[]|int[] An assorted array of the stats that will be used for stat generation
+     * @throws dml_exception
+     */
+    public function getstats() {
+        global $DB, $USER;
+
+        // The weight indicates the number of minutes after which the user's reading speed will be prioritized over the average.
+        $weight = 180;
+        // The global reading speed in minutes.
+        $globalreadingspeed = 2;
+
+        // Fetch courses user is enrolled in.
+        $usercourses = enrol_get_users_courses($USER->id, true);
+
+        $courseids = array_keys($usercourses); // Extract course IDs from the user's courses array.
+
+        $placeholders = implode(',', array_fill(0, count($courseids), '?'));
+
+        // Get records of all completions with the start page, end page, start time and end time of the material.
+        $records = $DB->get_records_sql(
+            "
+            SELECT c.*, hm.startpage, hm.endpage
+            FROM {completions} c
+            INNER JOIN {homework_materials} hm ON c.material_id = hm.id
+            WHERE c.usermodified = :userid",
+            ['userid' => $USER->id]
+        );
+
+        $sql = "
+            SELECT hm.*
+            FROM {homework_materials} hm
+            INNER JOIN {homework} hw ON hm.homework_id = hw.id
+            INNER JOIN {course} co ON hw.course_id = co.id
+            WHERE co.id IN ($placeholders)
+        ";
+
+        $availablematerials = $DB->get_records_sql($sql, $courseids);
+
+        $totalminutes = 0;
+        $totalreadingtime = 0;
+        $totalpages = 0;
+        $totaldays = 0;
+
+        // Calculate total time spent both reading and in total.
+        foreach ($records as $record) {
+            // Timestamps are in seconds, so we get the day difference by dividing by seconds per day.
+            // Use the time from the first homework completion as the start time for these stats.
+            $totaldays = floor((time() - $record->timecreated) / 86400) + 1;
+
+            $totalminutes += $record->timetaken;
+
+            $startpage = $record->startpage;
+            $endpage = $record->endpage;
+
+            if ($startpage != null && $endpage != null) {
+                $totalpages += $endpage - $startpage;
+                $totalreadingtime += $record->timetaken;
+            }
+        }
+
+        $weightedreadingspeed = $globalreadingspeed;
+
+        // Calculate time per day.
+        $timeperday = 0;
+        if ($totaldays != 0) {
+            $timeperday = $totalminutes / $totaldays;
+        }
+
+        // Calculate weighted reading speed.
+        if ($totalpages != 0) {
+            $readingspeed = $totalreadingtime / $totalpages;
+            // The reading speed is weighted. When no pages have been read, it will be the global average a page per minute.
+            // Once the number of minutes reaches the weight, the user's speed will be weighted more than the average.
+            $weightedreadingspeed = $globalreadingspeed + ($readingspeed - $globalreadingspeed) *
+                $totalminutes / ($totalminutes + $weight);
+        }
+
+        // Calculate percent completed.
+        $percentcompleted = 0;
+        if (count($records) && count($availablematerials)) {
+            $percentcompleted = count($records) / count($availablematerials) * 100;
+        }
+
+        return ['timeperday' => $timeperday, 'percentcompleted' => $percentcompleted, 'weightedreadingspeed' => $weightedreadingspeed];
+    }
+
 }
