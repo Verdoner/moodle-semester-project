@@ -45,12 +45,9 @@ Feature: Enable the homework_feed  block on the dashboard and view its contents
     And I set the field "name" to "testinghomework"
     And I click on "Due Date" "link"
     And I click on "duedateselector[enabled]" "checkbox"
-    And I click on "duedateselector[day]" "select"
-    And I click on "15" "option"
-    And I click on "duedateselector[month]" "select"
-    And I click on "October" "option"
-    And I click on "duedateselector[year]" "select"
-    And I click on "2025" "option"
+    And I select "15" from the "duedateselector[day]" singleselect
+    And I select "October" from the "duedateselector[month]" singleselect
+    And I select "2025" from the "duedateselector[year]" singleselect
     And I click on "Save and return to course" "button"
     And I am on the "testingcourse" course page
     And I click on "Add an activity or resource" "button" skipping visibility check
