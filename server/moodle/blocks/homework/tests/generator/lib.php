@@ -15,16 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Block definition class for the block_homework plugin.
+ * Class that inserts testing data into the db for behat testing
+ * heavily inspired by https://moodledev.io/general/development/tools/behat/writing#writing-new-acceptance-test-step-definitions
  *
- * @package   block_homework
- * @copyright Year, You Name <your@email.address>
- * @author    group 11
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright group 11
+ * @package block_homework
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-$string['homework'] = 'Homework';
-$string['homework block'] = 'homework block';
-$string['homework:addinstance'] = 'Add a new homework block';
-$string['homework:myaddinstance'] = 'Add a new homework block to the My Moodle page';
-$string['pluginname'] = 'Homework';
+class block_homework_generator extends component_generator_base {
+    public function create_homework($homework) {
+        global $DB;
+        $DB->insert_record('homework', $homework);
+    }
+}

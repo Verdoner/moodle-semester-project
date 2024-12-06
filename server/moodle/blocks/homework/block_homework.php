@@ -305,5 +305,5 @@ class block_homework extends block_base {
 
         return ['timeperday' => $timeperday, 'percentcompleted' => $percentcompleted, 'weightedreadingspeed' => $weightedreadingspeed];
     }
-    
+
 }
