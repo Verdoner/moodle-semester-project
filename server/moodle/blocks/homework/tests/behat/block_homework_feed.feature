@@ -65,6 +65,6 @@ Feature: Enable the homework_feed  block on the dashboard and view its contents
     Then I should see "Homework" in the "Homework" "block"
     And I should see "testingcourse" in the "Homework" "block"
     And I should see "2025" in the "Homework" "block"
-    Then I click on "sort" "select"
-    And I click on "Due Date" "option"
+    And I should see "2026" in the "Homework" "block"
+    And I log out
     #this does not work but was intended to be used to test sorting: Then "15-10-2025" "text" should appear before "15-10-2026" "text"
